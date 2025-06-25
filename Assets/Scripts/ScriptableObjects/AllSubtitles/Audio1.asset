@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01f64585efbe7ff48b4f1d31ddb36ffa, type: 3}
+  m_Name: Audio1
+  m_EditorClassIdentifier: 
+  subtitlesList: "Bienvenido a Explorando el movimiento con vectores TBN! Aqu\xED
+    aprender\xE1s de forma divertida y visual los conceptos de vectores tangente,
+    normal y binormal. Prep\xE1rate para sumergirte en esta aventura llena de movimiento.
+    Ahora, elige la atracci\xF3n en la que quieras montarte... \xA1y que comience
+    el viaje!"

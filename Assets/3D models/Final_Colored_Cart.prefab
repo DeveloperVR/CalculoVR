@@ -1,0 +1,133 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1323487121748951899
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 81.14746
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.467
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 69.412506
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2364729486305919432, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6d3d1c7a606ee60489316b5333e27be0, type: 2}
+    - target: {fileID: -2364729486305919432, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[4]
+      value: 
+      objectReference: {fileID: 2100000, guid: 92c21b6b844ac394f9ede966459d4ac2, type: 2}
+    - target: {fileID: -2364729486305919432, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[7]
+      value: 
+      objectReference: {fileID: 2100000, guid: 92c21b6b844ac394f9ede966459d4ac2, type: 2}
+    - target: {fileID: -2364729486305919432, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[10]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4216a17adb9c4c44fa29ede90c56fb94, type: 2}
+    - target: {fileID: -2364729486305919432, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[11]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4216a17adb9c4c44fa29ede90c56fb94, type: 2}
+    - target: {fileID: -2364729486305919432, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[12]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6d3d1c7a606ee60489316b5333e27be0, type: 2}
+    - target: {fileID: -2364729486305919432, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[13]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6d3d1c7a606ee60489316b5333e27be0, type: 2}
+    - target: {fileID: -2364729486305919432, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[14]
+      value: 
+      objectReference: {fileID: 2100000, guid: af286ec657b0851459adab0d0747b67b, type: 2}
+    - target: {fileID: -2364729486305919432, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[15]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6d3d1c7a606ee60489316b5333e27be0, type: 2}
+    - target: {fileID: -2364729486305919432, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[16]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6d3d1c7a606ee60489316b5333e27be0, type: 2}
+    - target: {fileID: -2364729486305919432, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[17]
+      value: 
+      objectReference: {fileID: 2100000, guid: 04e63946e4dde644691722f5a1c077de, type: 2}
+    - target: {fileID: 919132149155446097, guid: 9eb78eab1b20266408e6f221d508c15e,
+        type: 3}
+      propertyPath: m_Name
+      value: "carrito_monta\xF1a_rusa"
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: 65702495048144492, guid: 9eb78eab1b20266408e6f221d508c15e, type: 3}
+    - {fileID: -2572967989333021709, guid: 9eb78eab1b20266408e6f221d508c15e, type: 3}
+    - {fileID: -3824974996824756987, guid: 9eb78eab1b20266408e6f221d508c15e, type: 3}
+    - {fileID: -7769951421894727821, guid: 9eb78eab1b20266408e6f221d508c15e, type: 3}
+    - {fileID: -8700617353114198275, guid: 9eb78eab1b20266408e6f221d508c15e, type: 3}
+    - {fileID: 2654713335656134247, guid: 9eb78eab1b20266408e6f221d508c15e, type: 3}
+    - {fileID: -168051006817133204, guid: 9eb78eab1b20266408e6f221d508c15e, type: 3}
+    - {fileID: -8582407930827941612, guid: 9eb78eab1b20266408e6f221d508c15e, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9eb78eab1b20266408e6f221d508c15e, type: 3}
