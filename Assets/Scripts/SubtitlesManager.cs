@@ -1,6 +1,7 @@
- using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class SubtitlesLibrary : MonoBehaviour
 {
@@ -13,6 +14,20 @@ public class SubtitlesLibrary : MonoBehaviour
     [SerializeField] private SubtitlesDB subtitleslibrary2;
     [SerializeField] private SubtitlesDB subtitleslibrary3;
     [SerializeField] private TMP_Text subtitlesText;
+    [SerializeField] private Canvas subtitlescanvas;
+    [SerializeField] private Transform cam;
+    private bool active;
+
+    void LateUpdate()
+    {
+        if (enabled == true)
+        {
+            Vector3 forward = cam.forward;
+            transform.position = cam.position + forward * 2;
+            transform.LookAt(cam);
+        }
+    }
+
 
     public string GetSubtitles(SubtitlesDB origin)
     {
@@ -38,6 +53,7 @@ public class SubtitlesLibrary : MonoBehaviour
         {
             case 1:
                 subtitlesText.text = subtitles1;
+                enablecanvas(subtitlescanvas);
                 break;
             case 2:
                 subtitlesText.text = subtitles2;
@@ -47,9 +63,36 @@ public class SubtitlesLibrary : MonoBehaviour
                 break;
             default:
                 Debug.LogWarning("Invalid subtitle index.");
+                subtitlesText = null;
                 break;
         }
+        if (subtitlesText == null)
+        {
+            Debug.Log("No hay texto valido para mostrar");
+            return;
+        }
+        else
+        {
+            enablecanvas(subtitlescanvas);
+            int timecounter = 0;
+            while (timecounter < duration)
+            {
+                active = true;
+            }
+            active = false;
 
+        }
+
+    }
+
+    void disablecanvas(Canvas canvas)
+    {
+        canvas.gameObject.SetActive(false);
+    }
+
+    void enablecanvas(Canvas canvas)
+    {
+        canvas.gameObject.SetActive(true);
     }
 
 }
