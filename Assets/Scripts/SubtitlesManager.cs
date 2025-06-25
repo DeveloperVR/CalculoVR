@@ -1,13 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 
 public class SubtitlesLibrary : MonoBehaviour
 {
-    public string subtitles1;
-    public string subtitles2;
-    public string subtitles3;
+    private string subtitles1;
+    private string subtitles2;
+    private string subtitles3;
 
 
     [SerializeField] private SubtitlesDB subtitleslibrary;
