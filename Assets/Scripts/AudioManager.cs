@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -8,6 +6,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip[] audios;
     private AudioSource controlAudio;
     private bool isPlaying = false;
+    [SerializeField] SubtitlesLibrary subtitles; 
 
     private void Awake()
     {
@@ -26,6 +25,7 @@ public class AudioManager : MonoBehaviour
         controlAudio.loop = loop;
         controlAudio.Play();
         StartCoroutine(WaitForAudioToFinish());
+        subtitles.SetSubtitlesText(indice);
 
     }
     private IEnumerator WaitForAudioToFinish()

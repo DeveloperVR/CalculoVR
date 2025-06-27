@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01f64585efbe7ff48b4f1d31ddb36ffa, type: 3}
   m_Name: Audio3
   m_EditorClassIdentifier: 
-  subtitlesList: "\"\xBFDesde d\xF3nde quieres vivir esta experiencia? Puedes ser
-    un observador y ver todo desde afuera\u2026 O puedes subirte a la monta\xF1a
-    rusa y sentir los vectores en primera persona. \xA1T\xFA decides!"
+  subtitlesList: "\xBFDesde d\xF3nde quieres vivir esta experiencia? Puedes ser un
+    observador y ver todo desde afuera\u2026 O puedes subirte a la monta\xF1a rusa
+    y sentir los vectores en primera persona. \xA1T\xFA decides!"
+  TimeOfDisplay: 5

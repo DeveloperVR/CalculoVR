@@ -16,14 +16,16 @@ public class SubtitlesLibrary : MonoBehaviour
     [SerializeField] private Canvas subtitlescanvas;
     [SerializeField] private Transform cam;
     private bool active;
+    private int duration;
 
     void LateUpdate()
     {
         if (enabled == true)
         {
             Vector3 forward = cam.forward;
-            transform.position = cam.position + forward * 2;
-            transform.LookAt(cam);
+            subtitlescanvas.transform.position = cam.position + forward * 2;
+            subtitlescanvas.transform.LookAt(cam);
+            subtitlescanvas.transform.Rotate(0, 180, 0); // Rotate to face the camera
         }
     }
 
@@ -39,6 +41,17 @@ public class SubtitlesLibrary : MonoBehaviour
         return subtitles;
     }
 
+    public int GetTimeOfDisplay(SubtitlesDB origin)
+    {
+        int time = origin.GetTimeOfDisplay;
+        if (time <= 0)
+        {
+            Debug.LogWarning("Invalid display time for subtitles.");
+            return 5; // Default display time if invalid
+        }
+        return time;
+    }
+
     void Awake()
     {
         subtitles1 = GetSubtitles(subtitleslibrary);
@@ -46,19 +59,27 @@ public class SubtitlesLibrary : MonoBehaviour
         subtitles3 = GetSubtitles(subtitleslibrary3);
     }
 
-    public void SetSubtitlesText(int indice, float duration)
+    public void SetSubtitlesText(int indice)
     {
         switch (indice)
         {
-            case 1:
+            case 0:
                 subtitlesText.text = subtitles1;
+                duration = GetTimeOfDisplay(subtitleslibrary);
+                Debug.Log("Subtitles: " + subtitlesText.text);
+                enablecanvas(subtitlescanvas);
+                break;
+            case 1:
+                subtitlesText.text = subtitles2;
+                duration = GetTimeOfDisplay(subtitleslibrary2);
+                Debug.Log("Subtitles: " + subtitlesText.text);
                 enablecanvas(subtitlescanvas);
                 break;
             case 2:
-                subtitlesText.text = subtitles2;
-                break;
-            case 3:
                 subtitlesText.text = subtitles3;
+                duration = GetTimeOfDisplay(subtitleslibrary3);
+                Debug.Log("Subtitles: " + subtitlesText.text);
+                enablecanvas(subtitlescanvas);
                 break;
             default:
                 Debug.LogWarning("Invalid subtitle index.");
@@ -68,17 +89,22 @@ public class SubtitlesLibrary : MonoBehaviour
         if (subtitlesText == null)
         {
             Debug.Log("No hay texto valido para mostrar");
+            disablecanvas(subtitlescanvas);
+            active = false;
             return;
         }
         else
         {
             enablecanvas(subtitlescanvas);
-            int timecounter = 0;
+            float timecounter = 0;
             while (timecounter < duration)
             {
+                timecounter += Time.deltaTime;
+                Debug.Log("Tiempo de espera: " + timecounter);
                 active = true;
             }
             active = false;
+            disablecanvas(subtitlescanvas);
 
         }
 

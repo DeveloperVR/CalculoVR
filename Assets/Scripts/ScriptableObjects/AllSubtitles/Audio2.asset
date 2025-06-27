@@ -15,3 +15,4 @@ MonoBehaviour:
   subtitlesList: "\xA1Es hora de elegir pista! Tenemos tres trayectos diferentes
     para ti. Selecciona en cu\xE1l de estas pistas quieres subirte... y prep\xE1rate
     para la experiencia."
+  TimeOfDisplay: 5
