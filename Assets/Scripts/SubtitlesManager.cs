@@ -112,7 +112,7 @@ public class SubtitlesLibrary : MonoBehaviour
 
     }
 
-    void disablecanvas(Canvas canvas)
+    public void disablecanvas(Canvas canvas)
     {
         canvas.gameObject.SetActive(false);
     }

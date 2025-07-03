@@ -6,7 +6,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip[] audios;
     private AudioSource controlAudio;
     private bool isPlaying = false;
-    [SerializeField] SubtitlesLibrary subtitles; 
+    [SerializeField] SubtitlesLibrary subtitles;
+    [SerializeField] private Canvas SCanvas;
 
     private void Awake()
     {
@@ -32,6 +33,7 @@ public class AudioManager : MonoBehaviour
     {
         yield return new WaitWhile(() => controlAudio.isPlaying);
         isPlaying = false;
+        subtitles.disablecanvas(SCanvas);
     }
 
     public void StopAudio()
