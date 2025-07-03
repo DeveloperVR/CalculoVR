@@ -23,7 +23,9 @@ public class SubtitlesLibrary : MonoBehaviour
         if (enabled == true)
         {
             Vector3 forward = cam.forward;
-            subtitlescanvas.transform.position = cam.position + forward * 2;
+            Vector3 canvasposition = cam.position + forward * 2;
+            canvasposition.y = cam.position.y - 2;
+            subtitlescanvas.transform.position = canvasposition;
             subtitlescanvas.transform.LookAt(cam);
             subtitlescanvas.transform.Rotate(0, 180, 0); // Rotate to face the camera
         }
@@ -104,7 +106,7 @@ public class SubtitlesLibrary : MonoBehaviour
                 active = true;
             }
             active = false;
-            disablecanvas(subtitlescanvas);
+            //disablecanvas(subtitlescanvas);
 
         }
 
