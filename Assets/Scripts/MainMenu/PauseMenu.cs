@@ -20,21 +20,21 @@ public class PauseMenu : MonoBehaviour
         pauseButton.action.performed += Pausing;
     }
 
-    private void OnDisable()
-    {
-        pauseButton.action.performed -= Pausing;
-    }
+    // private void OnDisable()
+    // {
+    //     pauseButton.action.performed -= Pausing;
+    // }
 
     private void LateUpdate()
     {
-        if (isPaused)
-        {
-            Vector3 forward = cam.forward;
-            Vector3 canvasPosition = cam.position + forward * 3;
-            mainMenuCanvas.transform.position = canvasPosition;
-            mainMenuCanvas.transform.LookAt(cam);
-            mainMenuCanvas.transform.Rotate(0, 180, 0); // Rotate to face the camera
-        }
+         if (isPaused)
+         {
+             Vector3 forward = cam.forward;
+             Vector3 canvasPosition = cam.position + forward * 5;
+             mainMenuCanvas.transform.position = canvasPosition;
+             mainMenuCanvas.transform.LookAt(cam);
+             mainMenuCanvas.transform.Rotate(0, 180, 0); // Rotate to face the camera
+         }
     }
 
 
