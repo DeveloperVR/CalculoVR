@@ -106,8 +106,6 @@ public class SubtitlesLibrary : MonoBehaviour
                 active = true;
             }
             active = false;
-            //disablecanvas(subtitlescanvas);
-
         }
 
     }

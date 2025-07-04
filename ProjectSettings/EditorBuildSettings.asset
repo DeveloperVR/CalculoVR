@@ -32,6 +32,8 @@ EditorBuildSettings:
       type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000,
       guid: e5465f025b2aff848b770a2dfdeae8de, type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: 8d047b56fd91a7d45867add8593744c7,
+      type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: ad4050bc0deda4e238354e959df0f1f4,
       type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: b53b89ca9241447b0a56ff61fa931615,

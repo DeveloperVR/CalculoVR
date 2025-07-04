@@ -13,8 +13,16 @@ public class PauseMenu : MonoBehaviour
     private void Awake()
     {
         pauseButton.action.Enable();
-        pauseButton.action.performed += Pausing;
+    }
 
+    private void OnEnable()
+    {
+        pauseButton.action.performed += Pausing;
+    }
+
+    private void OnDisable()
+    {
+        pauseButton.action.performed -= Pausing;
     }
 
     private void LateUpdate()
@@ -28,6 +36,8 @@ public class PauseMenu : MonoBehaviour
             mainMenuCanvas.transform.Rotate(0, 180, 0); // Rotate to face the camera
         }
     }
+
+
 
     private void OnDestroy()
     {
