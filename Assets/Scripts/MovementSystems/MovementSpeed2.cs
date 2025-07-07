@@ -263,7 +263,23 @@ public class MovementSpeed2 : MonoBehaviour
     }
 
     private void StopSound()
-    { 
+    {
         railing.Stop();
+    }
+
+    private void muteSound()
+    {
+        if (railing != null)
+        {
+            railing.volume = 0f;
+        }
+    }
+    
+    private void unmuteSound()
+    {
+        if (railing != null)
+        {
+            railing.volume = 0.3f;
+        }
     }
 }

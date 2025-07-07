@@ -44,4 +44,14 @@ public class AudioManager : MonoBehaviour
             isPlaying = false;
         }
     }
+
+    public void muteAudio()
+    {
+        controlAudio.mute = true;
+    }
+
+    public void unmuteAudio()
+    {
+        controlAudio.mute = false;
+    }
 }

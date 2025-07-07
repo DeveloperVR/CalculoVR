@@ -260,12 +260,28 @@ public class MovementSpeed1 : MonoBehaviour
             railing.loop = true; // Asegúrate de que el audio se repita
             railing.volume = 0.3f; // Ajusta el volumen según sea necesario
             railing.Play();
-            
+
 
         }
     }
     void StopAudio()
     {
         railing.Stop();
+    }
+
+    public void MuteAudio()
+    {
+        if (railing != null)
+        {
+            railing.volume = 0f;
+        }
+    }
+    
+    public void UnmuteAudio()
+    {
+        if (railing != null)
+        {
+            railing.volume = 0.3f;
+        }
     }
 }

@@ -5,10 +5,13 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] private GameObject mainMenuCanvas;
+    [SerializeField] private GameObject SettingsCanvas; 
     [SerializeField] private Transform cam;
 
     public InputActionReference pauseButton;
     private bool isPaused = false;
+
+    private bool isSettingsActive = false;
 
     private void Awake()
     {
@@ -27,14 +30,15 @@ public class PauseMenu : MonoBehaviour
 
     private void LateUpdate()
     {
-         if (isPaused)
-         {
-             Vector3 forward = cam.forward;
-             Vector3 canvasPosition = cam.position + forward * 5;
-             mainMenuCanvas.transform.position = canvasPosition;
-             mainMenuCanvas.transform.LookAt(cam);
-             mainMenuCanvas.transform.Rotate(0, 180, 0); // Rotate to face the camera
-         }
+        if (isPaused)
+        {
+            Vector3 forward = cam.forward;
+            Vector3 canvasPosition = cam.position + forward * 5;
+            mainMenuCanvas.transform.position = canvasPosition;
+            mainMenuCanvas.transform.LookAt(cam);
+            mainMenuCanvas.transform.Rotate(0, 180, 0); // Rotate to face the camera
+        }
+        
     }
 
 
@@ -57,13 +61,13 @@ public class PauseMenu : MonoBehaviour
         {
             mainMenuCanvas.SetActive(false);
             isPaused = false;
-            Time.timeScale = 1f; // Resumes the game
+            //Time.timeScale = 1f; // Resumes the game
         }
         else if (!isPaused)
         {
             mainMenuCanvas.SetActive(true);
             isPaused = true;
-            Time.timeScale = 0f; // Pauses the game
+            //Time.timeScale = 0f; // Pauses the game
         }
 
     }
@@ -73,13 +77,13 @@ public class PauseMenu : MonoBehaviour
     {
         mainMenuCanvas.SetActive(false);
         isPaused = false;
-        Time.timeScale = 1f; // Resumes the game
+        //Time.timeScale = 1f; // Resumes the game
     }
 
     public void MenuReturn()
     {
         SceneManager.LoadScene("MainMenu");
-        Time.timeScale = 1f; // Resumes the game
+        //Time.timeScale = 1f; // Resumes the game
     }
 
     public void QuitGame()

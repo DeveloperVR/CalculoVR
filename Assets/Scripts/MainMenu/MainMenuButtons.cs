@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuButtons : MonoBehaviour
 {
+
+    [SerializeField] private LoadingScene LoadingScreen;
     private string test;
     private string mode;
     [SerializeField] private GameObject TestCanvas;
@@ -57,7 +59,7 @@ public class MainMenuButtons : MonoBehaviour
     {
         if (test == "RollerCoaster" && mode == "SinglePlayer")
         {
-            SceneManager.LoadScene("RC1");
+            LoadingScreen.LoadScene(1);
         }
     }
 
