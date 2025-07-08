@@ -5,7 +5,7 @@ using Photon.Pun;
 
 public class ConnectionManager : MonoBehaviourPunCallbacks
 {
-    // Start is called before the first frame update
+    [SerializeField]  private 
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -13,6 +13,7 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     { 
-        
+        Debug.Log("Connected to Master Server");
+        PhotonNetwork.JoinLobby();
     }
 }
