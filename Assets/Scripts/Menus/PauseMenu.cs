@@ -5,13 +5,11 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] private GameObject mainMenuCanvas;
-    [SerializeField] private GameObject SettingsCanvas; 
+    [SerializeField] private GameObject SettingsCanvas;
     [SerializeField] private Transform cam;
 
     public InputActionReference pauseButton;
     private bool isPaused = false;
-
-    private bool isSettingsActive = false;
 
     private void Awake()
     {
@@ -38,7 +36,6 @@ public class PauseMenu : MonoBehaviour
             mainMenuCanvas.transform.LookAt(cam);
             mainMenuCanvas.transform.Rotate(0, 180, 0); // Rotate to face the camera
         }
-        
     }
 
 
@@ -82,12 +79,20 @@ public class PauseMenu : MonoBehaviour
 
     public void MenuReturn()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene(0);
         //Time.timeScale = 1f; // Resumes the game
     }
 
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void SettingsMenu()
+    {
+
+        mainMenuCanvas.SetActive(false);
+        SettingsCanvas.SetActive(true);
+        SettingsCanvas.GetComponent<SettingsMenu>().SetSettings(true);
     }
 }

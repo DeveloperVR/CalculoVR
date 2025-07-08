@@ -102,7 +102,7 @@ public class SubtitlesLibrary : MonoBehaviour
             while (timecounter < duration)
             {
                 timecounter += Time.deltaTime;
-                Debug.Log("Tiempo de espera: " + timecounter);
+                //Debug.Log("Tiempo de espera: " + timecounter);
                 active = true;
             }
             active = false;

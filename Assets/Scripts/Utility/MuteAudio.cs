@@ -17,4 +17,9 @@ public class MuteAudio : MonoBehaviour
     {
         audioListener.enabled = false;
     }
+
+    public void UnmuteListener()
+    {
+        audioListener.enabled = true;
+    }
 }
