@@ -8,12 +8,15 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private GameObject SettingsCanvas;
     [SerializeField] private Transform cam;
 
+    private GameObject LoadingScreen;
+
     public InputActionReference pauseButton;
     private bool isPaused = false;
 
     private void Awake()
     {
         pauseButton.action.Enable();
+        LoadingScreen = GameObject.Find("LoadingScreen");
     }
 
     private void OnEnable()
@@ -79,7 +82,8 @@ public class PauseMenu : MonoBehaviour
 
     public void MenuReturn()
     {
-        SceneManager.LoadScene(0);
+        LoadingScene loadingScene = LoadingScreen.GetComponent<LoadingScene>();
+        loadingScene.LoadScene(0); // Assuming 0 is the main menu scene index
         //Time.timeScale = 1f; // Resumes the game
     }
 
