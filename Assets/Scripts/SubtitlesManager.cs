@@ -68,19 +68,16 @@ public class SubtitlesLibrary : MonoBehaviour
             case 0:
                 subtitlesText.text = subtitles1;
                 duration = GetTimeOfDisplay(subtitleslibrary);
-                Debug.Log("Subtitles: " + subtitlesText.text);
                 enablecanvas(subtitlescanvas);
                 break;
             case 1:
                 subtitlesText.text = subtitles2;
                 duration = GetTimeOfDisplay(subtitleslibrary2);
-                Debug.Log("Subtitles: " + subtitlesText.text);
                 enablecanvas(subtitlescanvas);
                 break;
             case 2:
                 subtitlesText.text = subtitles3;
                 duration = GetTimeOfDisplay(subtitleslibrary3);
-                Debug.Log("Subtitles: " + subtitlesText.text);
                 enablecanvas(subtitlescanvas);
                 break;
             default:

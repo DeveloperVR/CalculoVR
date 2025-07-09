@@ -7,6 +7,7 @@ using Photon.Realtime;
 public class ConnectionManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private List<string> roomNames;
+    [SerializeField] private LoadingScene LoadingScreen; // Assuming you have a LoadingScene script to handle scene loading
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -42,6 +43,20 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
         base.OnCreatedRoom();
         roomNames.Add(PhotonNetwork.CurrentRoom.Name);
         Debug.Log($"Room created: {PhotonNetwork.CurrentRoom.Name}");
+    }
+
+    public override void OnJoinedLobby()
+    {
+        base.OnJoinedLobby();
+        Debug.Log("Joined lobby");
+    }
+
+    public override void OnJoinedRoom()
+    {
+        base.OnJoinedRoom();
+        roomNames.Add(PhotonNetwork.CurrentRoom.Name);
+        Debug.Log($"Joined room: {PhotonNetwork.CurrentRoom.Name}");
+        LoadingScreen.LoadScene(PhotonNetwork.CurrentRoom.Name); // Assuming you have a LoadingScreen script to handle scene loading
     }
     
     public override void OnLeftRoom()

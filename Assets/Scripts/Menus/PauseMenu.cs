@@ -83,7 +83,7 @@ public class PauseMenu : MonoBehaviour
     public void MenuReturn()
     {
         LoadingScene loadingScene = LoadingScreen.GetComponent<LoadingScene>();
-        loadingScene.LoadScene(0); // Assuming 0 is the main menu scene index
+        loadingScene.LoadScene("MainMenu"); // Assuming 0 is the main menu scene index
         //Time.timeScale = 1f; // Resumes the game
     }
 

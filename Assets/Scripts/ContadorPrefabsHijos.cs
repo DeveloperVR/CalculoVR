@@ -18,6 +18,5 @@ public class ContadorPrefabsHijos : MonoBehaviour
             children.Add(child.gameObject);
         }
 
-        Debug.Log($"Número de hijos: {children.Count}");
     }
 }
