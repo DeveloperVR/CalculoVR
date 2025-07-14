@@ -12,12 +12,18 @@ public class MainMenuButtons : MonoBehaviour
     [SerializeField] private GameObject TestCanvas;
     [SerializeField] private GameObject ModeCanvas;
     [SerializeField] private GameObject ConfirmationCanvas;
+    private GameObject ConnectionManagerObject;
 
     private void Awake()
     {
         TestCanvas.SetActive(true);
         ModeCanvas.SetActive(false);
         ConfirmationCanvas.SetActive(false);
+    }
+
+    public void Start()
+    {
+        
     }
     //Funtionality to pick what test to initiate----------------------------------------------------------//
     public void RollerCoaster()
@@ -59,23 +65,14 @@ public class MainMenuButtons : MonoBehaviour
     {
         if (test == "RollerCoaster" && mode == "SinglePlayer")
         {
-<<<<<<< Updated upstream
-            LoadingScreen.LoadScene(1);
-=======
             LoadingScreen.LoadScene("RollerCoaster_SinglePlayer");
         }
 
         if (test == "RollerCoaster" && mode == "MultiPlayer")
         {
-            connectionManager.GetComponent<ConnectionManager>().SetRoomName("RollerCoaster_MultiPlayer");
             LoadingScreen.LoadScene("RollerCoaster_MultiPlayer");
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+            ConnectionManager.Instance.SetRoomName("RollerCoaster_Multiplayer");
+
         }
     }
 

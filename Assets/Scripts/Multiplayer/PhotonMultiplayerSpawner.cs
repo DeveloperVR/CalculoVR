@@ -7,39 +7,16 @@ public class PhotonMultiplayerSpawner : MonoBehaviour
 
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private GameObject playerPrefab;
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+    [SerializeField] private GameObject testCubePrefab; // Assuming you have a prefab for the test cube
+    private bool hasSpawned = false;
+    private bool CubeHasSpawned = false;
     // Start is called before the first frame update
-    void Start()
-    {
 
-=======
-    [SerializeField] private GameObject testCubePrefab; // Assuming you have a prefab for the test cube
-    private bool hasSpawned = false;
-    private bool CubeHasSpawned = false;
     void Start()
     {
         StartCoroutine(WaitForConnectionReady());
->>>>>>> Stashed changes
-=======
-    [SerializeField] private GameObject testCubePrefab; // Assuming you have a prefab for the test cube
-    private bool hasSpawned = false;
-    private bool CubeHasSpawned = false;
-    void Start()
-    {
-        StartCoroutine(WaitForConnectionReady());
->>>>>>> Stashed changes
-=======
-    [SerializeField] private GameObject testCubePrefab; // Assuming you have a prefab for the test cube
-    private bool hasSpawned = false;
-    private bool CubeHasSpawned = false;
-    void Start()
-    {
-        StartCoroutine(WaitForConnectionReady());
->>>>>>> Stashed changes
     }
-
+   
     public void SpawnPlayer(int playerIndex)
     {
         if (hasSpawned)
@@ -55,8 +32,7 @@ public class PhotonMultiplayerSpawner : MonoBehaviour
         Transform spawnPoint = spawnPoints[playerIndex];
         PhotonNetwork.Instantiate(playerPrefab.name, spawnPoint.position, spawnPoint.rotation);
     }
-<<<<<<< Updated upstream
-=======
+
 
     public void SpawnTestCube()
     {
@@ -76,15 +52,9 @@ public class PhotonMultiplayerSpawner : MonoBehaviour
         {
             yield return null;
         }
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(1f);
         SpawnPlayer(0); // Spawn player after connection is ready
         SpawnTestCube(); // Spawn test cube after connection is ready
     }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
 }

@@ -2,21 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class ConnectionManager : MonoBehaviourPunCallbacks
 {
-<<<<<<< Updated upstream
-    [SerializeField]  private 
-=======
+
     [SerializeField] private List<string> roomNames;
     [SerializeField] private LoadingScene LoadingScreen; // Assuming you have a LoadingScene script to handle scene loading
-    public static ConnectionManager Instance;
+    public static ConnectionManager Instance { get; private set; }
     private GameObject DebugAudio;
     private string roomName;
 
     void Awake()
     {
-        if (Instance == null && Instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
         }
@@ -26,25 +25,19 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
             DontDestroyOnLoad(this);
         }
     }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
     void Start()
     {
+        DebugAudio = GameObject.Find("DebugAudio");
         PhotonNetwork.ConnectUsingSettings();
     }
 
     public override void OnConnectedToMaster()
     { 
         Debug.Log("Connected to Master Server");
+        DebugAudio.GetComponent<DebugAudio>().SuccesAudio();
         PhotonNetwork.JoinLobby();
     }
-<<<<<<< Updated upstream
-=======
 
     public void JoinRoom(string roomName)
     {
@@ -76,6 +69,7 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
     {
         base.OnJoinedLobby();
         Debug.Log("Joined lobby");
+        DebugAudio.GetComponent<DebugAudio>().SuccesAudio();
     }
 
     public override void OnJoinedRoom()
@@ -83,7 +77,7 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         roomNames.Add(PhotonNetwork.CurrentRoom.Name);
         Debug.Log($"Joined room: {PhotonNetwork.CurrentRoom.Name}");
-        DebugAudio.GetComponent<DebugAudio>().SuccesAudio(); // Play success audio
+        LoadingScreen.LoadScene("RollerCoaster_MultiPlayer");
     }
 
     public override void OnLeftRoom()
@@ -99,11 +93,4 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
     {
         roomName = name;
     }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 }

@@ -8,12 +8,12 @@ public class LoadingScene : MonoBehaviour
 {
     [SerializeField] private GameObject loadingScreen;
 
-    public void LoadScene(int SceneId)
+    public void LoadScene(string SceneId)
     {
         StartCoroutine(LoadSceneAsync(SceneId));
     }
 
-    IEnumerator LoadSceneAsync(int SceneId)
+    IEnumerator LoadSceneAsync(string SceneId)
     {
 
         loadingScreen.SetActive(true);
