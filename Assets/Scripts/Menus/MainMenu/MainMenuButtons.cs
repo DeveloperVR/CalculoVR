@@ -59,7 +59,17 @@ public class MainMenuButtons : MonoBehaviour
     {
         if (test == "RollerCoaster" && mode == "SinglePlayer")
         {
+<<<<<<< Updated upstream
             LoadingScreen.LoadScene(1);
+=======
+            LoadingScreen.LoadScene("RollerCoaster_SinglePlayer");
+        }
+
+        if (test == "RollerCoaster" && mode == "MultiPlayer")
+        {
+            connectionManager.GetComponent<ConnectionManager>().SetRoomName("RollerCoaster_MultiPlayer");
+            LoadingScreen.LoadScene("RollerCoaster_MultiPlayer");
+>>>>>>> Stashed changes
         }
     }
 

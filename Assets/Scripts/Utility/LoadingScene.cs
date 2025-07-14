@@ -22,10 +22,6 @@ public class LoadingScene : MonoBehaviour
         loadingScreen.transform.rotation = Quaternion.LookRotation(loadingScreen.transform.position - Camera.main.transform.position);
         AsyncOperation operation = SceneManager.LoadSceneAsync(SceneId);
 
-
-
-        loadingScreen.SetActive(true);
-
         while (!operation.isDone)
         {
             float progress = Mathf.Clamp01(operation.progress / 0.9f);
@@ -34,7 +30,15 @@ public class LoadingScene : MonoBehaviour
 
             yield return null;
         }
-        
+
         loadingScreen.SetActive(false);
     }
+
+    // IEnumerator ShowLoadingScreen()
+    // { 
+    //     loadingScreen.SetActive(true);
+
+    //     loadingScreen.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 2.5f;
+    //     loadingScreen.transform.rotation = Quaternion.LookRotation(loadingScreen.transform.position - Camera.main.transform.position);
+    // }
 }
