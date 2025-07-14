@@ -9,10 +9,19 @@ public class PhotonMultiplayerSpawner : MonoBehaviour
     [SerializeField] private GameObject playerPrefab;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     // Start is called before the first frame update
     void Start()
     {
 
+=======
+    [SerializeField] private GameObject testCubePrefab; // Assuming you have a prefab for the test cube
+    private bool hasSpawned = false;
+    private bool CubeHasSpawned = false;
+    void Start()
+    {
+        StartCoroutine(WaitForConnectionReady());
+>>>>>>> Stashed changes
 =======
     [SerializeField] private GameObject testCubePrefab; // Assuming you have a prefab for the test cube
     private bool hasSpawned = false;
@@ -72,6 +81,9 @@ public class PhotonMultiplayerSpawner : MonoBehaviour
         SpawnTestCube(); // Spawn test cube after connection is ready
     }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

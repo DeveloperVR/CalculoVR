@@ -27,6 +27,9 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
         }
     }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -97,6 +100,9 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
         roomName = name;
     }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
