@@ -542,6 +542,10 @@ GameObject:
   - component: {fileID: 7174822357416751456}
   - component: {fileID: 3006582157641031350}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+  - component: {fileID: 3527336563856745044}
+>>>>>>> Stashed changes
 =======
   - component: {fileID: 3527336563856745044}
 >>>>>>> Stashed changes
@@ -883,7 +887,10 @@ MonoBehaviour:
     overrideGroupMembers:
     - {fileID: 3666467818137683819}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 --- !u!114 &3527336563856745044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1582,6 +1589,10 @@ GameObject:
   - component: {fileID: 7532224007968131695}
   - component: {fileID: 411727041448986361}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+  - component: {fileID: 7088569946324581955}
+>>>>>>> Stashed changes
 =======
   - component: {fileID: 7088569946324581955}
 >>>>>>> Stashed changes
@@ -1923,7 +1934,10 @@ MonoBehaviour:
     overrideGroupMembers:
     - {fileID: 1526838479918281688}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 --- !u!114 &7088569946324581955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1940,6 +1954,9 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 --- !u!1 &3734825306654328026
 GameObject:
@@ -2327,6 +2344,9 @@ GameObject:
   - component: {fileID: 881673624404185706}
   - component: {fileID: 1357577251034788347}
   - component: {fileID: 7074372088561875086}
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   m_Layer: 2
   m_Name: XR Origin (XR Rig)

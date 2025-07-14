@@ -69,6 +69,9 @@ public class MainMenuButtons : MonoBehaviour
         {
             connectionManager.GetComponent<ConnectionManager>().SetRoomName("RollerCoaster_MultiPlayer");
             LoadingScreen.LoadScene("RollerCoaster_MultiPlayer");
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         }
     }
