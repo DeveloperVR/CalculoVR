@@ -93,12 +93,10 @@ public class puntostrigger : MonoBehaviour
         Debug.Log("Entro al GetDrawer");
         if (CDrawer != null)
         {
-            Debug.Log("Hay un objeto de tipo CDrawer el cual es: " + CDrawer);
             CDrawer.SetActive(true);
         }
         else
         {
-            Debug.Log("No hay un objeto de tipo CDrawer");
         }
     }
     

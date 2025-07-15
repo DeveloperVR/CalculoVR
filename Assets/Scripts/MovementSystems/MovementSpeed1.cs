@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.ProBuilder.Shapes;
 
@@ -21,6 +22,7 @@ public class MovementSpeed1 : MonoBehaviour
     [SerializeField] private Transform RidingMenuFinalPosition;
     [SerializeField] private Transform ObservingMenuFinalPosition;
     [SerializeField] private XROriginRecentering centrado;
+    private GameObject CartMovementManager;
     private AudioManager audioManager;
     [SerializeField] private AudioSource railing;
 
@@ -44,7 +46,7 @@ public class MovementSpeed1 : MonoBehaviour
     private float r = 200f; // Radio de la curva
     private List<Vector3> pathPoints = new List<Vector3>();
     private Vector3 initialPosition = Vector3.zero;
-    [SerializeField] private int rotationSpeed = 1;
+    public static int rotationSpeed = 1;
     [SerializeField] float boostEnergy = 50f;
 
     float totalLength = 0f;
@@ -55,11 +57,13 @@ public class MovementSpeed1 : MonoBehaviour
     private bool checkpoint = false;
 
     private Dictionary<GameObject, GameObject> sphereToTangent = new Dictionary<GameObject, GameObject>();
+    private Quaternion PlayerRotation;
 
     void Start()
     {
         StartCoroutine(WaitForData());
         audioManager = FindObjectOfType<AudioManager>();
+        CartMovementManager = GameObject.Find("CartMovementManager");
     }
 
     void Update()
@@ -99,13 +103,13 @@ public class MovementSpeed1 : MonoBehaviour
         transform.position = currentPosition;
         Vector3 moveDirection = currentPosition - lastPosition;
         Quaternion lookRotation = Quaternion.LookRotation(moveDirection.normalized);
-        Quaternion playerRotation = Quaternion.LookRotation(moveDirection.normalized);
+        PlayerRotation = Quaternion.LookRotation(moveDirection.normalized);
         lookRotation *= Quaternion.Euler(0f, 90f, 0f);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime * currentVelocity);
         if (Observing == false)
         {
             player.transform.position = currentPosition;
-            player.transform.rotation = Quaternion.Slerp(player.transform.rotation, playerRotation, rotationSpeed * Time.deltaTime * currentVelocity);
+            player.transform.rotation = Quaternion.Slerp(player.transform.rotation, PlayerRotation, rotationSpeed * Time.deltaTime * currentVelocity);
         }
 
 
@@ -138,6 +142,8 @@ public class MovementSpeed1 : MonoBehaviour
             menu.gameObject.SetActive(true);
             checkpoint = false;
             centrado.RecenterToHeadset();
+            CartMovementManager.GetComponent<CartMovementManager>().SetisMoving(false);
+
             return;
         }
         // Preparar para siguiente frame
@@ -186,6 +192,11 @@ public class MovementSpeed1 : MonoBehaviour
 
         ComputePathData();
 
+    }
+
+    public void PlayerMovement()
+    { 
+        
     }
 
     // Calcular la longitud total del camino
@@ -285,8 +296,12 @@ public class MovementSpeed1 : MonoBehaviour
         }
     }
     
+    public float getCurrentVelocity() => currentVelocity;
+    public Quaternion getPlayerRotation() => PlayerRotation;
+    public float getRotationSpeed() => rotationSpeed;
+
     public void SetPlayer()
-    { 
+    {
         player = RCGameManager.Instance.LocalPlayer;
         if (player == null)
         {
