@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Inputs;
@@ -18,6 +19,7 @@ public class CXRNetworkSetup : MonoBehaviour
     [SerializeField] private XRInputModalityManager xrInputModalityManager;
     [SerializeField] private XRGazeAssistance xrGazeAssistance;
     [SerializeField] private OnButtonPress onButtonPress;
+    private GameObject PlayerSpawnEvent;
 
 
     void Awake()
@@ -41,6 +43,9 @@ public class CXRNetworkSetup : MonoBehaviour
             xrInputModalityManager.enabled = true;
             xrGazeAssistance.enabled = true;
             onButtonPress.enabled = true;
+
+            RCGameManager.Instance.SetLocalPlayer(this.gameObject);
+
         }
         else
         {

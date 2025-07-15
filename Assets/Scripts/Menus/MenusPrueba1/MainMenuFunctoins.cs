@@ -18,6 +18,18 @@ public class MainMenuFunctions : MonoBehaviour
     // Start is called before the first frame update
 
 
+    public void SetPlayer()
+    { 
+        Player = RCGameManager.Instance.LocalPlayer;
+        if (Player == null)
+        {
+            Debug.LogError("XR Origin (XR Rig) not found in the scene.");
+        }
+        else
+        {
+            Debug.Log("XR Origin (XR Rig) found: " + Player.name);
+        }
+    }
     public void Start()
     {
         audioManager = FindObjectOfType<AudioManager>();

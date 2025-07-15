@@ -41,5 +41,14 @@ public class Menu31Functions : MonoBehaviour
         //audioManager.SeleccionAudio(3, 0.4f, true);
     }
 
+    public void SetPlayer()
+    { 
+        Player = RCGameManager.Instance.LocalPlayer;
+        if (Player == null)
+        {
+            Debug.LogError("XR Origin (XR Rig) not found in the scene.");
+        }
+    }
+
 
 }

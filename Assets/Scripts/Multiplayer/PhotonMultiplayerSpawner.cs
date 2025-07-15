@@ -10,13 +10,14 @@ public class PhotonMultiplayerSpawner : MonoBehaviour
     [SerializeField] private GameObject testCubePrefab; // Assuming you have a prefab for the test cube
     private bool hasSpawned = false;
     private bool CubeHasSpawned = false;
+    private GameObject PlayerEvent;
     // Start is called before the first frame update
 
     void Start()
     {
         StartCoroutine(WaitForConnectionReady());
     }
-   
+
     public void SpawnPlayer(int playerIndex)
     {
         if (hasSpawned)
@@ -31,6 +32,10 @@ public class PhotonMultiplayerSpawner : MonoBehaviour
         }
         Transform spawnPoint = spawnPoints[playerIndex];
         PhotonNetwork.Instantiate(playerPrefab.name, spawnPoint.position, spawnPoint.rotation);
+        hasSpawned = true;
+        PlayerEvent = GameObject.Find("PlayerSpawnEvent");
+        PlayerEvent.GetComponent<PlayerSpawnEvent>().playerSpawned = true;
+
     }
 
 

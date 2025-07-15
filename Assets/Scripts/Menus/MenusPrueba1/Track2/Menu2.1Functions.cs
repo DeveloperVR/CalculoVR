@@ -43,5 +43,14 @@ public class Menu21Functions : MonoBehaviour
 
     }
 
+    public void SetPlayer()
+    { 
+        Player = RCGameManager.Instance.LocalPlayer;
+        if (Player == null)
+        {
+            Debug.LogError("XR Origin (XR Rig) not found in the scene.");
+        }
+    }
+
 
 }

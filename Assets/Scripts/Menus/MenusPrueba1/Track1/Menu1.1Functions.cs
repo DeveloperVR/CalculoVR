@@ -11,7 +11,7 @@ public class Menu11Functions : MonoBehaviour
     [SerializeField] private GameObject visualizationplataform;
     private AudioManager audioManager;
 
-    // Start is called before the first frame update
+
 
     void Start()
     {
@@ -30,6 +30,7 @@ public class Menu11Functions : MonoBehaviour
 
 
     }
+
 
     async public void Observing()
     {
@@ -73,6 +74,15 @@ public class Menu11Functions : MonoBehaviour
         Cart.GetComponent<MovementVersion2>().ObservingSetter(true);
         await thread.Task.Delay(3000);
         Cart.GetComponent<MovementVersion2>().IsReadySetter(true);
+    }
+    
+    public void SetPlayer()
+    { 
+        Player = RCGameManager.Instance.LocalPlayer;
+        if (Player == null)
+        {
+            Debug.LogError("XR Origin (XR Rig) not found in the scene.");
+        }
     }
     
 

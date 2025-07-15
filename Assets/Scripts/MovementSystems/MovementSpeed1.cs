@@ -276,12 +276,25 @@ public class MovementSpeed1 : MonoBehaviour
             railing.volume = 0f;
         }
     }
-    
+
     public void UnmuteAudio()
     {
         if (railing != null)
         {
             railing.volume = 0.3f;
+        }
+    }
+    
+    public void SetPlayer()
+    { 
+        player = RCGameManager.Instance.LocalPlayer;
+        if (player == null)
+        {
+            Debug.LogError("XR Origin (XR Rig) not found in the scene.");
+        }
+        else
+        {
+            Debug.Log("XR Origin (XR Rig) found: " + player.name);
         }
     }
 }
