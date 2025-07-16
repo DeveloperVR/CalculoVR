@@ -23,6 +23,5 @@ public class RCGameManager : MonoBehaviour
     public void SetLocalPlayer(GameObject player)
     {
         LocalPlayer = player;
-        Debug.Log("Local player set: " + player.name);
     }
 }

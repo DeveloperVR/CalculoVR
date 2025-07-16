@@ -8,8 +8,20 @@ public class CartMovementManager : MonoBehaviourPun
 {
     [SerializeField] private GameObject cart;
     [SerializeField] private GameObject Player;
-    [SerializeField] public bool isMoving { get; private set; } = false;
+    public bool isMoving { get; private set; } = false;
+    public bool isFollowing { get; private set; } = false;
+    private GameObject PlayerAfterCartPosition;
 
+
+    public void Start()
+    {
+        PlayerAfterCartPosition = GameObject.Find("AfterCartPlace");
+        if (PlayerAfterCartPosition == null)
+        {
+            Debug.LogError("PlayerAfterCartPlace not found in the scene.");
+        }
+        
+    }
     public void SetPlayer()
     {
         Player = RCGameManager.Instance.LocalPlayer;
@@ -21,26 +33,47 @@ public class CartMovementManager : MonoBehaviourPun
 
     public void FollowCartMovement()
     {
-        while (isMoving == true)
+
+        if (cart != null && Player != null)
         {
-            if (cart != null && Player != null)
-            {
-                Player.transform.position = cart.transform.position;
-                Player.transform.rotation = Quaternion.Slerp(Player.transform.rotation, cart.GetComponent<MovementSpeed1>().getPlayerRotation(), cart.GetComponent<MovementSpeed1>().getRotationSpeed() * Time.deltaTime * cart.GetComponent<MovementSpeed1>().getCurrentVelocity());
-            }
-            else
-            {
-                Debug.LogError("Cart or Player is not set.");
-            }
+            Player.transform.position = cart.transform.position;
+            Player.transform.rotation = Quaternion.Slerp(Player.transform.rotation, cart.GetComponent<MovementSpeed1>().getPlayerRotation(), cart.GetComponent<MovementSpeed1>().getRotationSpeed() * Time.deltaTime * cart.GetComponent<MovementSpeed1>().getCurrentVelocity());
+        }
+        else
+        {
+            Debug.LogError("Cart or Player is not set.");
         }
 
+
     }
-    
+
+    void Update()
+    {
+        if (isMoving && isFollowing)
+        {
+            FollowCartMovement();
+        }
+    }
+
     [PunRPC]
     public void SetisMoving(bool value)
     {
         isMoving = value;
+        Debug.Log("Cart movement state changed: " + isMoving);
     }
 
+    public void SetisFollowing(bool value)
+    {
+        isFollowing = value;
+        Debug.Log("Cart following state changed: " + isFollowing);
+    }
+
+    [PunRPC]
+    public void TakeOffPlayer()
+    {
+        Player.transform.position = PlayerAfterCartPosition.transform.position;
+        Debug.Log("Player taken off the cart and moved to PlayerAfterCartPlace position.");
+
+    }
 
 }

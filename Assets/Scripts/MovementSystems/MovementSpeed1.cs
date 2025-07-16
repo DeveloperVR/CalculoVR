@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.ProBuilder.Shapes;
 
@@ -142,7 +143,9 @@ public class MovementSpeed1 : MonoBehaviour
             menu.gameObject.SetActive(true);
             checkpoint = false;
             centrado.RecenterToHeadset();
-            CartMovementManager.GetComponent<CartMovementManager>().SetisMoving(false);
+            CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, false);   
+            CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisFollowing", RpcTarget.AllBuffered, false);
+            CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("TakeOffPlayer", RpcTarget.AllBuffered);
 
             return;
         }

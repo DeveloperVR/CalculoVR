@@ -15,6 +15,7 @@ public class FunctionGenerator : MonoBehaviour
     //En Unity Z es lo que en cálculo es Y. Puede ser confuso, pero en este código B será el coeficiente de Z.
     public float A; //Coeficiente de X.
     public float B; //Coeficiente de Z.
+    private GameObject FunctionInstantiator; //Objeto que instanciará la función.
 
     [Range(1, 100)] // Rango que aparecerá en el inspector.
     public int xSegments; // Número de vértices en X.
@@ -30,8 +31,11 @@ public class FunctionGenerator : MonoBehaviour
     public Material whiteMat;
     public Material blackMat;
 
-    private void Start() 
+    public string FunctionType { get; private set; }
+
+    private void Start()
     {
+        FunctionInstantiator = GameObject.Find("FunctionInstantiator");
         MakeFunction();
     }
 
@@ -84,19 +88,21 @@ public class FunctionGenerator : MonoBehaviour
                 break;
         }
     }
-    
+
     //Estos métodos se usarán para llamar desde el botón
     public void SetFunctionToHyperbolicParaboloid()
     {
         function = tipoFuncion.HyperbolicParaboloid;
+        setFunctionType("HyperbolicParaboloid");
         MakeFunction();
     }
     public void SetFunctionToEllipticParaboloid()
     {
         function = tipoFuncion.EllipticParaboloid;
+        setFunctionType("EllipticParaboloid");
         MakeFunction();
     }
-    
+
     /// <summary>
     /// Este método retorna los vertices necesarios para construir el paraboloide hiperbólico.
     /// </summary>
@@ -107,9 +113,9 @@ public class FunctionGenerator : MonoBehaviour
         float stepY = 1.0f / (ySegments - 1); // Esta es la distancia entre vértices en y.
 
         // Se comienza en la mitad negativa del Rango, y va hasta la mitad positiva. Es decir, para un rango de 100. se comienza en -50 y va hasta 50.
-        for (int y = -ySegments/2; y <= (ySegments/2); y++)
+        for (int y = -ySegments / 2; y <= (ySegments / 2); y++)
         {
-            for (int x = -xSegments/2; x <= (xSegments/2); x++)
+            for (int x = -xSegments / 2; x <= (xSegments / 2); x++)
             {
                 float xPos = x * stepX;
                 float zPos = y * stepY; // z se trata como y.
@@ -131,9 +137,9 @@ public class FunctionGenerator : MonoBehaviour
         float stepY = 1.0f / (ySegments - 1); // Esta es la distancia entre vértices en y.
 
         // Se comienza en la mitad negativa del Rango, y va hasta la mitad positiva. Es decir, para un rango de 100. se comienza en -50 y va hasta 50.
-        for (int y = -ySegments/2; y <= (ySegments/2); y++)
+        for (int y = -ySegments / 2; y <= (ySegments / 2); y++)
         {
-            for (int x = -xSegments/2; x <= (xSegments/2); x++)
+            for (int x = -xSegments / 2; x <= (xSegments / 2); x++)
             {
                 float xPos = x * stepX;
                 float zPos = y * stepY; // z se trata como y.
@@ -161,7 +167,7 @@ public class FunctionGenerator : MonoBehaviour
                 int bottomRight = bottomLeft + 1;
                 int topLeft = bottomLeft + xSegments;
                 int topRight = topLeft + 1;
-                
+
                 // **Solo superficie superior**
                 // Primer triángulo (abajo-izquierda a arriba-izquierda a abajo-derecha)
                 tris[index++] = bottomLeft;
@@ -195,7 +201,7 @@ public class FunctionGenerator : MonoBehaviour
         for (int i = 0; i < triangles.Length; i += 3)
         {
             // Se intercalan los colores
-            if (i % 2 == 0) 
+            if (i % 2 == 0)
             {
                 submesh1.Add(triangles[i]);
                 submesh1.Add(triangles[i + 1]);
@@ -222,58 +228,64 @@ public class FunctionGenerator : MonoBehaviour
         meshRenderer.sharedMaterials = new Material[] { whiteMat, blackMat };
     }
 
-    public void SaveMesh() 
+    public void SaveMesh()
     {
-        #if UNITY_EDITOR
-            if (!Directory.Exists("Assets/Meshes"))
-                AssetDatabase.CreateFolder("Assets", "Meshes");
-            string meshPath;
-            switch(function)
-            {
-                case tipoFuncion.HyperbolicParaboloid:
-                    meshPath = "Assets/Meshes/HyperbolicParaboloid.mesh";
-                    break;
-                case tipoFuncion.EllipticParaboloid:
-                    meshPath = "Assets/Meshes/EllipticParaboloid.mesh";
-                    break;
-                default:
-                    meshPath = "Assets/Meshes/FailedMesh.mesh";
-                    break;
-            }
-            AssetDatabase.CreateAsset(mesh, meshPath);
-        #endif
+#if UNITY_EDITOR
+        if (!Directory.Exists("Assets/Meshes"))
+            AssetDatabase.CreateFolder("Assets", "Meshes");
+        string meshPath;
+        switch (function)
+        {
+            case tipoFuncion.HyperbolicParaboloid:
+                meshPath = "Assets/Resources/Meshes/HyperbolicParaboloid.mesh";
+                break;
+            case tipoFuncion.EllipticParaboloid:
+                meshPath = "Assets/Resources/Meshes/EllipticParaboloid.mesh";
+                break;
+            default:
+                meshPath = "Assets/Resources/Meshes/FailedMesh.mesh";
+                break;
+        }
+        AssetDatabase.CreateAsset(mesh, meshPath);
+        FunctionInstantiator.GetComponent<FunctionInstantiator>().SetMeshPath(meshPath);
+#endif
     }
 
     public void SavePrefab()
     {
-        #if UNITY_EDITOR
-            if (!Directory.Exists("Assets/Prefabs"))
-                AssetDatabase.CreateFolder("Assets", "Prefabs");
-            string localPath;
-            switch(function)
-            {
-                case tipoFuncion.HyperbolicParaboloid:
-                    localPath = "Assets/Prefabs/HyperbolicParaboloid.prefab";
-                    break;
-                case tipoFuncion.EllipticParaboloid:
-                    localPath = "Assets/Prefabs/EllipticParaboloid.prefab";
-                    break;
-                default:
-                    localPath = "Assets/Prefabs/FailedPrefab.prefab";
-                    break;
-            }
-            
+#if UNITY_EDITOR
+        if (!Directory.Exists("Assets/Prefabs"))
+            AssetDatabase.CreateFolder("Assets", "Prefabs");
+        string localPath;
+        switch (function)
+        {
+            case tipoFuncion.HyperbolicParaboloid:
+                localPath = "Assets/Prefabs/"+ FunctionType +".prefab";
+                break;
+            case tipoFuncion.EllipticParaboloid:
+                localPath = "Assets/Prefabs/"+ FunctionType +".prefab";
+                break;
+            default:
+                localPath = "Assets/Prefabs/FailedPrefab.prefab";
+                break;
+        }
 
-            // Solo usar esto si se quieren guardar prefabs diferentes.
-            //localPath = AssetDatabase.GenerateUniqueAssetPath(localPath);
 
-            bool prefabSuccess;
-            PrefabUtility.SaveAsPrefabAsset(gameObject, localPath, out prefabSuccess);
-            if (prefabSuccess == true)
-                Debug.Log("Prefab guardado con éxito");
-            else
-                Debug.Log("Error al guardar el prefab" + prefabSuccess);
-        #endif
+        // Solo usar esto si se quieren guardar prefabs diferentes.
+        //localPath = AssetDatabase.GenerateUniqueAssetPath(localPath);
+
+        bool prefabSuccess;
+        PrefabUtility.SaveAsPrefabAsset(gameObject, localPath, out prefabSuccess);
+        if (prefabSuccess == true)
+            Debug.Log("Prefab guardado con éxito");
+        else
+            Debug.Log("Error al guardar el prefab" + prefabSuccess);
+#endif
+    }
+    
+    public void setFunctionType(string type)
+    {
+        FunctionType = type;
     }
 }
 

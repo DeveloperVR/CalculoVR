@@ -31,7 +31,7 @@ public class Menu11Functions : MonoBehaviourPun
         {
             if (CartMovementManager.GetComponent<CartMovementManager>().isMoving == true)
             {
-                CartMovementManager.GetComponent<CartMovementManager>().FollowCartMovement();
+                CartMovementManager.GetComponent<CartMovementManager>().SetisFollowing(true);
             }
             else
             {
