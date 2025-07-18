@@ -29,6 +29,7 @@ public class FunctionGenerator : MonoBehaviour
     private MeshRenderer meshRenderer;
     public Material whiteMat;
     public Material blackMat;
+    private string meshPath;
 
     private void Start() 
     {
@@ -67,6 +68,7 @@ public class FunctionGenerator : MonoBehaviour
         PaintMesh();
         SaveMesh();
         SavePrefab();
+        FunctionInstantiator.GetComponent<FunctionInstantiator>().SetMesh(meshPath);
     }
 
     public void MakeVertices(tipoFuncion function)
@@ -224,6 +226,7 @@ public class FunctionGenerator : MonoBehaviour
 
     public void SaveMesh() 
     {
+<<<<<<< Updated upstream
         #if UNITY_EDITOR
             if (!Directory.Exists("Assets/Meshes"))
                 AssetDatabase.CreateFolder("Assets", "Meshes");
@@ -242,6 +245,27 @@ public class FunctionGenerator : MonoBehaviour
             }
             AssetDatabase.CreateAsset(mesh, meshPath);
         #endif
+=======
+#if UNITY_EDITOR
+        if (!Directory.Exists("Assets/Meshes"))
+            AssetDatabase.CreateFolder("Assets", "Meshes");
+        ;
+        switch (function)
+        {
+            case tipoFuncion.HyperbolicParaboloid:
+                meshPath = "Assets/Resources/Meshes/HyperbolicParaboloid.mesh";
+                break;
+            case tipoFuncion.EllipticParaboloid:
+                meshPath = "Assets/Resources/Meshes/EllipticParaboloid.mesh";
+                break;
+            default:
+                meshPath = "Assets/Resources/Meshes/FailedMesh.mesh";
+                break;
+        }
+        AssetDatabase.CreateAsset(mesh, meshPath);
+        
+#endif
+>>>>>>> Stashed changes
     }
 
     public void SavePrefab()
