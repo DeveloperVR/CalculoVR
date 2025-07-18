@@ -2,8 +2,10 @@ using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
 #if UNITY_EDITOR
-    using UnityEditor;
+using UnityEditor;
 #endif
 
 
@@ -30,10 +32,15 @@ public class FunctionGenerator : MonoBehaviour
     public Material whiteMat;
     public Material blackMat;
     private string meshPath;
+    private GameObject FunctionInstantiator;
 
-    private void Start() 
+    public String FunctionType;
+
+    private void Start()
     {
+        FunctionInstantiator = GameObject.Find("FunctionInstantiator");
         MakeFunction();
+        
     }
 
     ///<summary>
@@ -226,7 +233,6 @@ public class FunctionGenerator : MonoBehaviour
 
     public void SaveMesh() 
     {
-<<<<<<< Updated upstream
         #if UNITY_EDITOR
             if (!Directory.Exists("Assets/Meshes"))
                 AssetDatabase.CreateFolder("Assets", "Meshes");
@@ -234,10 +240,10 @@ public class FunctionGenerator : MonoBehaviour
             switch(function)
             {
                 case tipoFuncion.HyperbolicParaboloid:
-                    meshPath = "Assets/Meshes/HyperbolicParaboloid.mesh";
+                    meshPath = "Assets/Resources/Meshes/HyperbolicParaboloid.Asset";
                     break;
                 case tipoFuncion.EllipticParaboloid:
-                    meshPath = "Assets/Meshes/EllipticParaboloid.mesh";
+                    meshPath = "Assets/Resources/Meshes/EllipticParaboloid.Asset";
                     break;
                 default:
                     meshPath = "Assets/Meshes/FailedMesh.mesh";
@@ -245,27 +251,6 @@ public class FunctionGenerator : MonoBehaviour
             }
             AssetDatabase.CreateAsset(mesh, meshPath);
         #endif
-=======
-#if UNITY_EDITOR
-        if (!Directory.Exists("Assets/Meshes"))
-            AssetDatabase.CreateFolder("Assets", "Meshes");
-        ;
-        switch (function)
-        {
-            case tipoFuncion.HyperbolicParaboloid:
-                meshPath = "Assets/Resources/Meshes/HyperbolicParaboloid.mesh";
-                break;
-            case tipoFuncion.EllipticParaboloid:
-                meshPath = "Assets/Resources/Meshes/EllipticParaboloid.mesh";
-                break;
-            default:
-                meshPath = "Assets/Resources/Meshes/FailedMesh.mesh";
-                break;
-        }
-        AssetDatabase.CreateAsset(mesh, meshPath);
-        
-#endif
->>>>>>> Stashed changes
     }
 
     public void SavePrefab()
