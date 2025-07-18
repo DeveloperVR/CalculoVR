@@ -51,7 +51,9 @@ public class FunctionInstantiator : MonoBehaviour
     public void SetMesh(string path)
     {
         MeshPath = path;
+        Debug.Log("Mesh path set to: " + MeshPath);
         string ShortPath = Path.GetFileNameWithoutExtension(MeshPath);
+        Debug.Log("Short path: " + ShortPath);
         TruePath = "Meshes/" + ShortPath;
         SavedPath = TruePath;
         Debug.Log("Mesh path set to: " + TruePath);
