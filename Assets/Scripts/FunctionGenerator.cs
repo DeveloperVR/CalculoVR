@@ -2,8 +2,10 @@ using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
 #if UNITY_EDITOR
-    using UnityEditor;
+using UnityEditor;
 #endif
 
 
@@ -30,13 +32,19 @@ public class FunctionGenerator : MonoBehaviour
     private MeshRenderer meshRenderer;
     public Material whiteMat;
     public Material blackMat;
+    private string meshPath;
+    [SerializeField] private string SavedMeshPath;
+    private GameObject FunctionInstantiator;
 
+    public String FunctionType;
+    
     public string FunctionType { get; private set; }
 
     private void Start()
     {
         FunctionInstantiator = GameObject.Find("FunctionInstantiator");
         MakeFunction();
+        
     }
 
     ///<summary>
@@ -71,6 +79,8 @@ public class FunctionGenerator : MonoBehaviour
         PaintMesh();
         SaveMesh();
         SavePrefab();
+        Debug.Log("Enviando el Mesh: " + SavedMeshPath + " al Instantiator");
+        FunctionInstantiator.GetComponent<FunctionInstantiator>().SetMesh(SavedMeshPath);
     }
 
     public void MakeVertices(tipoFuncion function)
