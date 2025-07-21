@@ -6,13 +6,24 @@ using UnityEngine;
 
 public class CartMovementManager : MonoBehaviourPun
 {
-    [SerializeField] private GameObject cart;
+    public static CartMovementManager Instance { get; private set; }
+    private GameObject cart;
     [SerializeField] private GameObject Player;
     public bool isMoving { get; private set; } = false;
     public bool isFollowing { get; private set; } = false;
     private GameObject PlayerAfterCartPosition;
 
-
+    public void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
     public void Start()
     {
         PlayerAfterCartPosition = GameObject.Find("AfterCartPlace");
@@ -20,7 +31,9 @@ public class CartMovementManager : MonoBehaviourPun
         {
             Debug.LogError("PlayerAfterCartPlace not found in the scene.");
         }
-        
+        cart = GameObject.Find("Carrito1");
+        SetPlayer();
+
     }
     public void SetPlayer()
     {
