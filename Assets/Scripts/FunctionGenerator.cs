@@ -247,7 +247,7 @@ public class FunctionGenerator : MonoBehaviour
                 break;
         }
         AssetDatabase.CreateAsset(mesh, meshPath);
-        FunctionInstantiator.GetComponent<FunctionInstantiator>().SetMeshPath(meshPath);
+        FunctionInstantiator.GetComponent<FunctionInstantiator>().SetMesh(meshPath);
 #endif
     }
 

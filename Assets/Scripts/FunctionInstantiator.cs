@@ -11,7 +11,9 @@ public class FunctionInstantiator : MonoBehaviour
     public GameObject functionMesh;
     private String MeshPath;
     public string TruePath;
+    [SerializeField] private string SavedPath;
     private String FunctionType;
+    private GameObject newsurface;
     void Start()
     {
         FunctionGenerator = GameObject.Find("FunctionGenerator");
@@ -21,40 +23,51 @@ public class FunctionInstantiator : MonoBehaviour
             return;
         }
         FunctionType = FunctionGenerator.GetComponent<FunctionGenerator>().FunctionType;
+        CreateSurface();
     }
 
     // Update is called once per frame
     public void CreateSurface()
     {
-        //Creates the GameObject for the surface and sets the components that it needs
-        GameObject newsurface = new GameObject("Surface");
+        newsurface = new GameObject("FunctionSurface");
         newsurface.transform.position = new Vector3(-100, -100, -100);
         newsurface.transform.localScale = new Vector3(50, 50, 50);
         newsurface.AddComponent<MeshFilter>();
         newsurface.AddComponent<MeshRenderer>();
         newsurface.AddComponent<MeshCollider>();
-        Mesh loadedMesh = Resources.Load<Mesh>("Meshes/HyperbolicParaboloid");
-        Debug.Log("Loaded mesh from path: " + TruePath);
-        if (loadedMesh == null)
+        Material mat = Resources.Load<Material>("Materials/Surfaces Material");
+        Material mat2 = Resources.Load<Material>("Materials/Surfaces Material");
+        if (mat != null)
         {
-            Debug.LogError("Failed to load mesh.");
-            return;
+            newsurface.GetComponent<MeshRenderer>().materials = new Material[] { mat, mat2 };
         }
-        newsurface.GetComponent<MeshFilter>().mesh = loadedMesh;
+        else
+        {
+            Debug.LogError("Material not found!");
+        }
+        
     }
 
-    public void SetMeshPath(string path)
+    public void SetMesh(string path)
     {
         MeshPath = path;
         string ShortPath = Path.GetFileNameWithoutExtension(MeshPath);
         TruePath = "Meshes/" + ShortPath;
+        SavedPath = TruePath;
         Debug.Log("Mesh path set to: " + TruePath);
+        if (SavedPath == null || SavedPath == "")
+        {
+            Debug.LogError("Mesh path is not set. Please set the mesh path before creating the surface.");
+            return;
+        }
+        Mesh loadedMesh = Resources.Load<Mesh>(SavedPath);
+        newsurface.GetComponent<MeshFilter>().mesh = loadedMesh;
+        Debug.Log("Loaded mesh from path: " + SavedPath);
+        if (loadedMesh == null)
+        {
+            Debug.LogError("Failed to load mesh.");
+            return;
+        }
 
-    }
-
-    public void StartCreation()
-    {
-        CreateSurface();
-
-    }
+    }
 }
