@@ -3,7 +3,7 @@ using UnityEngine.XR;
 
 public class XROriginRecentering : MonoBehaviour
 {
-    public GameObject xrOrigin; // El objeto XR Origin o XR Rig
+    public GameObject Player; // El objeto XR Origin o XR Rig
 
     public void RecenterToHeadset()
     {
@@ -12,18 +12,27 @@ public class XROriginRecentering : MonoBehaviour
 
         // Calcula el desplazamiento entre el XR Origin y la cabeza
         Vector3 headsetPosition = cameraTransform.position;
-        Vector3 offset = xrOrigin.transform.position - headsetPosition;
+        Vector3 offset = Player.transform.position - headsetPosition;
         offset.y = 0f; // Opcional: mantener la altura actual
 
         // Aplicar corrección al XR Origin
-        xrOrigin.transform.position += offset;
+        Player.transform.position += offset;
 
         // Corregir inclinación si es necesario (alinear rotación horizontal)
         Vector3 forward = cameraTransform.forward;
         forward.y = 0;
         if (forward.sqrMagnitude > 0.01f)
         {
-            xrOrigin.transform.forward = forward;
+            Player.transform.forward = forward;
+        }
+    }
+
+    public void SetPlayer()
+    { 
+        Player = RCGameManager.Instance.LocalPlayer;
+        if (Player == null)
+        {
+            Debug.LogError("XR Origin (XR Rig) not found in the scene.");
         }
     }
 }

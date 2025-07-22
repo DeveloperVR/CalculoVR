@@ -74,6 +74,10 @@ public class MainMenuButtons : MonoBehaviour
             ConnectionManager.Instance.SetRoomName("RollerCoaster_Multiplayer");
 
         }
+        if (test == "FreeRoam" && mode == "SinglePlayer")
+        {
+            LoadingScreen.LoadScene("SurfacesApp_SinglePlayer");
+        }
     }
 
     public void cancel()

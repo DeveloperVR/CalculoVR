@@ -1,8 +1,9 @@
+using Photon.Pun;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using thread = System.Threading.Tasks;
 
-public class Menu11Functions : MonoBehaviour
+public class Menu11Functions : MonoBehaviourPun
 {
 
     [SerializeField] private GameObject Player;
@@ -10,25 +11,43 @@ public class Menu11Functions : MonoBehaviour
     private Vector3 cartlocation;
     [SerializeField] private GameObject visualizationplataform;
     private AudioManager audioManager;
+    private GameObject CartMovementManager;
 
 
 
     void Start()
     {
         audioManager = FindObjectOfType<AudioManager>();
+        CartMovementManager = GameObject.Find("CartMovementManager");
+        if (CartMovementManager == null)
+        {
+            Debug.LogError("CartMovementManager not found in the scene.");
+        }
     }
     async public void Ridding()
     {
-        await thread.Task.Delay(3000);
-        cartlocation = Cart.transform.position;
-        Player.transform.position = cartlocation;
-        Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
-        Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
-        Cart.GetComponent<MovementSpeed1>().Observing = false;
-        Cart.GetComponent<MovementSpeed1>().isReady = true;
-        //audioManager.SeleccionAudio(4, 0.3f, true);
 
-
+        if (CartMovementManager != null)
+        {
+            if (CartMovementManager.GetComponent<CartMovementManager>().isMoving == true)
+            {
+                CartMovementManager.GetComponent<CartMovementManager>().SetisFollowing(true);
+            }
+            else
+            {
+                await thread.Task.Delay(3000);
+                cartlocation = Cart.transform.position;
+                Player.transform.position = cartlocation;
+                Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
+                Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
+                Cart.GetComponent<MovementSpeed1>().Observing = false;
+                Cart.GetComponent<MovementSpeed1>().isReady = true;
+                CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
+                //audioManager.SeleccionAudio(4, 0.3f, true);
+            }
+            
+        }
+        
     }
 
 
