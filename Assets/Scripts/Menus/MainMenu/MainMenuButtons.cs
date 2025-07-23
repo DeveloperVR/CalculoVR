@@ -78,6 +78,11 @@ public class MainMenuButtons : MonoBehaviour
         {
             LoadingScreen.LoadScene("SurfacesApp_SinglePlayer");
         }
+        if (test == "FreeRoam" && mode == "MultiPlayer")
+        {
+            LoadingScreen.LoadScene("SurfacesApp_MultiPlayer");
+            ConnectionManager.Instance.SetRoomName("SurfacesApp_Multiplayer");
+        }
     }
 
     public void cancel()

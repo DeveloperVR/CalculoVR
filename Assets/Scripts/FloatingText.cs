@@ -14,6 +14,6 @@ public class FloatingText : MonoBehaviour
     void Update()
     {
         // el texto siempre mira al usuario.
-        transform.rotation = Quaternion.LookRotation(transform.position - mainCamera.position);
+        //transform.rotation = Quaternion.LookRotation(transform.position - mainCamera.position);
     }
 }

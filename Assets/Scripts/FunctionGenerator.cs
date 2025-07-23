@@ -33,6 +33,11 @@ public class FunctionGenerator : MonoBehaviour
 
     public string FunctionType { get; private set; }
 
+    private string GlobalMeshPath;
+
+    public string HyperbolicParaboloidPath = "Assets/Resources/Meshes/HyperbolicParaboloid.asset";
+    public string EllipticParaboloidPath = "Assets/Resources/Meshes/EllipticParaboloid.asset";
+
     private void Start()
     {
         FunctionInstantiator = GameObject.Find("FunctionInstantiator");
@@ -71,6 +76,7 @@ public class FunctionGenerator : MonoBehaviour
         PaintMesh();
         SaveMesh();
         SavePrefab();
+        FunctionInstantiator.GetComponent<FunctionInstantiator>().SetMesh(GlobalMeshPath);
     }
 
     public void MakeVertices(tipoFuncion function)
@@ -124,6 +130,7 @@ public class FunctionGenerator : MonoBehaviour
             }
         }
         Debug.Log("Vértices totales: " + verts.Count);
+        GlobalMeshPath = HyperbolicParaboloidPath;
         return verts;
     }
 
@@ -148,6 +155,7 @@ public class FunctionGenerator : MonoBehaviour
             }
         }
         Debug.Log("Vértices totales: " + verts.Count);
+        GlobalMeshPath = EllipticParaboloidPath;
         return verts;
     }
 
@@ -237,17 +245,17 @@ public class FunctionGenerator : MonoBehaviour
         switch (function)
         {
             case tipoFuncion.HyperbolicParaboloid:
-                meshPath = "Assets/Resources/Meshes/HyperbolicParaboloid.mesh";
+                meshPath = "Assets/Resources/Meshes/HyperbolicParaboloid.asset";
                 break;
             case tipoFuncion.EllipticParaboloid:
-                meshPath = "Assets/Resources/Meshes/EllipticParaboloid.mesh";
+                meshPath = "Assets/Resources/Meshes/EllipticParaboloid.asset";
                 break;
             default:
-                meshPath = "Assets/Resources/Meshes/FailedMesh.mesh";
+                meshPath = "Assets/Resources/Meshes/FailedMesh.asset";
                 break;
         }
         AssetDatabase.CreateAsset(mesh, meshPath);
-        FunctionInstantiator.GetComponent<FunctionInstantiator>().SetMesh(meshPath);
+        
 #endif
     }
 
@@ -260,10 +268,10 @@ public class FunctionGenerator : MonoBehaviour
         switch (function)
         {
             case tipoFuncion.HyperbolicParaboloid:
-                localPath = "Assets/Prefabs/"+ FunctionType +".prefab";
+                localPath = "Assets/Prefabs/" + FunctionType + ".prefab";
                 break;
             case tipoFuncion.EllipticParaboloid:
-                localPath = "Assets/Prefabs/"+ FunctionType +".prefab";
+                localPath = "Assets/Prefabs/" + FunctionType + ".prefab";
                 break;
             default:
                 localPath = "Assets/Prefabs/FailedPrefab.prefab";

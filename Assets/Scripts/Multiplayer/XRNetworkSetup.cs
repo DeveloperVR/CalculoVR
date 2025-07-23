@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Inputs;
+using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
+using System;
 
 public class CXRNetworkSetup : MonoBehaviour
 {
@@ -19,13 +19,7 @@ public class CXRNetworkSetup : MonoBehaviour
     [SerializeField] private XRInputModalityManager xrInputModalityManager;
     [SerializeField] private XRGazeAssistance xrGazeAssistance;
     [SerializeField] private OnButtonPress onButtonPress;
-    private GameObject PlayerSpawnEvent;
 
-
-    void Awake()
-    { 
-
-    }
     void Start()
     {
 
@@ -44,7 +38,14 @@ public class CXRNetworkSetup : MonoBehaviour
             xrGazeAssistance.enabled = true;
             onButtonPress.enabled = true;
 
-            RCGameManager.Instance.SetLocalPlayer(this.gameObject);
+            if (SceneManager.GetActiveScene().name == "SurfacesApp_Multiplayer")
+            {
+                FRGameManager.Instance.SetLocalPlayer(this.gameObject);
+            }
+            else if (SceneManager.GetActiveScene().name == "RollerCoaster_Multiplayer")
+            {
+                RCGameManager.Instance.SetLocalPlayer(this.gameObject);
+            }
 
         }
         else

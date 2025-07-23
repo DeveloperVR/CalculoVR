@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class RigSwitcher : MonoBehaviour
     [SerializeField] private GameObject xrRig;
     [SerializeField] private GameObject nonVrRig;
     [SerializeField] private GameObject crosshair;
+    private bool isXRActivated;
     void Start()
     {
         var xrManager = XRGeneralSettings.Instance?.Manager;
@@ -31,6 +33,7 @@ public class RigSwitcher : MonoBehaviour
             xrRig.SetActive(true);
             nonVrRig.SetActive(false);
             crosshair.SetActive(false);
+            setisXRActivated(true);
         }
         else
         {
@@ -38,6 +41,17 @@ public class RigSwitcher : MonoBehaviour
             xrRig.SetActive(false);
             nonVrRig.SetActive(true);
             crosshair.SetActive(true);
+            setisXRActivated(false);
         }
+    }
+
+    private void setisXRActivated(bool state)
+    {
+        isXRActivated = state;
+    }
+
+    public bool getisXRActivated()
+    {
+        return isXRActivated;
     }
 }

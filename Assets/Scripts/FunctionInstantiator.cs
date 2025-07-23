@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using Photon.Pun;
 
 public class FunctionInstantiator : MonoBehaviour
 {
@@ -31,12 +29,14 @@ public class FunctionInstantiator : MonoBehaviour
     public void CreateSurface()
     {
         newsurface = new GameObject("FunctionSurface");
-        newsurface.transform.position = new Vector3(-100, -100, -100);
+        newsurface.transform.position = new Vector3(-100, 100000, -100);
         newsurface.transform.localScale = new Vector3(50, 50, 50);
         newsurface.AddComponent<MeshFilter>();
         newsurface.AddComponent<MeshRenderer>();
         newsurface.AddComponent<MeshCollider>();
         newsurface.AddComponent<TeleportationArea>();
+        newsurface.AddComponent<PhotonView>();
+        newsurface.AddComponent<PhotonTransformView>();
         Material mat = Resources.Load<Material>("Materials/Surfaces Material");
         Material mat2 = Resources.Load<Material>("Materials/Surfaces Material");
         if (mat != null)
@@ -47,7 +47,7 @@ public class FunctionInstantiator : MonoBehaviour
         {
             Debug.LogError("Material not found!");
         }
-        
+
     }
 
     public void SetMesh(string path)
@@ -65,6 +65,7 @@ public class FunctionInstantiator : MonoBehaviour
         Mesh loadedMesh = Resources.Load<Mesh>(SavedPath);
         newsurface.GetComponent<MeshFilter>().mesh = loadedMesh;
         newsurface.GetComponent<MeshCollider>().sharedMesh = loadedMesh;
+        newsurface.GetComponent<MeshCollider>().providesContacts = true;
         Debug.Log("Loaded mesh from path: " + SavedPath);
         if (loadedMesh == null)
         {

@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
-public class RCGameManager : MonoBehaviour
+public class FRGameManager : MonoBehaviour
 {
-    public static RCGameManager Instance { get; private set; }
+    public static FRGameManager Instance { get; private set; }
     public GameObject LocalPlayer { get; private set; }
 
     void Awake()

@@ -6,8 +6,4 @@ public class RoomConnection : MonoBehaviour
     {
         ConnectionManager.Instance.JoinRoom(ConnectionManager.Instance.GetRoomName());
     }
-
-
-
-
 }
