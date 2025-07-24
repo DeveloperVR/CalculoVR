@@ -24,6 +24,11 @@ public class Menu11Functions : MonoBehaviourPun
             Debug.LogError("CartMovementManager not found in the scene.");
         }
     }
+    
+    public void setCartMovementManager()
+    {
+        CartMovementManager = GameObject.Find("CartMovementManager(clone)");
+    }
     async public void Ridding()
     {
 
@@ -45,9 +50,9 @@ public class Menu11Functions : MonoBehaviourPun
                 CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
                 //audioManager.SeleccionAudio(4, 0.3f, true);
             }
-            
+
         }
-        
+
     }
 
 

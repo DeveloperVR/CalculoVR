@@ -42,7 +42,7 @@ public class CXRNetworkSetup : MonoBehaviour
             {
                 FRGameManager.Instance.SetLocalPlayer(this.gameObject);
             }
-            else if (SceneManager.GetActiveScene().name == "RollerCoaster_Multiplayer")
+            else if (SceneManager.GetActiveScene().name == "RollerCoaster_MultiPlayer")
             {
                 RCGameManager.Instance.SetLocalPlayer(this.gameObject);
             }

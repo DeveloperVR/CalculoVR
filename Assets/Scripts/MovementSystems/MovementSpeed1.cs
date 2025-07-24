@@ -14,7 +14,7 @@ public class MovementSpeed1 : MonoBehaviour
     private DrawLine1 drawLine; // Referencia a la otra clase
     [SerializeField]
     private DrawTangent1 drawTangent;
-    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject Player;
     [SerializeField] private TangentPool1 tangentPool;
     [SerializeField] private CentripetalPool1 centripetalPool;
     [SerializeField] private NormalPool1 normalPool;
@@ -109,8 +109,8 @@ public class MovementSpeed1 : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime * currentVelocity);
         if (Observing == false)
         {
-            player.transform.position = currentPosition;
-            player.transform.rotation = Quaternion.Slerp(player.transform.rotation, PlayerRotation, rotationSpeed * Time.deltaTime * currentVelocity);
+            Player.transform.position = currentPosition;
+            Player.transform.rotation = Quaternion.Slerp(Player.transform.rotation, PlayerRotation, rotationSpeed * Time.deltaTime * currentVelocity);
         }
 
 
@@ -304,15 +304,15 @@ public class MovementSpeed1 : MonoBehaviour
     public float getRotationSpeed() => rotationSpeed;
 
     public void SetPlayer()
-    {
-        player = RCGameManager.Instance.LocalPlayer;
-        if (player == null)
+    { 
+        Player = RCGameManager.Instance.LocalPlayer;
+        if (Player == null)
         {
             Debug.LogError("XR Origin (XR Rig) not found in the scene.");
         }
         else
         {
-            Debug.Log("XR Origin (XR Rig) found: " + player.name);
+            Debug.Log("XR Origin (XR Rig) found: " + Player.name);
         }
     }
 }

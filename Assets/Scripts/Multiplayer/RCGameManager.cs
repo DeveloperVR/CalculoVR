@@ -15,6 +15,7 @@ public class RCGameManager : MonoBehaviour
         else
         {
             Instance = this;
+            DontDestroyOnLoad(this);
         }
     }
     public void SetLocalPlayer(GameObject player)
