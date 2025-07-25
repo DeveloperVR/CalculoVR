@@ -1,39 +1,34 @@
 using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
-using Photon.Pun.Demo.Cockpit;
 using UnityEngine;
 
 public class CartMovementManager : MonoBehaviourPun
 {
-    public static CartMovementManager Instance { get; private set; }
     private GameObject cart;
     [SerializeField] private GameObject Player;
     public bool isMoving { get; private set; } = false;
     public bool isFollowing { get; private set; } = false;
     private GameObject PlayerAfterCartPosition;
+    private GameObject[] Menus = new GameObject[3];
+    private GameObject PlayerEvent;
+    private GameObject Spawner;
 
-    public void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-        }
-    }
     public void Start()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+        PlayerEvent = GameObject.Find("PlayerSpawnEvent");
+        Spawner = GameObject.Find("PhotonConnectionManager");
         PlayerAfterCartPosition = GameObject.Find("AfterCartPlace");
         if (PlayerAfterCartPosition == null)
         {
             Debug.LogError("PlayerAfterCartPlace not found in the scene.");
         }
         cart = GameObject.Find("Carrito1");
-        SetPlayer();
-
+        StartCoroutine(WaitForPlayerSpawn());
+        //StartCoroutine(WaitForSpawner());
     }
     public void SetPlayer()
     {
@@ -41,6 +36,10 @@ public class CartMovementManager : MonoBehaviourPun
         if (Player == null)
         {
             Debug.LogError("XR Origin (XR Rig) not found in the scene.");
+        }
+        else
+        {
+            Debug.Log("Player set successfully: " + Player.name);
         }
     }
 
@@ -87,6 +86,38 @@ public class CartMovementManager : MonoBehaviourPun
         Player.transform.position = PlayerAfterCartPosition.transform.position;
         Debug.Log("Player taken off the cart and moved to PlayerAfterCartPlace position.");
 
+    }
+
+    public void SetMenus()
+    {
+        Menus[0] = GameObject.Find("MENUS/MENUPISTA1/Menu1Track1");
+        if (Menus[0] != null)
+        {
+            Menus[0].GetComponent<Menu11Functions>().SetCartMovementManager();
+        }
+        else
+        {
+            Debug.LogError("Menu1Track1 not found in the scene.");
+        }
+    }
+
+    IEnumerator WaitForPlayerSpawn()
+    {
+        while (PlayerEvent.GetComponent<PlayerSpawnEvent>().playerSpawned == false)
+        {
+            yield return null; // Wait for the player to be spawned
+        }
+
+        SetPlayer(); // Set the player after they have spawned
+    }
+
+    IEnumerator WaitForSpawner()
+    {
+        while (Spawner.GetComponent<PhotonMultiplayerSpawner>().CartManagerHasSpawned == false)
+        {
+            yield return null; // Wait for the CartMovementManager to be spawned
+        }
+        SetMenus(); // Set the menus after the CartMovementManager has been spawned
     }
 
 }

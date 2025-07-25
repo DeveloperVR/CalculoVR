@@ -3,8 +3,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Inputs;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
-using System;
+
 
 public class CXRNetworkSetup : MonoBehaviour
 {

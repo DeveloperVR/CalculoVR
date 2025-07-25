@@ -11,7 +11,7 @@ public class PhotonMultiplayerSpawner : MonoBehaviour
     [SerializeField] private GameObject CartMovementManagerPrefab; // Assuming this is the cart movement manager prefab
     private bool hasSpawned = false;
     private bool CubeHasSpawned = false;
-    private bool CartManagerHasSpawned = false;
+    public bool CartManagerHasSpawned = false;
     private GameObject PlayerEvent;
     // Start is called before the first frame update
 
@@ -55,13 +55,23 @@ public class PhotonMultiplayerSpawner : MonoBehaviour
 
     public void SpawnMovementManager()
     {
-        if (CartManagerHasSpawned)
+        if (RCGameManager.Instance.CartMovementManager != null)
         {
-            Debug.LogWarning("CartMovementManager has already been spawned.");
+            Debug.LogWarning("This client's CartMovementManager already exists");
             return;
         }
-        Transform spawnPoint = spawnPoints[1]; // Assuming you want to spawn at the third spawn point
+        Transform spawnPoint = spawnPoints[PhotonNetwork.LocalPlayer.ActorNumber % spawnPoints.Length];
         GameObject cartManager = PhotonNetwork.Instantiate(CartMovementManagerPrefab.name, spawnPoint.position, spawnPoint.rotation);
+        Debug.Log("CartMovementManager spawned successfully: " + cartManager.name);
+        CartManagerHasSpawned = true;
+        GameObject ManagerEvent = GameObject.Find("CartMovementManagerSpawnEvent");
+        if (ManagerEvent == null)
+        {
+            Debug.LogError("CartMovementManagerSpawnEvent not found in the scene.");
+            return;
+        }
+        ManagerEvent.GetComponent<CartMovementManagerSpawnEvent>().cartMovementManagerSpawned = true;
+        Debug.Log("CartMovementManagerSpawnEvent updated successfully.");
     }
 
     IEnumerator WaitForConnectionReady()
@@ -70,7 +80,7 @@ public class PhotonMultiplayerSpawner : MonoBehaviour
         {
             yield return null;
         }
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
         SpawnPlayer(0); // Spawn player after connection is ready
         SpawnTestCube(); // Spawn test cube after connection is ready
         SpawnMovementManager(); // Spawn cart movement manager after connection is ready

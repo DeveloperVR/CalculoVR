@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2333795980742836079}
   - component: {fileID: 2133353188054165194}
   - component: {fileID: 5785875912311062621}
+  - component: {fileID: 1836488250886003966}
   m_Layer: 0
   m_Name: CartMovementManager
   m_TagString: Untagged
@@ -68,3 +69,15 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &1836488250886003966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6085059058808934976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52d712cf57c07854d8458ef1b4ce65d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -5,6 +5,7 @@ public class RCGameManager : MonoBehaviour
 {
     public static RCGameManager Instance { get; private set; }
     public GameObject LocalPlayer { get; private set; }
+    public GameObject CartMovementManager { get; private set; }
 
     void Awake()
     {
@@ -21,5 +22,11 @@ public class RCGameManager : MonoBehaviour
     public void SetLocalPlayer(GameObject player)
     {
         LocalPlayer = player;
+    }
+
+    public void SetCartMovementManager(GameObject cartManager)
+    {
+        CartMovementManager = cartManager;
+        Debug.Log("CartMovementManager set in RCGameManager.");
     }
 }

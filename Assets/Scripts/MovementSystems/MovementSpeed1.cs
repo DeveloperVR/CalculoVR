@@ -64,7 +64,6 @@ public class MovementSpeed1 : MonoBehaviour
     {
         StartCoroutine(WaitForData());
         audioManager = FindObjectOfType<AudioManager>();
-        CartMovementManager = GameObject.Find("CartMovementManager");
     }
 
     void Update()
@@ -143,7 +142,7 @@ public class MovementSpeed1 : MonoBehaviour
             menu.gameObject.SetActive(true);
             checkpoint = false;
             centrado.RecenterToHeadset();
-            CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, false);   
+            CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, false);
             CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisFollowing", RpcTarget.AllBuffered, false);
             CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("TakeOffPlayer", RpcTarget.AllBuffered);
 
@@ -198,8 +197,8 @@ public class MovementSpeed1 : MonoBehaviour
     }
 
     public void PlayerMovement()
-    { 
-        
+    {
+
     }
 
     // Calcular la longitud total del camino
@@ -298,13 +297,13 @@ public class MovementSpeed1 : MonoBehaviour
             railing.volume = 0.3f;
         }
     }
-    
+
     public float getCurrentVelocity() => currentVelocity;
     public Quaternion getPlayerRotation() => PlayerRotation;
     public float getRotationSpeed() => rotationSpeed;
 
     public void SetPlayer()
-    { 
+    {
         Player = RCGameManager.Instance.LocalPlayer;
         if (Player == null)
         {
@@ -312,7 +311,20 @@ public class MovementSpeed1 : MonoBehaviour
         }
         else
         {
-            Debug.Log("XR Origin (XR Rig) found: " + Player.name);
+            Debug.Log("MovementSpeed 1 XR Origin (XR Rig) found: " + Player.name);
+        }
+    }
+    
+    public void SetCartMovementManager()
+    {
+        CartMovementManager = RCGameManager.Instance.CartMovementManager;
+        if (CartMovementManager == null)
+        {
+            Debug.LogError("CartMovementManager not found in the scene.");
+        }
+        else
+        {
+            Debug.Log("CartMovementManager set successfully: " + CartMovementManager.name);
         }
     }
 }

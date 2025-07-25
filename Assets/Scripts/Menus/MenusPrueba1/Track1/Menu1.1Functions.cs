@@ -18,16 +18,15 @@ public class Menu11Functions : MonoBehaviourPun
     void Start()
     {
         audioManager = FindObjectOfType<AudioManager>();
-        CartMovementManager = GameObject.Find("CartMovementManager");
+    }
+
+    public void SetCartMovementManager()
+    {
+        CartMovementManager = RCGameManager.Instance.CartMovementManager;
         if (CartMovementManager == null)
         {
-            Debug.LogError("CartMovementManager not found in the scene.");
+            Debug.LogError("CartMovementManager not found in RCGameManager.");
         }
-    }
-    
-    public void setCartMovementManager()
-    {
-        CartMovementManager = GameObject.Find("CartMovementManager(clone)");
     }
     async public void Ridding()
     {
