@@ -40,7 +40,7 @@ public class FunctionGenerator : MonoBehaviour
     public string HyperbolicParaboloidPath = "Assets/Resources/Meshes/HyperbolicParaboloid.asset";
     public string EllipticParaboloidPath = "Assets/Resources/Meshes/EllipticParaboloid.asset";
 
-    private string WrittenFunction;
+    [SerializeField] private string WrittenFunction;
 
     private void Start()
     {
@@ -132,6 +132,7 @@ public class FunctionGenerator : MonoBehaviour
     /// </summary>
     public List<Vector3> FreeFunctionResolver()
     {
+        Debug.Log("Entró a free Resolver, activando Parser");
         List<Vector3> verts = new List<Vector3>();
         double stepX = 1.0 / (xSegments - 1);
         double stepY = 1.0 / (ySegments - 1);
@@ -141,11 +142,14 @@ public class FunctionGenerator : MonoBehaviour
         Node ast = parser.Parse();
         for (int y = -ySegments / 2; y <= ySegments / 2; y++)
         {
+            Debug.Log("Entró al y : " + y);
             for (int x = -xSegments / 2; x <= xSegments / 2; x++)
             {
+                Debug.Log("Entró al x:" + x);
                 double xPos = x * stepX;
+                Debug.Log("El valor de x es: " + xPos);
                 double zPos = y * stepY;
-
+                Debug.Log("El valor de y es: " + zPos);
                 Dictionary<string, double> variables = new Dictionary<string, double>
                 {
                     { "x", xPos },
@@ -153,11 +157,14 @@ public class FunctionGenerator : MonoBehaviour
                 };
 
                 double yPos = ast.Evaluate(variables);
+                Debug.Log("El valor de z es: " + yPos);
 
                 verts.Add(new Vector3((float)xPos, (float)yPos, (float)zPos));
             }
         }
-        return null;
+        Debug.Log("Vértices totales: " + verts.Count);
+        GlobalMeshPath = HyperbolicParaboloidPath;
+        return verts;
     }
     public List<Vector3> HyperbolicParaboloid()
     {

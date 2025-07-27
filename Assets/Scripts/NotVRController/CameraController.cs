@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour
 {
@@ -69,10 +70,15 @@ public class CameraController : MonoBehaviour
                 TMPro.TMP_InputField tmpInput = hit.collider.GetComponent<TMPro.TMP_InputField>();
                 if (tmpInput != null)
                 {
-                    tmpInput.ActivateInputField();
+                    PointerEventData pointer = new PointerEventData(EventSystem.current);
+                    pointer.pointerPressRaycast = new RaycastResult { gameObject = tmpInput.gameObject };
+
+                    tmpInput.OnPointerClick(pointer);
                     tmpInput.Select();
+                    tmpInput.ActivateInputField();
+
                     Debug.Log("TMP_InputField Selected");
-                }
+        }
             }
         }
         
