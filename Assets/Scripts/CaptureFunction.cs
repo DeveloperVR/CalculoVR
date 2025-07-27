@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class CaptureFunction : MonoBehaviour
 {
-    private string input;
+    public string input { get; private set; }
+
     public void textedCaptured(string text)
     {
         input = text;

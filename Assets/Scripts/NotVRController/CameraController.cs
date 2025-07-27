@@ -58,7 +58,21 @@ public class CameraController : MonoBehaviour
                     button.onClick.Invoke();
                     Debug.Log("Button clicked: " + button.name);
                 }
-                // You can add logic here to interact with the object hit by the raycast
+
+                UnityEngine.UI.InputField inputField = hit.collider.GetComponent<UnityEngine.UI.InputField>();
+                if (inputField != null)
+                {
+                    inputField.ActivateInputField();
+                    inputField.Select();
+                    Debug.Log("InputField selected: " + inputField.name);
+                }
+                TMPro.TMP_InputField tmpInput = hit.collider.GetComponent<TMPro.TMP_InputField>();
+                if (tmpInput != null)
+                {
+                    tmpInput.ActivateInputField();
+                    tmpInput.Select();
+                    Debug.Log("TMP_InputField Selected");
+                }
             }
         }
         

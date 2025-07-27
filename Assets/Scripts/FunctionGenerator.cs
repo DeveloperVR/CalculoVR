@@ -12,6 +12,8 @@ public class FunctionGenerator : MonoBehaviour
 {
     public tipoFuncion function; //La función que se pintará.
 
+    private GameObject StringCaptured; //the GameObject that gets the string for the free resolver
+
     //En Unity Z es lo que en cálculo es Y. Puede ser confuso, pero en este código B será el coeficiente de Z.
     public float A; //Coeficiente de X.
     public float B; //Coeficiente de Z.
@@ -38,10 +40,14 @@ public class FunctionGenerator : MonoBehaviour
     public string HyperbolicParaboloidPath = "Assets/Resources/Meshes/HyperbolicParaboloid.asset";
     public string EllipticParaboloidPath = "Assets/Resources/Meshes/EllipticParaboloid.asset";
 
+    private string WrittenFunction;
+
     private void Start()
     {
         FunctionInstantiator = GameObject.Find("FunctionInstantiator");
-        MakeFunction();
+        StringCaptured = GameObject.Find("EnterFunction");
+        
+        //MakeFunction();
     }
 
     ///<summary>
@@ -90,6 +96,9 @@ public class FunctionGenerator : MonoBehaviour
             case tipoFuncion.EllipticParaboloid:
                 verts = EllipticParaboloid();
                 break;
+            case tipoFuncion.OriginalFunction:
+                verts = FreeFunctionResolver();
+                break;
             default:
                 break;
         }
@@ -109,9 +118,47 @@ public class FunctionGenerator : MonoBehaviour
         MakeFunction();
     }
 
+    public void SetFunctionToFreeFunction()
+    {
+        function = tipoFuncion.OriginalFunction;
+        setFunctionType("OrignalFunction");
+        WrittenFunction = StringCaptured.GetComponent<CaptureFunction>().input;
+        Debug.Log("The function entered is: " + WrittenFunction);
+        MakeFunction();
+    }
+
     /// <summary>
     /// Este método retorna los vertices necesarios para construir el paraboloide hiperbólico.
     /// </summary>
+    public List<Vector3> FreeFunctionResolver()
+    {
+        List<Vector3> verts = new List<Vector3>();
+        double stepX = 1.0 / (xSegments - 1);
+        double stepY = 1.0 / (ySegments - 1);
+
+        Tokenizer tokenizer = new Tokenizer(WrittenFunction);
+        Parser parser = new Parser(tokenizer);
+        Node ast = parser.Parse();
+        for (int y = -ySegments / 2; y <= ySegments / 2; y++)
+        {
+            for (int x = -xSegments / 2; x <= xSegments / 2; x++)
+            {
+                double xPos = x * stepX;
+                double zPos = y * stepY;
+
+                Dictionary<string, double> variables = new Dictionary<string, double>
+                {
+                    { "x", xPos },
+                    { "y", zPos }
+                };
+
+                double yPos = ast.Evaluate(variables);
+
+                verts.Add(new Vector3((float)xPos, (float)yPos, (float)zPos));
+            }
+        }
+        return null;
+    }
     public List<Vector3> HyperbolicParaboloid()
     {
         List<Vector3> verts = new List<Vector3>();
@@ -250,6 +297,9 @@ public class FunctionGenerator : MonoBehaviour
             case tipoFuncion.EllipticParaboloid:
                 meshPath = "Assets/Resources/Meshes/EllipticParaboloid.asset";
                 break;
+            case tipoFuncion.OriginalFunction:
+                meshPath = "Assets/Resources/Meshes/FreeFunction.asset";
+                break;
             default:
                 meshPath = "Assets/Resources/Meshes/FailedMesh.asset";
                 break;
@@ -268,10 +318,13 @@ public class FunctionGenerator : MonoBehaviour
         switch (function)
         {
             case tipoFuncion.HyperbolicParaboloid:
-                localPath = "Assets/Prefabs/" + FunctionType + ".prefab";
+                localPath = "Assets/Prefabs/HyperbolicParaboloid.prefab";
                 break;
             case tipoFuncion.EllipticParaboloid:
-                localPath = "Assets/Prefabs/" + FunctionType + ".prefab";
+                localPath = "Assets/Prefabs/EllipticParaboloid.prefab";
+                break;
+            case tipoFuncion.OriginalFunction:
+                localPath = "Assets/Prefabs/FreeFunction.prefab";
                 break;
             default:
                 localPath = "Assets/Prefabs/FailedPrefab.prefab";
@@ -298,7 +351,9 @@ public class FunctionGenerator : MonoBehaviour
 }
 
 public enum tipoFuncion
-    {
-        HyperbolicParaboloid,
-        EllipticParaboloid
-    }
+{
+    HyperbolicParaboloid,
+    EllipticParaboloid,
+        
+    OriginalFunction
+}
