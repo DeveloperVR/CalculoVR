@@ -40,6 +40,8 @@ public class FunctionGenerator : MonoBehaviour
     public string HyperbolicParaboloidPath = "Assets/Resources/Meshes/HyperbolicParaboloid.asset";
     public string EllipticParaboloidPath = "Assets/Resources/Meshes/EllipticParaboloid.asset";
 
+    public string FreeMeshPath = "Assets/Resources/Meshes/FreeFunction.asset";
+
     [SerializeField] private string WrittenFunction;
 
     private void Start()
@@ -80,9 +82,9 @@ public class FunctionGenerator : MonoBehaviour
 
         UpdateMesh();
         PaintMesh();
-        SaveMesh();
-        SavePrefab();
-        FunctionInstantiator.GetComponent<FunctionInstantiator>().SetMesh(GlobalMeshPath);
+        //SaveMesh();
+        //SavePrefab();
+        FunctionInstantiator.GetComponent<FunctionInstantiator>().SetMesh();
     }
 
     public void MakeVertices(tipoFuncion function)
@@ -123,7 +125,6 @@ public class FunctionGenerator : MonoBehaviour
         function = tipoFuncion.OriginalFunction;
         setFunctionType("OrignalFunction");
         WrittenFunction = StringCaptured.GetComponent<CaptureFunction>().input;
-        Debug.Log("The function entered is: " + WrittenFunction);
         MakeFunction();
     }
 
@@ -142,14 +143,10 @@ public class FunctionGenerator : MonoBehaviour
         Node ast = parser.Parse();
         for (int y = -ySegments / 2; y <= ySegments / 2; y++)
         {
-            Debug.Log("Entró al y : " + y);
             for (int x = -xSegments / 2; x <= xSegments / 2; x++)
             {
-                Debug.Log("Entró al x:" + x);
                 double xPos = x * stepX;
-                Debug.Log("El valor de x es: " + xPos);
                 double zPos = y * stepY;
-                Debug.Log("El valor de y es: " + zPos);
                 Dictionary<string, double> variables = new Dictionary<string, double>
                 {
                     { "x", xPos },
@@ -157,13 +154,11 @@ public class FunctionGenerator : MonoBehaviour
                 };
 
                 double yPos = ast.Evaluate(variables);
-                Debug.Log("El valor de z es: " + yPos);
 
                 verts.Add(new Vector3((float)xPos, (float)yPos, (float)zPos));
             }
         }
-        Debug.Log("Vértices totales: " + verts.Count);
-        GlobalMeshPath = HyperbolicParaboloidPath;
+        GlobalMeshPath = FreeMeshPath;
         return verts;
     }
     public List<Vector3> HyperbolicParaboloid()
@@ -312,7 +307,6 @@ public class FunctionGenerator : MonoBehaviour
                 break;
         }
         AssetDatabase.CreateAsset(mesh, meshPath);
-        
 #endif
     }
 

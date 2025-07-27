@@ -1641,6 +1641,7 @@ MonoBehaviour:
   blackMat: {fileID: 2100000, guid: 4e5473008af31524aa0c4f92204e5c70, type: 2}
   HyperbolicParaboloidPath: Assets/Resources/Meshes/HyperbolicParaboloid.asset
   EllipticParaboloidPath: Assets/Resources/Meshes/EllipticParaboloid.asset
+  WrittenFunction: 
 --- !u!1 &7048214374987462471
 GameObject:
   m_ObjectHideFlags: 0

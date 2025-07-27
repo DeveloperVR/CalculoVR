@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Unity.VisualScripting;
 
 public class TeleportPlayerToSurface : MonoBehaviourPun
 {
-    private GameObject Player;
-    private GameObject Surface;
+    [SerializeField] private GameObject Player;
+    [SerializeField] private GameObject Surface;
 
-    [PunRPC]
+    //[PunRPC]
     public void TeleportPlayer()
     {
         Surface = GameObject.Find("FunctionSurface");
         Player.transform.position = Surface.transform.position + new Vector3(0, 3, 0); // Adjust the Y position to be above the surface
+        Debug.Log("La posición a la que se lleva al jugador es: " + (Surface.transform.position + new Vector3(0, 3, 0)));
         Player.transform.rotation = Quaternion.identity; // Reset rotation to default
     }
 
@@ -30,7 +32,7 @@ public class TeleportPlayerToSurface : MonoBehaviourPun
     }
 
     public void callTeleport()
-    { 
-        photonView.RPC("TeleportPlayer", RpcTarget.AllBuffered);
+    {
+        TeleportPlayer();
     }
 }

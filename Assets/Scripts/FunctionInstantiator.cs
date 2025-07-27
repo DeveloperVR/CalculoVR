@@ -13,6 +13,8 @@ public class FunctionInstantiator : MonoBehaviour
     [SerializeField] private string SavedPath;
     private String FunctionType;
     private GameObject newsurface;
+
+
     void Start()
     {
         FunctionGenerator = GameObject.Find("FunctionGenerator");
@@ -50,28 +52,12 @@ public class FunctionInstantiator : MonoBehaviour
 
     }
 
-    public void SetMesh(string path)
+    public void SetMesh()
     {
-        MeshPath = path;
-        string ShortPath = Path.GetFileNameWithoutExtension(MeshPath);
-        TruePath = "Meshes/" + ShortPath;
-        SavedPath = TruePath;
-        Debug.Log("Mesh path set to: " + TruePath);
-        if (SavedPath == null || SavedPath == "")
-        {
-            Debug.LogError("Mesh path is not set. Please set the mesh path before creating the surface.");
-            return;
-        }
-        Mesh loadedMesh = Resources.Load<Mesh>(SavedPath);
-        newsurface.GetComponent<MeshFilter>().mesh = loadedMesh;
-        newsurface.GetComponent<MeshCollider>().sharedMesh = loadedMesh;
+        MeshFilter GeneratorMeshFilter = FunctionGenerator.GetComponent<MeshFilter>();
+        Mesh GeneratorMesh = GeneratorMeshFilter.mesh;
+        newsurface.GetComponent<MeshFilter>().mesh = GeneratorMesh;
+        newsurface.GetComponent<MeshCollider>().sharedMesh = GeneratorMesh;
         newsurface.GetComponent<MeshCollider>().providesContacts = true;
-        Debug.Log("Loaded mesh from path: " + SavedPath);
-        if (loadedMesh == null)
-        {
-            Debug.LogError("Failed to load mesh.");
-            return;
-        }
-
     }
 }
