@@ -4,7 +4,7 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.ProBuilder.Shapes;
 
-public class MovementSpeed1 : MonoBehaviour
+public class MovementSpeed1 : MonoBehaviourPun
 {
     [SerializeField]
     private Cube self;
@@ -151,6 +151,11 @@ public class MovementSpeed1 : MonoBehaviour
         lastPosition = currentPosition;
         lastVelocity = currentVelocity;
         i++;
+    }
+
+    public void PlayerFollowing()
+    {
+
     }
 
     IEnumerator WaitForData()
@@ -312,7 +317,7 @@ public class MovementSpeed1 : MonoBehaviour
             Debug.Log("MovementSpeed 1 XR Origin (XR Rig) found: " + Player.name);
         }
     }
-    
+
     public void SetCartMovementManager()
     {
         CartMovementManager = RCGameManager.Instance.CartMovementManager;
@@ -324,5 +329,12 @@ public class MovementSpeed1 : MonoBehaviour
         {
             Debug.Log("CartMovementManager set successfully: " + CartMovementManager.name);
         }
+    }
+
+    [PunRPC]
+    public void SetIsReady(bool value)
+    {
+        isReady = value;
+        Debug.Log("Is ready set to: " + value);
     }
 }

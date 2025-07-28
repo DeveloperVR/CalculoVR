@@ -45,7 +45,7 @@ public class Menu11Functions : MonoBehaviourPun
                 Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
                 Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
                 Cart.GetComponent<MovementSpeed1>().Observing = false;
-                Cart.GetComponent<MovementSpeed1>().isReady = true;
+                Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetIsReady", RpcTarget.AllBuffered, true);
                 CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
                 //audioManager.SeleccionAudio(4, 0.3f, true);
             }

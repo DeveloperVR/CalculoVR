@@ -120,11 +120,12 @@ public class FunctionGenerator : MonoBehaviour
         MakeFunction();
     }
 
-    public void SetFunctionToFreeFunction()
+    public void SetFunctionToFreeFunction(string functionReceived)
     {
+        StringCaptured = GameObject.Find("EnterFunction");
         function = tipoFuncion.OriginalFunction;
         setFunctionType("OrignalFunction");
-        WrittenFunction = StringCaptured.GetComponent<CaptureFunction>().input;
+        WrittenFunction = functionReceived;
         MakeFunction();
     }
 
