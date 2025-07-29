@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
@@ -14,11 +13,18 @@ public class CameraController : MonoBehaviour
     Ray cameraRay;
     LayerMask UILayerMask;
 
-    [SerializeField]Camera cam;
+    [SerializeField] Camera cam;
+    public InputActionReference PanelButtonDesktop;
+
+    [SerializeField]private MonoBehaviour movementScript;
+
+    void Awake()
+    {
+        PanelButtonDesktop.action.Enable();
+    }
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        LockCursor();
         UILayerMask = LayerMask.GetMask("UI");
     }
 
@@ -29,8 +35,32 @@ public class CameraController : MonoBehaviour
         HandleRaycast();
     }
 
+    private void OnEnable()
+    {
+        PanelButtonDesktop.action.performed += ActivateEscapeKey;
+    }
+    
+    private void OnDisable()
+    {
+        PanelButtonDesktop.action.performed -= ActivateEscapeKey;
+    }
+
+    public void ActivateEscapeKey(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            HandleMenuToggle();
+        }
+    }
+
     public void HandleCameraRotation()
     {
+
+        if (Cursor.lockState != CursorLockMode.Locked)
+        {
+            Debug.Log("Cursor is not locked, camera rotation skipped.");
+            return;
+        }
         float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
 
@@ -45,9 +75,13 @@ public class CameraController : MonoBehaviour
     public void HandleRaycast()
     {
         
-
+        if (Cursor.lockState != CursorLockMode.Locked)
+        {
+            Debug.Log("Cursor is not locked, Raycast skipped.");
+            return;
+        }
         if (Input.GetMouseButtonDown(0))
-        { 
+        {
             cameraRay = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             if (Physics.Raycast(cameraRay, out RaycastHit hit, 50f, UILayerMask))
             {
@@ -78,10 +112,36 @@ public class CameraController : MonoBehaviour
                     tmpInput.ActivateInputField();
 
                     Debug.Log("TMP_InputField Selected");
-        }
+                }
             }
         }
-        
+
+    }
+
+    public void HandleMenuToggle()
+    {
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            UnlockCursor();
+        }
+        else
+        {
+            LockCursor();
+        }
+    }
+
+    private void LockCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        movementScript.enabled = true;
+    }
+
+    private void UnlockCursor()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        movementScript.enabled = false;
     }
         
 }

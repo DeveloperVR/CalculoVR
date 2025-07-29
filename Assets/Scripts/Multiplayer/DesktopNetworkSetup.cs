@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DektopNetworkSetup : MonoBehaviour
 {
+    [SerializeField] private MonoBehaviour movementScript;
     [SerializeField] private GameObject CameraHolder;
     [SerializeField] private Camera cam;
     [SerializeField] private GameObject Orientation;
@@ -15,7 +16,8 @@ public class DektopNetworkSetup : MonoBehaviour
     {
         PhotonView photonView = GetComponent<PhotonView>();
         if (photonView.IsMine)
-        {
+        {   
+            movementScript.enabled = true;
             CameraHolder.SetActive(true);
             cam.gameObject.SetActive(true);
             Orientation.SetActive(true);
@@ -25,6 +27,7 @@ public class DektopNetworkSetup : MonoBehaviour
         }
         else
         {
+            movementScript.enabled = false;
             Orientation.SetActive(false);
             CameraPos.SetActive(false);
             CameraHolder.SetActive(false);

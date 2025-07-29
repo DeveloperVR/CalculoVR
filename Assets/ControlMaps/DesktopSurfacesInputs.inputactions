@@ -1,0 +1,34 @@
+{
+    "name": "DektopSurfacesInputs",
+    "maps": [
+        {
+            "name": "SurfacesInputs",
+            "id": "6a44712d-f54a-40ff-a240-79c1e0486fb4",
+            "actions": [
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "9441cfc5-a25a-45f7-ac1d-bf277de162d5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b98f4e8b-638e-4743-806f-1e4e576a302a",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
