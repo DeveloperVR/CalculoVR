@@ -199,6 +199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementScript: {fileID: 5890848920307269362}
+  rb: {fileID: 5685136905705613002}
   CameraHolder: {fileID: 7945787146411624012}
   cam: {fileID: 6197810047864755923}
   Orientation: {fileID: 1557780801802281702}
