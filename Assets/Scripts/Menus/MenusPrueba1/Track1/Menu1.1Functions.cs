@@ -15,6 +15,7 @@ public class Menu11Functions : MonoBehaviourPun
 
 
 
+
     void Start()
     {
         audioManager = FindObjectOfType<AudioManager>();
@@ -33,21 +34,31 @@ public class Menu11Functions : MonoBehaviourPun
 
         if (CartMovementManager != null)
         {
+            Debug.Log("isMoving state is: " + CartMovementManager.GetComponent<CartMovementManager>().isMoving);
             if (CartMovementManager.GetComponent<CartMovementManager>().isMoving == true)
             {
-                CartMovementManager.GetComponent<CartMovementManager>().SetisFollowing(true);
+                Debug.Log("Cart is already moving, setting player position.");
+                Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
             }
-            else
+            else if (PhotonNetwork.IsMasterClient)
             {
+                Debug.Log("Master client is setting up the cart movement.");
                 await thread.Task.Delay(3000);
                 cartlocation = Cart.transform.position;
                 Player.transform.position = cartlocation;
                 Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
                 Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
                 Cart.GetComponent<MovementSpeed1>().Observing = false;
-                Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetIsReady", RpcTarget.AllBuffered, true);
+                Cart.GetComponent<MovementSpeed1>().SetIsReady(true);
+                Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
                 CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
                 //audioManager.SeleccionAudio(4, 0.3f, true);
+            }
+            else
+            {
+                Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetIsReady", RpcTarget.MasterClient, true);
+                CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
+                Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
             }
 
         }

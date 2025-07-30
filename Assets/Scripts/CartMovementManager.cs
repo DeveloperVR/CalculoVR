@@ -11,7 +11,6 @@ public class CartMovementManager : MonoBehaviourPun
     private GameObject PlayerAfterCartPosition;
     private GameObject[] Menus = new GameObject[3];
     private GameObject PlayerEvent;
-    private GameObject Spawner;
 
     public void Start()
     {
@@ -20,7 +19,6 @@ public class CartMovementManager : MonoBehaviourPun
             return;
         }
         PlayerEvent = GameObject.Find("PlayerSpawnEvent");
-        Spawner = GameObject.Find("PhotonConnectionManager");
         PlayerAfterCartPosition = GameObject.Find("AfterCartPlace");
         if (PlayerAfterCartPosition == null)
         {
@@ -28,7 +26,6 @@ public class CartMovementManager : MonoBehaviourPun
         }
         cart = GameObject.Find("Carrito1");
         StartCoroutine(WaitForPlayerSpawn());
-        //StartCoroutine(WaitForSpawner());
     }
     public void SetPlayer()
     {
@@ -45,18 +42,6 @@ public class CartMovementManager : MonoBehaviourPun
 
     public void FollowCartMovement()
     {
-
-        if (cart != null && Player != null)
-        {
-            Player.transform.position = cart.transform.position;
-            Player.transform.rotation = Quaternion.Slerp(Player.transform.rotation, cart.GetComponent<MovementSpeed1>().getPlayerRotation(), cart.GetComponent<MovementSpeed1>().getRotationSpeed() * Time.deltaTime * cart.GetComponent<MovementSpeed1>().getCurrentVelocity());
-        }
-        else
-        {
-            Debug.LogError("Cart or Player is not set.");
-        }
-
-
     }
 
     void Update()
@@ -109,15 +94,6 @@ public class CartMovementManager : MonoBehaviourPun
         }
 
         SetPlayer(); // Set the player after they have spawned
-    }
-
-    IEnumerator WaitForSpawner()
-    {
-        while (Spawner.GetComponent<PhotonMultiplayerSpawner>().CartManagerHasSpawned == false)
-        {
-            yield return null; // Wait for the CartMovementManager to be spawned
-        }
-        SetMenus(); // Set the menus after the CartMovementManager has been spawned
     }
 
 }
