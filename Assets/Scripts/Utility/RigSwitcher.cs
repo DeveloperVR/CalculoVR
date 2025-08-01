@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Management;
 
@@ -11,6 +8,7 @@ public class RigSwitcher : MonoBehaviour
     [SerializeField] private GameObject nonVrRig;
     [SerializeField] private GameObject crosshair;
     private bool isXRActivated;
+    public string PlayerType { get; private set; }
     void Start()
     {
         var xrManager = XRGeneralSettings.Instance?.Manager;
@@ -29,6 +27,7 @@ public class RigSwitcher : MonoBehaviour
 
         if (isXRActive)
         {
+            SetPlayerType("XR");
             Debug.Log("XR Rig is active.");
             xrRig.SetActive(true);
             nonVrRig.SetActive(false);
@@ -37,6 +36,7 @@ public class RigSwitcher : MonoBehaviour
         }
         else
         {
+            SetPlayerType("Non-XR");
             Debug.Log("Non-VR Rig is active.");
             xrRig.SetActive(false);
             nonVrRig.SetActive(true);
@@ -53,5 +53,11 @@ public class RigSwitcher : MonoBehaviour
     public bool getisXRActivated()
     {
         return isXRActivated;
+    }
+
+    public void SetPlayerType(string playerType)
+    {
+        PlayerType = playerType;
+        Debug.Log("Player type set to: " + PlayerType);
     }
 }
