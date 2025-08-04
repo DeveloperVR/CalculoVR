@@ -356,6 +356,12 @@ public class MovementSpeed1 : MonoBehaviourPun
         }
     }
 
+    public void SetOfflinePlayer()
+    {
+        Player = GameObject.Find("XR Player");
+        Debug.Log("XR Player found: " + Player.name);
+    }
+
     public void SetCartMovementManager()
     {
         CartMovementManager = RCGameManager.Instance.CartMovementManager;

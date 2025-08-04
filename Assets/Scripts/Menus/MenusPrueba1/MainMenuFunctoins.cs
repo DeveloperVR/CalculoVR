@@ -30,6 +30,12 @@ public class MainMenuFunctions : MonoBehaviour
             Debug.Log("XR Origin (XR Rig) found: " + Player.name);
         }
     }
+
+    public void SetOfflinePlayer()
+    {
+        Player = GameObject.Find("XR Player");
+        Debug.Log("XR Player found: " + Player.name);
+    }
     public void Start()
     {
         audioManager = FindObjectOfType<AudioManager>();

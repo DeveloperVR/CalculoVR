@@ -71,7 +71,7 @@ public class SettingsMenu : MonoBehaviour
         isSettingsActive = false;
         settingsCanvas.SetActive(false);
     }
-    
+
     private void MuteListener()
     {
         audioListener.enabled = false;
@@ -82,6 +82,12 @@ public class SettingsMenu : MonoBehaviour
     {
         audioListener.enabled = true;
         muteButton.GetComponent<SpriteSwap>().SwapSprite(0);
-        
+
+    }
+    
+    public void SetOfflineCam()
+    {
+        GameObject Player = GameObject.Find("XR Player");
+        cam = Player.transform.Find("Camera Offset/Main Camera");
     }
 }

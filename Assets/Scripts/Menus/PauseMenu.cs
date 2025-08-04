@@ -71,6 +71,13 @@ public class PauseMenu : MonoBehaviour
         }
 
     }
+
+    public void SetOfflineCam()
+    {
+        GameObject Player = GameObject.Find("XR Player");
+        cam = Player.transform.Find("Camera Offset/Main Camera");
+        SettingsCanvas.GetComponent<SettingsMenu>().SetOfflineCam();
+    }
     //--------------------------------FUNCIONALIDAD DE BOTONES DEL MENU---------------------------------------//
 
     public void ResumeGame()

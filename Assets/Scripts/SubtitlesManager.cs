@@ -118,4 +118,10 @@ public class SubtitlesLibrary : MonoBehaviour
         canvas.gameObject.SetActive(true);
     }
 
+    public void SetOfflineCam()
+    {
+        GameObject Player = GameObject.Find("XR Player");
+        cam = Player.transform.Find("Camera Offset/Main Camera");
+    }
+
 }

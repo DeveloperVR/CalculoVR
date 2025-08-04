@@ -65,6 +65,17 @@ public class Menu11Functions : MonoBehaviourPun
 
     }
 
+    async public void OfflineRiding()
+    { 
+        await thread.Task.Delay(3000);
+        cartlocation = Cart.transform.position;
+        Player.transform.position = cartlocation;
+        Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
+        Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
+        Cart.GetComponent<OfflineMovementSpeed1>().OfflineObserving = false;
+        Cart.GetComponent<OfflineMovementSpeed1>().OfflineisReady = true;
+    }
+
 
     async public void Observing()
     {
@@ -72,9 +83,9 @@ public class Menu11Functions : MonoBehaviourPun
         Player.transform.position = observinglocation;
         Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
         Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
-        Cart.GetComponent<MovementSpeed1>().Observing = true;
+        Cart.GetComponent<OfflineMovementSpeed1>().OfflineObserving = true;
         await thread.Task.Delay(3000);
-        Cart.GetComponent<MovementSpeed1>().isReady = true;
+        Cart.GetComponent<OfflineMovementSpeed1>().OfflineisReady = true;
         //audioManager.SeleccionAudio(3, 0.4f, true);
     }
 
@@ -109,14 +120,20 @@ public class Menu11Functions : MonoBehaviourPun
         await thread.Task.Delay(3000);
         Cart.GetComponent<MovementVersion2>().IsReadySetter(true);
     }
-    
+
     public void SetPlayer()
-    { 
+    {
         Player = RCGameManager.Instance.LocalPlayer;
         if (Player == null)
         {
             Debug.LogError("XR Origin (XR Rig) not found in the scene.");
         }
+    }
+    
+    public void SetOfflinePlayer()
+    {
+        Player = GameObject.Find("XR Player");
+        Debug.Log("XR Player found: " + Player.name);
     }
     
 

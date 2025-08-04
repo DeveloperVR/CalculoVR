@@ -277,9 +277,9 @@ public class MovementSpeed3 : MonoBehaviour
             railing.volume = 0.3f;
         }
     }
-    
+
     public void SetPlayer()
-    { 
+    {
         player = RCGameManager.Instance.LocalPlayer;
         if (player == null)
         {
@@ -289,5 +289,11 @@ public class MovementSpeed3 : MonoBehaviour
         {
             Debug.Log("XR Origin (XR Rig) found: " + player.name);
         }
+    }
+    
+    public void SetOfflinePlayer()
+    {
+        player = GameObject.Find("XR Player");
+        Debug.Log("XR Player found: " + player.name);
     }
 }
