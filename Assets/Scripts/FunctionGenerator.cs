@@ -2,8 +2,10 @@ using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Runtime.CompilerServices;
+
 #if UNITY_EDITOR
-    using UnityEditor;
+using UnityEditor;
 #endif
 
 
@@ -27,6 +29,7 @@ public class FunctionGenerator : MonoBehaviour
     public List<Vector3> verts; // Lista de vértices generados.
 
     public int[] triangles;
+    public List<Vector3> intersectionPoints = new List<Vector3>();
 
     private Mesh mesh;
     private MeshRenderer meshRenderer;
