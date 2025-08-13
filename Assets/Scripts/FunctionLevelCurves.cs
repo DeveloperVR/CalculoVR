@@ -11,7 +11,6 @@ public class FunctionLevelCurves : MonoBehaviour
         DrawContactPoints(collision);
     }
 
-
     void DrawContactPoints(Collision collision)
     {
         foreach (ContactPoint contact in collision.contacts)

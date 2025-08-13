@@ -184,6 +184,8 @@ public class FunctionGenerator : MonoBehaviour
         }
         Debug.Log("Vértices totales: " + verts.Count);
         GlobalMeshPath = HyperbolicParaboloidPath;
+        LevelCurvesCreator levelCurvesCreator = GetComponent<LevelCurvesCreator>();
+        levelCurvesCreator.GenerateLevelCurve(verts, xSegments, ySegments);
         return verts;
     }
 
