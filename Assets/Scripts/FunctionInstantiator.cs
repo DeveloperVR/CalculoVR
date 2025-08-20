@@ -36,7 +36,6 @@ public class FunctionInstantiator : MonoBehaviour
         newsurface.AddComponent<MeshFilter>();
         newsurface.AddComponent<MeshRenderer>();
         newsurface.AddComponent<MeshCollider>();
-        newsurface.AddComponent<TeleportationArea>();
         newsurface.AddComponent<PhotonView>();
         newsurface.AddComponent<PhotonTransformView>();
         Material mat = Resources.Load<Material>("Materials/Surfaces Material");
