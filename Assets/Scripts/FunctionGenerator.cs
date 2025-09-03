@@ -30,6 +30,8 @@ public class FunctionGenerator : MonoBehaviour
 
     public int[] triangles;
     public List<Vector3> intersectionPoints = new List<Vector3>();
+    public float curveHeight = 5f;
+    public float epsilon = 0.01f;
 
     private Mesh mesh;
     private MeshRenderer meshRenderer;
@@ -46,12 +48,13 @@ public class FunctionGenerator : MonoBehaviour
     public string FreeMeshPath = "Assets/Resources/Meshes/FreeFunction.asset";
 
     [SerializeField] private string WrittenFunction;
+    GameObject s = new GameObject();
 
     private void Start()
     {
         FunctionInstantiator = GameObject.Find("FunctionInstantiator");
         StringCaptured = GameObject.Find("EnterFunction");
-        
+
         //MakeFunction();
     }
 
@@ -88,6 +91,7 @@ public class FunctionGenerator : MonoBehaviour
         //SaveMesh();
         //SavePrefab();
         FunctionInstantiator.GetComponent<FunctionInstantiator>().SetMesh();
+        ComputePoints(mesh);
     }
 
     public void MakeVertices(tipoFuncion function)
@@ -350,11 +354,86 @@ public class FunctionGenerator : MonoBehaviour
             Debug.Log("Error al guardar el prefab" + prefabSuccess);
 #endif
     }
-    
+
     public void setFunctionType(string type)
     {
         FunctionType = type;
     }
+
+    public void ComputePoints(Mesh mesh)
+    {
+        
+        intersectionPoints.Clear();
+        int contadorEpsilon = 0;
+
+        Vector3[] vertices = mesh.vertices;
+        int[] triangles = mesh.triangles;
+
+        // Recorremos los triángulos de la malla
+        for (int i = 0; i < triangles.Length; i += 3)
+        {
+            // Cada triángulo tiene 3 vértices
+            Vector3 p1 = vertices[triangles[i]];
+            Vector3 p2 = vertices[triangles[i + 1]];
+            Vector3 p3 = vertices[triangles[i + 2]];
+
+            // Revisar las aristas del triángulo
+            CheckEdge(p1, p2, ref contadorEpsilon);
+            CheckEdge(p2, p3, ref contadorEpsilon);
+            CheckEdge(p3, p1, ref contadorEpsilon);
+        }
+
+        Debug.Log("Contador: " + contadorEpsilon);
+    }
+    
+    private void CheckEdge(Vector3 p1, Vector3 p2, ref int contadorEpsilon)
+    {
+        
+        float y1 = p1.y;
+        float y2 = p2.y;
+
+        // Caso 1: la arista cruza el plano
+        if ((y1 < curveHeight && y2 > curveHeight) || (y1 > curveHeight && y2 < curveHeight))
+        {
+            Vector3 dir = p2 - p1;
+            float dy = dir.y;
+
+            if (Mathf.Abs(dy) > 1e-6f) // evitar división por cero
+            {
+                float yc = curveHeight - p1.y;
+                float t = yc / dy; // interpolación [0,1]
+                float x = p1.x + dir.x * t;
+                float y = curveHeight;
+                float z = p1.z + dir.z * t;
+                intersectionPoints.Add(new Vector3(x, y, z));
+                s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                s.transform.position = new Vector3(x - 100, y + 100000, z - 100);
+                s.transform.localScale = Vector3.one * 0.5f; // Escala de la esfera
+                Debug.Log("Punto de intersección: " + new Vector3(x, y, z).ToString());
+            }
+        }
+        // Caso 2: uno de los extremos está en el plano
+        else if (Mathf.Abs(p1.y - curveHeight) < epsilon)
+        {
+            intersectionPoints.Add(p1);
+            Debug.Log("Punto de intersección: " + p1.ToString());
+            s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            s.transform.position = new Vector3(p1.x - 100, p1.y + 100000, p1.z - 100);
+            s.transform.localScale = Vector3.one * 0.5f; // Escala de la esfera
+            contadorEpsilon++;
+        }
+        else if (Mathf.Abs(p2.y - curveHeight) < epsilon)
+        {
+            intersectionPoints.Add(p2);
+            Debug.Log("Punto de intersección: " + p2.ToString());
+            s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            s.transform.position = new Vector3(p2.x - 100, p2.y + 100000, p2.z - 100);
+            s.transform.localScale = Vector3.one * 0.5f; // Escala de la esfera
+            contadorEpsilon++;
+        }
+    }
+
+
 }
 
 public enum tipoFuncion
