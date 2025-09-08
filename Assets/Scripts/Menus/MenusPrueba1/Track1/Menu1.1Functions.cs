@@ -47,21 +47,23 @@ public class Menu11Functions : MonoBehaviourPun
             {
                 Debug.Log("Master client is setting up the cart movement.");
                 await thread.Task.Delay(3000);
-                cartlocation = Cart.transform.position;
-                Player.transform.position = cartlocation;
                 Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
                 Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
                 Cart.GetComponent<MovementSpeed1>().Observing = false;
                 Cart.GetComponent<MovementSpeed1>().SetIsReady(true);
                 Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
                 CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
+                Cart.GetComponent<MovementSpeed1>().SetisMasterCall(true);
                 //audioManager.SeleccionAudio(4, 0.3f, true);
             }
             else
             {
                 Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetIsReady", RpcTarget.MasterClient, true);
                 Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
+                Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMasterCall", RpcTarget.MasterClient, true);
                 CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
+                Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMasterCall", RpcTarget.MasterClient, true);
+                Cart.GetComponent<MovementSpeed1>().Observing = false;
             }
 
         }
@@ -69,7 +71,7 @@ public class Menu11Functions : MonoBehaviourPun
     }
 
     async public void OfflineRiding()
-    { 
+    {
         await thread.Task.Delay(3000);
         cartlocation = Cart.transform.position;
         Player.transform.position = cartlocation;
@@ -132,13 +134,10 @@ public class Menu11Functions : MonoBehaviourPun
             Debug.LogError("XR Origin (XR Rig) not found in the scene.");
         }
     }
-    
+
     public void SetOfflinePlayer()
     {
         Player = GameObject.Find("XR Player");
         Debug.Log("XR Player found: " + Player.name);
     }
-    
-
-
 }

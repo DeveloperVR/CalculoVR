@@ -68,14 +68,13 @@ public class MovementSpeed1 : MonoBehaviourPun
     {
         StartCoroutine(WaitForData());
         audioManager = FindObjectOfType<AudioManager>();
-        SetisMasterCall(true);
     }
 
     void Update()
     {
 
         if (isMasterCall)
-        { 
+        {
             currentPosition = EvaluatePositionOnPath2(currentS);
             //Sends te value of the Position to all the clients
             photonView.RPC("SetCurrentPosition", RpcTarget.AllBuffered, currentPosition);
@@ -83,6 +82,7 @@ public class MovementSpeed1 : MonoBehaviourPun
             PlayerCalculatedRotation = Quaternion.LookRotation(moveDirection.normalized);
             //Sends the value of the PlayerCalculatedRotation to all the clients
             photonView.RPC("SetPlayerCalculatedRotation", RpcTarget.AllBuffered, PlayerCalculatedRotation);
+            photonView.RPC("CartCurrentMovement", RpcTarget.AllBuffered, currentPosition);      
         }
 
         if (Observing == false && isFollowing == true)
@@ -92,14 +92,13 @@ public class MovementSpeed1 : MonoBehaviourPun
         }
         if (!isReady) return;
         ///////////////////////////////////////////////if the movement starts/////////////////////////////////////////////
-
-        CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
         if (pathPoints.Count < 2) return;
         float deltaTime = Time.deltaTime;
         PlayingAudio();
 
         // Avanzar distancia S
         currentS = lastS + lastVelocity * deltaTime;
+        Debug.Log("Current S: " + currentS);
 
         // Actualizar altura y velocidad usando conservación de energía
         currentHeight = currentPosition.y;
@@ -117,7 +116,8 @@ public class MovementSpeed1 : MonoBehaviourPun
 
 
         // Mover objeto y rotarlo en la dirección del movimiento
-        transform.position = currentPosition;
+        
+        Debug.Log("Cart position updated to: " + transform.position);
         Quaternion lookRotation = Quaternion.LookRotation(moveDirection.normalized);
         lookRotation *= Quaternion.Euler(0f, 90f, 0f);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime * currentVelocity);
@@ -153,9 +153,10 @@ public class MovementSpeed1 : MonoBehaviourPun
             checkpoint = false;
             centrado.RecenterToHeadset();
             CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, false);
+            Debug.Log("isMoving set to false");
             photonView.RPC("SetisFollowing", RpcTarget.AllBuffered, false);
+            Debug.Log("isFollowing set to false");
             CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("TakeOffPlayer", RpcTarget.AllBuffered);
-            isFollowing = false;
 
 
             return;
@@ -170,9 +171,10 @@ public class MovementSpeed1 : MonoBehaviourPun
     public void PlayerMovementAndRotation(Quaternion playerRotation, float playerCurrentVelocity, Vector3 currentPosition)
     {
         Player.transform.position = currentPosition;
+        Debug.Log("Player position updated to: " + Player.transform.position);
         Quaternion PlayerFinalRotation = Quaternion.Slerp(Player.transform.rotation, playerRotation, rotationSpeed * Time.deltaTime * playerCurrentVelocity);
         Player.transform.rotation = PlayerFinalRotation;
-        Debug.Log("Player position and rotation updated. Position: " + Player.transform.position + " Rotation: " + Player.transform.rotation);
+        //Debug.Log("Player position and rotation updated. Position: " + Player.transform.position + " Rotation: " + Player.transform.rotation);
     }
 
     public void PlayerFollowing()
@@ -221,9 +223,10 @@ public class MovementSpeed1 : MonoBehaviourPun
 
     }
 
-    public void PlayerMovement()
+    [PunRPC]
+    public void CartCurrentMovement(Vector3 position)
     {
-
+        transform.position = position;
     }
 
     // Calcular la longitud total del camino
@@ -326,6 +329,7 @@ public class MovementSpeed1 : MonoBehaviourPun
     public void SetCurrentPosition(Vector3 position)
     {
         transform.position = position;
+        currentPosition = position;
     }
 
     public float getCurrentVelocity() => currentVelocity;
@@ -334,10 +338,10 @@ public class MovementSpeed1 : MonoBehaviourPun
     public void SetPlayerCalculatedRotation(Quaternion rotation)
     {
         PlayerCalculatedRotation = rotation;
-        Debug.Log("Player calculated rotation set to: " + PlayerCalculatedRotation);
     }
     public float getRotationSpeed() => rotationSpeed;
 
+    [PunRPC]
     public void SetisMasterCall(bool value)
     {
         isMasterCall = value;
@@ -382,7 +386,7 @@ public class MovementSpeed1 : MonoBehaviourPun
         isReady = value;
         Debug.Log("Is ready set to: " + value);
     }
-    
+    [PunRPC]
     public void SetisFollowing(bool value)
     {
         isFollowing = value;
