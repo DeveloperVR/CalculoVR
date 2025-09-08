@@ -48,10 +48,11 @@ public class FunctionGenerator : MonoBehaviour
     public string FreeMeshPath = "Assets/Resources/Meshes/FreeFunction.asset";
 
     [SerializeField] private string WrittenFunction;
-    GameObject s = new GameObject();
+    private GameObject s;
 
     private void Start()
     {
+        s = new GameObject();
         FunctionInstantiator = GameObject.Find("FunctionInstantiator");
         StringCaptured = GameObject.Find("EnterFunction");
 

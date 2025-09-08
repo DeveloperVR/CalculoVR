@@ -47,7 +47,7 @@ public class MovementSpeed1 : MonoBehaviourPun
     private float r = 200f; // Radio de la curva
     private List<Vector3> pathPoints = new List<Vector3>();
     private Vector3 initialPosition = Vector3.zero;
-    public static int rotationSpeed = 1;
+    public static int rotationSpeed = 3;
     [SerializeField] float boostEnergy = 50f;
 
     float totalLength = 0f;
@@ -60,7 +60,7 @@ public class MovementSpeed1 : MonoBehaviourPun
     public bool isMasterCall { get; private set; } = false;
 
     private Dictionary<GameObject, GameObject> sphereToTangent = new Dictionary<GameObject, GameObject>();
-    private Quaternion PlayerRotation;
+
     private Quaternion PlayerCalculatedRotation;
     public bool isFollowing { get; private set; }
 
@@ -68,6 +68,7 @@ public class MovementSpeed1 : MonoBehaviourPun
     {
         StartCoroutine(WaitForData());
         audioManager = FindObjectOfType<AudioManager>();
+        SetisMasterCall(true);
     }
 
     void Update()
@@ -83,22 +84,22 @@ public class MovementSpeed1 : MonoBehaviourPun
             //Sends the value of the PlayerCalculatedRotation to all the clients
             photonView.RPC("SetPlayerCalculatedRotation", RpcTarget.AllBuffered, PlayerCalculatedRotation);
         }
-        
+
         if (Observing == false && isFollowing == true)
         {
-            PlayerMovementAndRotation(PlayerRotation, currentVelocity, currentPosition);
+            PlayerMovementAndRotation(PlayerCalculatedRotation, currentVelocity, currentPosition);
+            Debug.Log("Player following the cart");
         }
         if (!isReady) return;
+        ///////////////////////////////////////////////if the movement starts/////////////////////////////////////////////
+
+        CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
         if (pathPoints.Count < 2) return;
         float deltaTime = Time.deltaTime;
         PlayingAudio();
 
         // Avanzar distancia S
         currentS = lastS + lastVelocity * deltaTime;
-
-
-        // Obtener posición actual en la curva según S
-        
 
         // Actualizar altura y velocidad usando conservación de energía
         currentHeight = currentPosition.y;
@@ -154,6 +155,8 @@ public class MovementSpeed1 : MonoBehaviourPun
             CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, false);
             photonView.RPC("SetisFollowing", RpcTarget.AllBuffered, false);
             CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("TakeOffPlayer", RpcTarget.AllBuffered);
+            isFollowing = false;
+
 
             return;
         }
@@ -169,7 +172,8 @@ public class MovementSpeed1 : MonoBehaviourPun
         Player.transform.position = currentPosition;
         Quaternion PlayerFinalRotation = Quaternion.Slerp(Player.transform.rotation, playerRotation, rotationSpeed * Time.deltaTime * playerCurrentVelocity);
         Player.transform.rotation = PlayerFinalRotation;
-    }  
+        Debug.Log("Player position and rotation updated. Position: " + Player.transform.position + " Rotation: " + Player.transform.rotation);
+    }
 
     public void PlayerFollowing()
     {
@@ -322,12 +326,9 @@ public class MovementSpeed1 : MonoBehaviourPun
     public void SetCurrentPosition(Vector3 position)
     {
         transform.position = position;
-        Debug.Log("Current position set to: " + position);
     }
 
     public float getCurrentVelocity() => currentVelocity;
-
-    public Quaternion getPlayerRotation() => PlayerRotation;
 
     [PunRPC]
     public void SetPlayerCalculatedRotation(Quaternion rotation)

@@ -35,11 +35,14 @@ public class Menu11Functions : MonoBehaviourPun
         if (CartMovementManager != null)
         {
             Debug.Log("isMoving state is: " + CartMovementManager.GetComponent<CartMovementManager>().isMoving);
+            //Si el carro ya se está moviendo, solo se ajusta la posición del jugador al carro
             if (CartMovementManager.GetComponent<CartMovementManager>().isMoving == true)
             {
                 Debug.Log("Cart is already moving, setting player position.");
                 Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
+                return;
             }
+            //Si el carro no se está moviendo, y quien seleccionó el boton es el master, se espera 3 segundos y se inicia el movimiento del carro
             else if (PhotonNetwork.IsMasterClient)
             {
                 Debug.Log("Master client is setting up the cart movement.");
@@ -57,8 +60,8 @@ public class Menu11Functions : MonoBehaviourPun
             else
             {
                 Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetIsReady", RpcTarget.MasterClient, true);
-                CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
                 Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
+                CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
             }
 
         }
