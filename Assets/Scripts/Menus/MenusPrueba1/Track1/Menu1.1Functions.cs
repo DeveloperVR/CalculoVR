@@ -53,6 +53,7 @@ public class Menu11Functions : MonoBehaviourPun
                 Cart.GetComponent<MovementSpeed1>().SetIsReady(true);
                 Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
                 CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
+                Debug.Log("isMoving set to true");
                 Cart.GetComponent<MovementSpeed1>().SetisMasterCall(true);
                 //audioManager.SeleccionAudio(4, 0.3f, true);
             }
@@ -62,6 +63,7 @@ public class Menu11Functions : MonoBehaviourPun
                 Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
                 Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMasterCall", RpcTarget.MasterClient, true);
                 CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
+                Debug.Log("isMoving set to true by non-master client");
                 Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMasterCall", RpcTarget.MasterClient, true);
                 Cart.GetComponent<MovementSpeed1>().Observing = false;
             }
