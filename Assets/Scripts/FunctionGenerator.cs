@@ -30,8 +30,8 @@ public class FunctionGenerator : MonoBehaviour
 
     public int[] triangles;
     public List<Vector3> intersectionPoints = new List<Vector3>();
-    public float curveHeight = 5f;
-    public float epsilon = 0.01f;
+    private float curveHeight = 0.3f;
+    private float epsilon = 0.01f;
 
     private Mesh mesh;
     private MeshRenderer meshRenderer;
@@ -91,7 +91,7 @@ public class FunctionGenerator : MonoBehaviour
         //SaveMesh();
         //SavePrefab();
         FunctionInstantiator.GetComponent<FunctionInstantiator>().SetMesh();
-        ComputePoints(mesh);
+        //ComputePoints(mesh);
     }
 
     public void MakeVertices(tipoFuncion function)
@@ -362,7 +362,7 @@ public class FunctionGenerator : MonoBehaviour
 
     public void ComputePoints(Mesh mesh)
     {
-        
+        Debug.Log("Computando puntos de intersección con la curva de nivel en y = " + curveHeight);
         intersectionPoints.Clear();
         int contadorEpsilon = 0;
 
@@ -373,11 +373,14 @@ public class FunctionGenerator : MonoBehaviour
         for (int i = 0; i < triangles.Length; i += 3)
         {
             // Cada triángulo tiene 3 vértices
-            Vector3 p1 = vertices[triangles[i]];
-            Vector3 p2 = vertices[triangles[i + 1]];
-            Vector3 p3 = vertices[triangles[i + 2]];
+            Vector3 p1 = (vertices[triangles[i]]);
+            Vector3 p2 = (vertices[triangles[i + 1]]);
+            Vector3 p3 = (vertices[triangles[i + 2]]);
 
             // Revisar las aristas del triángulo
+            Debug.Log("Altura curva: " + curveHeight);
+            Debug.Log("Mesh bounds local Y: " + mesh.bounds.min.y + " -> " + mesh.bounds.max.y);
+            Debug.Log("Mesh bounds world Y: " + (transform.position.y + mesh.bounds.min.y) + " -> " + (transform.position.y + mesh.bounds.max.y));
             CheckEdge(p1, p2, ref contadorEpsilon);
             CheckEdge(p2, p3, ref contadorEpsilon);
             CheckEdge(p3, p1, ref contadorEpsilon);
@@ -388,33 +391,39 @@ public class FunctionGenerator : MonoBehaviour
     
     private void CheckEdge(Vector3 p1, Vector3 p2, ref int contadorEpsilon)
     {
-        
         float y1 = p1.y;
         float y2 = p2.y;
 
         // Caso 1: la arista cruza el plano
         if ((y1 < curveHeight && y2 > curveHeight) || (y1 > curveHeight && y2 < curveHeight))
         {
+            Debug.Log("Entró al caso 1");
             Vector3 dir = p2 - p1;
             float dy = dir.y;
 
             if (Mathf.Abs(dy) > 1e-6f) // evitar división por cero
             {
+                Debug.Log("Entró al caso 1.1");
                 float yc = curveHeight - p1.y;
                 float t = yc / dy; // interpolación [0,1]
                 float x = p1.x + dir.x * t;
                 float y = curveHeight;
                 float z = p1.z + dir.z * t;
-                intersectionPoints.Add(new Vector3(x, y, z));
+
+                Vector3 localPoint = new Vector3(x, y, z);
+                intersectionPoints.Add(localPoint);
+
+                Vector3 worldPoint = transform.TransformPoint(localPoint);
                 s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                s.transform.position = new Vector3(x - 100, y + 100000, z - 100);
+                s.transform.position = (worldPoint);
                 s.transform.localScale = Vector3.one * 0.5f; // Escala de la esfera
-                Debug.Log("Punto de intersección: " + new Vector3(x, y, z).ToString());
+                Debug.Log("Punto de intersección: " + localPoint.ToString());
             }
         }
         // Caso 2: uno de los extremos está en el plano
         else if (Mathf.Abs(p1.y - curveHeight) < epsilon)
         {
+            Debug.Log("Entró al caso 2");
             intersectionPoints.Add(p1);
             Debug.Log("Punto de intersección: " + p1.ToString());
             s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -424,6 +433,7 @@ public class FunctionGenerator : MonoBehaviour
         }
         else if (Mathf.Abs(p2.y - curveHeight) < epsilon)
         {
+            Debug.Log("Entró al caso 2.1");
             intersectionPoints.Add(p2);
             Debug.Log("Punto de intersección: " + p2.ToString());
             s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
