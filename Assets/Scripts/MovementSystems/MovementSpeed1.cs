@@ -54,7 +54,7 @@ public class MovementSpeed1 : MonoBehaviourPun
     List<float> segmentLengths = new List<float>();
     List<float> cumulativeLengths = new List<float>();
     private int i = 0;
-    public bool Observing = false;
+    public bool isObserving = false;
     private bool checkpoint = false;
 
     public bool isMasterCall { get; private set; } = false;
@@ -88,10 +88,9 @@ public class MovementSpeed1 : MonoBehaviourPun
             photonView.RPC("CartCurrentMovement", RpcTarget.AllBuffered, currentPosition);
         }
 
-        if (Observing == false && isFollowing == true)
+        if (isObserving == false && isFollowing == true)
         {
             PlayerMovementAndRotation(PlayerCalculatedRotation, currentVelocity, currentPosition);
-            Debug.Log("Player following the cart");
         }
         if (!isReady) return;
         ///////////////////////////////////////////////if the movement starts/////////////////////////////////////////////
@@ -142,16 +141,9 @@ public class MovementSpeed1 : MonoBehaviourPun
             audioManager.StopAudio();
             StopAudio();
 
-            if (Observing == true)
-            {
-                menu.transform.position = ObservingMenuFinalPosition.transform.position;
-            }
-            else
-            {
-
-                menu.gameObject.transform.position = RidingMenuFinalPosition.transform.position;
-            }
-            Observing = false;
+            //Determines where tu put the button at the end of the ride
+            photonView.RPC("PlaceEndingButton", RpcTarget.AllBuffered);
+            isObserving = false;
             menu.gameObject.SetActive(true);
             checkpoint = false;
             centrado.RecenterToHeadset();
@@ -180,10 +172,6 @@ public class MovementSpeed1 : MonoBehaviourPun
         //Debug.Log("Player position and rotation updated. Position: " + Player.transform.position + " Rotation: " + Player.transform.rotation);
     }
 
-    public void PlayerFollowing()
-    {
-
-    }
 
     IEnumerator WaitForData()
     {
@@ -402,11 +390,25 @@ public class MovementSpeed1 : MonoBehaviourPun
         isMoving = value;
         Debug.Log("Cart movement state changed: " + isMoving);
     }
-    
+
     public void TakeOffPlayer()
     {
         Player.transform.position = PlayerAfterCartPosition.transform.position;
         Debug.Log("Player taken off the cart and moved to PlayerAfterCartPlace position.");
 
+    }
+
+    [PunRPC]
+    public void PlaceEndingButton()
+    {
+        if (isObserving == true)
+        {
+            menu.transform.position = ObservingMenuFinalPosition.transform.position;
+        }
+        else
+        {
+
+            menu.gameObject.transform.position = RidingMenuFinalPosition.transform.position;
+        }
     }
 }

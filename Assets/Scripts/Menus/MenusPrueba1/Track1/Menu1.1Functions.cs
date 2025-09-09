@@ -49,9 +49,8 @@ public class Menu11Functions : MonoBehaviourPun
                 await thread.Task.Delay(3000);
                 Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
                 Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
-                Cart.GetComponent<MovementSpeed1>().Observing = false;
-                Cart.GetComponent<MovementSpeed1>().SetIsReady(true);
-                Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
+                Cart.GetComponent<MovementSpeed1>().isObserving = false;
+                
                 Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
                 Debug.Log("isMoving set to true");
                 Cart.GetComponent<MovementSpeed1>().SetisMasterCall(true);
@@ -64,8 +63,7 @@ public class Menu11Functions : MonoBehaviourPun
                 Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMasterCall", RpcTarget.MasterClient, true);
                 Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
                 Debug.Log("isMoving set to true by non-master client");
-                Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMasterCall", RpcTarget.MasterClient, true);
-                Cart.GetComponent<MovementSpeed1>().Observing = false;
+                Cart.GetComponent<MovementSpeed1>().isObserving = false;
             }
 
         }
@@ -83,8 +81,41 @@ public class Menu11Functions : MonoBehaviourPun
         Cart.GetComponent<OfflineMovementSpeed1>().OfflineisReady = true;
     }
 
-
     async public void Observing()
+    {
+        Vector3 observinglocation = visualizationplataform.transform.position;
+        if (Cart.GetComponent<MovementSpeed1>().isMoving == true)
+        {
+            Player.transform.position = observinglocation;
+            Cart.GetComponent<MovementSpeed1>().isObserving = true;
+            return;
+        }
+        else if (PhotonNetwork.IsMasterClient)
+        {
+            Debug.Log("Master client is setting up observing mode.");
+            Player.transform.position = observinglocation;
+            await thread.Task.Delay(3000);
+            Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
+            Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
+            Cart.GetComponent<MovementSpeed1>().SetIsReady(true);
+            Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
+            Cart.GetComponent<MovementSpeed1>().isObserving = true;
+            Cart.GetComponent<MovementSpeed1>().SetisMasterCall(true);
+            Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetIsMoving", RpcTarget.AllBuffered, true);
+        }
+        else
+        {
+            Player.transform.position = observinglocation;
+            Cart.GetComponent<MovementSpeed1>().SetisFollowing(false);
+            Cart.GetComponent<MovementSpeed1>().isObserving = true;
+            Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetIsReady", RpcTarget.MasterClient, true);
+            Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMasterCall", RpcTarget.MasterClient, true);
+            Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
+        }
+        
+    }
+
+    async public void OfflineObserving()
     {
         Vector3 observinglocation = visualizationplataform.transform.position;
         Player.transform.position = observinglocation;
