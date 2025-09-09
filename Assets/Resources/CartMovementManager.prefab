@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
+  isMoving: 0
 --- !u!114 &5785875912311062621
 MonoBehaviour:
   m_ObjectHideFlags: 0

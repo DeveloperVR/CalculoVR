@@ -6,7 +6,7 @@ public class CartMovementManager : MonoBehaviourPun
 {
     private GameObject cart;
     [SerializeField] private GameObject Player;
-    public bool isMoving { get; private set; } = false;
+    public bool isMoving = false;
     public bool isFollowing { get; private set; } = false;
     private GameObject PlayerAfterCartPosition;
     private GameObject[] Menus = new GameObject[3];
@@ -59,11 +59,6 @@ public class CartMovementManager : MonoBehaviourPun
         Debug.Log("Cart movement state changed: " + isMoving);
     }
 
-    public void SetisFollowing(bool value)
-    {
-        isFollowing = value;
-        Debug.Log("Cart following state changed: " + isFollowing);
-    }
 
     [PunRPC]
     public void TakeOffPlayer()

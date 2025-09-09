@@ -63,11 +63,14 @@ public class MovementSpeed1 : MonoBehaviourPun
 
     private Quaternion PlayerCalculatedRotation;
     public bool isFollowing { get; private set; }
+    public bool isMoving = false;
+    private GameObject PlayerAfterCartPosition;
 
     void Start()
     {
         StartCoroutine(WaitForData());
         audioManager = FindObjectOfType<AudioManager>();
+        PlayerAfterCartPosition = GameObject.Find("AfterCart1Place");
     }
 
     void Update()
@@ -82,7 +85,7 @@ public class MovementSpeed1 : MonoBehaviourPun
             PlayerCalculatedRotation = Quaternion.LookRotation(moveDirection.normalized);
             //Sends the value of the PlayerCalculatedRotation to all the clients
             photonView.RPC("SetPlayerCalculatedRotation", RpcTarget.AllBuffered, PlayerCalculatedRotation);
-            photonView.RPC("CartCurrentMovement", RpcTarget.AllBuffered, currentPosition);      
+            photonView.RPC("CartCurrentMovement", RpcTarget.AllBuffered, currentPosition);
         }
 
         if (Observing == false && isFollowing == true)
@@ -116,7 +119,7 @@ public class MovementSpeed1 : MonoBehaviourPun
 
 
         // Mover objeto y rotarlo en la dirección del movimiento
-        
+
         Debug.Log("Cart position updated to: " + transform.position);
         Quaternion lookRotation = Quaternion.LookRotation(moveDirection.normalized);
         lookRotation *= Quaternion.Euler(0f, 90f, 0f);
@@ -152,11 +155,11 @@ public class MovementSpeed1 : MonoBehaviourPun
             menu.gameObject.SetActive(true);
             checkpoint = false;
             centrado.RecenterToHeadset();
-            CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, false);
+            photonView.RPC("SetisMoving", RpcTarget.AllBuffered, false);
             Debug.Log("isMoving set to false");
             photonView.RPC("SetisFollowing", RpcTarget.AllBuffered, false);
             Debug.Log("isFollowing set to false");
-            CartMovementManager.GetComponent<CartMovementManager>().photonView.RPC("TakeOffPlayer", RpcTarget.AllBuffered);
+            //photonView.RPC("TakeOffPlayer", RpcTarget.AllBuffered);
 
 
             return;
@@ -391,5 +394,19 @@ public class MovementSpeed1 : MonoBehaviourPun
     {
         isFollowing = value;
         Debug.Log("Is following set to: " + value);
+    }
+
+    [PunRPC]
+    public void SetisMoving(bool value)
+    {
+        isMoving = value;
+        Debug.Log("Cart movement state changed: " + isMoving);
+    }
+    
+    public void TakeOffPlayer()
+    {
+        Player.transform.position = PlayerAfterCartPosition.transform.position;
+        Debug.Log("Player taken off the cart and moved to PlayerAfterCartPlace position.");
+
     }
 }
