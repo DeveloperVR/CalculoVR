@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.ProBuilder.Shapes;
 
-public class MovementSpeed2 : MonoBehaviour
+public class MovementSpeed2 : MonoBehaviourPun
 {
     [SerializeField]
     private Cube self;
@@ -46,10 +48,16 @@ public class MovementSpeed2 : MonoBehaviour
     List<float> cumulativeLengths = new List<float>();
     private int i = 0;
 
+    private bool isMasterCall2 = false;
 
-
-    public bool Observing2 = false;
+    public bool isObserving2 = false;
     private bool checkpoint = false;
+    private Vector3 currentPosition;
+    private Vector3 moveDirection;
+    private Quaternion PlayerCalculatedRotation;
+
+    public bool isFollowing2 { get; private set; }
+    public bool isMoving2 { get; private set; } = false;
 
 
     private Dictionary<GameObject, GameObject> sphereToTangent = new Dictionary<GameObject, GameObject>();
@@ -62,11 +70,21 @@ public class MovementSpeed2 : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if (isMasterCall2)
         {
-            isReady2 = true;
+            currentPosition = EvaluatePositionOnPath2(currentS);
+            photonView.RPC("SetCurrentPosition2", RpcTarget.AllBuffered, currentPosition);
+            moveDirection = currentPosition - lastPosition;
+            PlayerCalculatedRotation = Quaternion.LookRotation(moveDirection.normalized);
+            photonView.RPC("SetPlayerCalculatedRotation2", RpcTarget.AllBuffered, PlayerCalculatedRotation);
+            photonView.RPC("CartCurrentMovement2", RpcTarget.AllBuffered, currentPosition);
+        }
+        if (isObserving2 == false && isFollowing2 == true)
+        {
+            PlayerMovementAndRotation2(PlayerCalculatedRotation, currentVelocity2, currentPosition);
         }
         if (!isReady2) return;
+        ////////////////////////////////////////////////////if the movement starts/////////////////////////////////////////////
         if (pathPoints.Count < 2) return;
         float deltaTime = Time.deltaTime;
         PlaySound();
@@ -74,9 +92,6 @@ public class MovementSpeed2 : MonoBehaviour
         // Avanzar distancia S
         currentS = lastS + lastVelocity * deltaTime;
 
-
-        // Obtener posición actual en la curva según S
-        Vector3 currentPosition = EvaluatePositionOnPath2(currentS);
 
         // Actualizar altura y velocidad usando conservación de energía
         currentHeight = currentPosition.y;
@@ -94,17 +109,9 @@ public class MovementSpeed2 : MonoBehaviour
 
 
         // Mover objeto y rotarlo en la dirección del movimiento
-        transform.position = currentPosition;
-        Vector3 moveDirection = currentPosition - lastPosition;
         Quaternion lookRotation = Quaternion.LookRotation(moveDirection.normalized);
-        Quaternion playerRotation = Quaternion.LookRotation(moveDirection.normalized);
         lookRotation *= Quaternion.Euler(0f, 90f, 0f);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime * currentVelocity2);
-        if (Observing2 == false)
-        {
-            player.transform.position = currentPosition;
-            player.transform.rotation = Quaternion.Slerp(player.transform.rotation, playerRotation, rotationSpeed * Time.deltaTime * currentVelocity2);
-        }
 
 
         if (currentPosition == pathPoints[pathPoints.Count - 1])
@@ -122,18 +129,14 @@ public class MovementSpeed2 : MonoBehaviour
             lastPosition = pathPoints[0];
             audioManager.StopAudio();
             StopSound();
-            if (Observing2 == true)
-            {
-                menu.transform.position = ObservingMenuFinalPosition.transform.position;
-            }
-            else
-            {
-                menu.gameObject.transform.position = RidingMenuFinalPosition.transform.position;
-            }
-            Observing2 = false;
+
+            photonView.RPC("PlaceEndingButton2", RpcTarget.AllBuffered);
+            isObserving2 = false;
             menu.gameObject.SetActive(true);
             checkpoint = false;
             centrado.RecenterToHeadset();
+            photonView.RPC("SetisMoving2", RpcTarget.AllBuffered, false);
+            photonView.RPC("SetisFollowing2", RpcTarget.AllBuffered, false);
             return;
         }
 
@@ -295,10 +298,79 @@ public class MovementSpeed2 : MonoBehaviour
             Debug.Log("XR Origin (XR Rig) found: " + player.name);
         }
     }
-    
+
     public void SetOfflinePlayer()
     {
         player = GameObject.Find("XR Player");
         Debug.Log("XR Player found: " + player.name);
+    }
+
+    [PunRPC]
+    public void SetCurrentPosition2(Vector3 position)
+    {
+        transform.position = position;
+        currentPosition = position;
+    }
+
+    [PunRPC]
+    public void SetPlayerCalculatedRotation2(Quaternion rotation)
+    {
+        PlayerCalculatedRotation = rotation;
+    }
+
+    [PunRPC]
+    public void CartCurrentMovement2(Vector3 position)
+    {
+        transform.position = position;
+    }
+
+    public void PlayerMovementAndRotation2(Quaternion playerRotation, float playerCurrentVelocity, Vector3 currentPosition)
+    {
+        player.transform.position = currentPosition;
+        Quaternion PlayerFinalRotation = Quaternion.Slerp(player.transform.rotation, playerRotation, rotationSpeed * Time.deltaTime * playerCurrentVelocity);
+        player.transform.rotation = PlayerFinalRotation;
+        //Debug.Log("Player position and rotation updated. Position: " + Player.transform.position + " Rotation: " + Player.transform.rotation);
+    }
+
+    [PunRPC]
+    public void SetIsReady2(bool value)
+    {
+        isReady2 = value;
+        Debug.Log("Is ready set to: " + value);
+    }
+
+    [PunRPC]
+    public void SetisMoving2(bool value)
+    {
+        isMoving2 = value;
+        Debug.Log("Cart movement state changed: " + isMoving2);
+    }
+
+    [PunRPC]
+    public void SetisFollowing2(bool value)
+    {
+        isFollowing2 = value;
+        Debug.Log("Is following set to: " + value);
+    }
+
+    [PunRPC]
+    public void SetisMasterCall2(bool value)
+    {
+        isMasterCall2 = value;
+        Debug.Log("isMasterCall2 set to: " + isMasterCall2);
+    }
+    
+    [PunRPC]
+    public void PlaceEndingButton2()
+    {
+        if (isObserving2 == true)
+        {
+            menu.transform.position = ObservingMenuFinalPosition.transform.position;
+        }
+        else
+        {
+
+            menu.gameObject.transform.position = RidingMenuFinalPosition.transform.position;
+        }
     }
 }

@@ -34,7 +34,7 @@ public class FunctionGenerator : MonoBehaviour
     private float epsilon = 0.01f;
 
     private Mesh mesh;
-    private MeshRenderer meshRenderer;
+    //private MeshRenderer meshRenderer;
     public Material whiteMat;
     public Material blackMat;
 
@@ -47,7 +47,7 @@ public class FunctionGenerator : MonoBehaviour
 
     public string FreeMeshPath = "Assets/Resources/Meshes/FreeFunction.asset";
 
-    [SerializeField] private string WrittenFunction;
+    public string WrittenFunction;
     private GameObject s;
 
     private void Start()
@@ -84,7 +84,7 @@ public class FunctionGenerator : MonoBehaviour
         triangles = GenerateTriangles(verts.Count); // orden en que se unirán los vértices para crear los triángulos.
 
         mesh = new Mesh();
-        meshRenderer = GetComponent<MeshRenderer>();
+        //meshRenderer = GetComponent<MeshRenderer>();
         GetComponent<MeshFilter>().mesh = mesh; // El objeto que tenga este código debe tener un MeshFilter.
 
         UpdateMesh();
@@ -293,7 +293,7 @@ public class FunctionGenerator : MonoBehaviour
 
 
         // Assign materials to submeshes (assuming alternating white/black pattern)
-        meshRenderer.sharedMaterials = new Material[] { whiteMat, blackMat };
+        //meshRenderer.sharedMaterials = new Material[] { whiteMat, blackMat };
     }
 
     public void SaveMesh()

@@ -1,9 +1,8 @@
 using System;
-using System.IO;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 using Photon.Pun;
 using System.Collections.Generic;
+using UnityEngine.Rendering;
 
 public class FunctionInstantiator : MonoBehaviour
 {
@@ -18,7 +17,7 @@ public class FunctionInstantiator : MonoBehaviour
     private GameObject s;
 
     private float curveHeight = 10f; // Altura de la curva de nivel
-    private float epsilon = 0.001f; // Tolerancia para considerar un punto
+                                     // Tolerancia para considerar un punto
 
     public List<Vector3> intersectionPoints = new List<Vector3>();
 
@@ -76,10 +75,12 @@ public class FunctionInstantiator : MonoBehaviour
 
     public void SetMesh()
     {
+        GradienteCalculator GradientCalculator = new GradienteCalculator();
+        SurfaceEvaluator surface = new SurfaceEvaluator(FunctionGenerator.GetComponent<FunctionGenerator>().WrittenFunction);
         MeshFilter GeneratorMeshFilter = FunctionGenerator.GetComponent<MeshFilter>();
         Mesh GeneratorMesh = GeneratorMeshFilter.mesh;
         newsurface.GetComponent<MeshFilter>().mesh = GeneratorMesh;
-        supportSurface.GetComponent<MeshFilter>().mesh = GeneratorMesh;
+        supportSurface.GetComponent<MeshFilter>().mesh.vertices = GeneratorMesh.vertices;
         newsurface.GetComponent<MeshCollider>().sharedMesh = GeneratorMesh;
         supportSurface.GetComponent<MeshCollider>().sharedMesh = GeneratorMesh;
         supportSurface.GetComponent<MeshCollider>().providesContacts = true;
@@ -87,6 +88,13 @@ public class FunctionInstantiator : MonoBehaviour
         Mesh scaledmesh = GeneratorMesh;
         scaledmesh = scaleMesh(scaledmesh);
         ComputePoints(scaledmesh);
+
+        foreach (Vector3 v in intersectionPoints)
+        {
+            Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
+            Vector2 grad = GradienteCalculator.CalculateGradient(pointXY, surface);
+            Debug.Log("Gradiente en punto " + pointXY + ": " + grad);
+        }
     }
 
     public void ComputePoints(Mesh mesh)
@@ -94,22 +102,22 @@ public class FunctionInstantiator : MonoBehaviour
         Debug.Log("Computando puntos de intersección con la curva de nivel en y = " + curveHeight);
         intersectionPoints.Clear();
         Bounds bounds = mesh.bounds;
-        
+
 
         float minY = bounds.min.y;
         float maxY = bounds.max.y;
 
-        minY = transform.TransformPoint(new Vector3(0, bounds.min.y, 0)).y;
-        maxY = transform.TransformPoint(new Vector3(0, bounds.max.y, 0)).y;
+        minY = (new Vector3(0, bounds.min.y, 0)).y;
+        maxY = (new Vector3(0, bounds.max.y, 0)).y;
 
 
 
-        for (float h = minY; h <= maxY; h += 1f)
+        for (float h = minY; h <= maxY + 1e-4f; h += 3f)
         {
             Debug.Log("Altura actual de la curva: " + h);
             ComputePointsAtHeight(mesh, h);
         }
-        
+
     }
 
     private void ComputePointsAtHeight(Mesh mesh, float curveHeight)
@@ -139,6 +147,7 @@ public class FunctionInstantiator : MonoBehaviour
 
     private void CheckEdge(Vector3 p1, Vector3 p2, float curveHeight, ref int contadorEpsilon)
     {
+        float epsilon = 0.01f;
         float y1 = p1.y;
         float y2 = p2.y;
 
@@ -164,6 +173,7 @@ public class FunctionInstantiator : MonoBehaviour
                 Vector3 worldPoint = transform.TransformPoint(localPoint);
                 s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 s.transform.position = (worldPoint);
+                s.GetComponent<SphereCollider>().enabled = false;
                 s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
                 Debug.Log("Punto de intersección: " + localPoint.ToString());
             }
@@ -178,6 +188,7 @@ public class FunctionInstantiator : MonoBehaviour
             Debug.Log("Punto de intersección: " + p1.ToString());
             s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             s.transform.position = worldP1;
+            s.GetComponent<SphereCollider>().enabled = false;
             s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
             contadorEpsilon++;
         }
@@ -190,11 +201,12 @@ public class FunctionInstantiator : MonoBehaviour
             Debug.Log("Punto de intersección: " + p2.ToString());
             s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             s.transform.position = worldP2;
+            s.GetComponent<SphereCollider>().enabled = false;
             s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
             contadorEpsilon++;
         }
     }
-    
+
     public Mesh scaleMesh(Mesh mesh)
     {
         Vector3[] vertices = mesh.vertices;
@@ -205,5 +217,53 @@ public class FunctionInstantiator : MonoBehaviour
         mesh.vertices = vertices;
         mesh.RecalculateBounds();
         return mesh;
+    }
+
+}
+
+public class GradienteCalculator
+{
+
+    public static float epsilon = 0.01f;
+
+    public static Vector2 CalculateGradient(Vector2 point, SurfaceEvaluator
+     surface)
+    {
+        float x1 = point.x;
+        float y1 = point.y;
+
+        float x2 = x1 + epsilon;
+        float y2 = y1 + epsilon;
+
+        double dzx = surface.ComputeZ(x2, y1) - surface.ComputeZ(x1, y1);
+        double dzy = surface.ComputeZ(x1, y2) - surface.ComputeZ(x1, y1);
+
+        float dzdx = (float)(dzx / epsilon);
+        float dzdy = (float)(dzy / epsilon);
+
+        Vector2 gradient = new Vector2(dzdx, dzdy).normalized;
+        return gradient;
+
+    }
+}
+
+public class SurfaceEvaluator
+{
+    private Node ast;
+    public SurfaceEvaluator(string writtenFunction)
+    {
+        Tokenizer tokenizer = new Tokenizer(writtenFunction);
+        Parser parser = new Parser(tokenizer);
+        ast = parser.Parse();
+    }
+
+    public double ComputeZ(double x, double y)
+    {
+        var variables = new Dictionary<string, double>
+        {
+            { "x", x },
+            { "y", y }
+        };
+        return ast.Evaluate(variables);
     }
 }

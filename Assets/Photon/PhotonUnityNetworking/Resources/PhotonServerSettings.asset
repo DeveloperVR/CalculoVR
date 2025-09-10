@@ -50,6 +50,14 @@ MonoBehaviour:
   - CartCurrentMovement
   - SetisFollowing
   - PlaceEndingButton
+  - CartCurrentMovement2
+  - SetCurrentPosition2
+  - SetisFollowing2
+  - SetisMoving2
+  - SetPlayerCalculatedRotation2
+  - SetisMasterCall2
+  - SetIsReady2
+  - PlaceEndingButton2
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

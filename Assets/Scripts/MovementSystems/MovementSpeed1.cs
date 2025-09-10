@@ -101,7 +101,6 @@ public class MovementSpeed1 : MonoBehaviourPun
 
         // Avanzar distancia S
         currentS = lastS + lastVelocity * deltaTime;
-        Debug.Log("Current S: " + currentS);
 
         // Actualizar altura y velocidad usando conservación de energía
         currentHeight = currentPosition.y;
@@ -120,7 +119,6 @@ public class MovementSpeed1 : MonoBehaviourPun
 
         // Mover objeto y rotarlo en la dirección del movimiento
 
-        Debug.Log("Cart position updated to: " + transform.position);
         Quaternion lookRotation = Quaternion.LookRotation(moveDirection.normalized);
         lookRotation *= Quaternion.Euler(0f, 90f, 0f);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime * currentVelocity);

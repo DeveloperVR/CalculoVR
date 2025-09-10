@@ -14,18 +14,18 @@ public class CartMovementManager : MonoBehaviourPun
 
     public void Start()
     {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-        PlayerEvent = GameObject.Find("PlayerSpawnEvent");
-        PlayerAfterCartPosition = GameObject.Find("AfterCartPlace");
-        if (PlayerAfterCartPosition == null)
-        {
-            Debug.LogError("PlayerAfterCartPlace not found in the scene.");
-        }
-        cart = GameObject.Find("Carrito1");
-        StartCoroutine(WaitForPlayerSpawn());
+        // if (!photonView.IsMine)
+        // {
+        //     return;
+        // }
+        // PlayerEvent = GameObject.Find("PlayerSpawnEvent");
+        // PlayerAfterCartPosition = GameObject.Find("AfterCartPlace");
+        // if (PlayerAfterCartPosition == null)
+        // {
+        //     Debug.LogError("PlayerAfterCartPlace not found in the scene.");
+        // }
+        // cart = GameObject.Find("Carrito1");
+        // StartCoroutine(WaitForPlayerSpawn());
     }
     public void SetPlayer()
     {
