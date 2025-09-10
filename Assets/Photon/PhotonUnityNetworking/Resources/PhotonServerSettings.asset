@@ -58,6 +58,11 @@ MonoBehaviour:
   - SetisMasterCall2
   - SetIsReady2
   - PlaceEndingButton2
+  - CartAlreadyMoving3
+  - CartAlreadyMovingOnObserver
+  - StartOnlyRollerCoaster3
+  - StartOnObserver
+  - StartPlayerAndRollerCoaster3
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

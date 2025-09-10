@@ -290,10 +290,12 @@ public class MovementSpeed3 : MonoBehaviour
             Debug.Log("XR Origin (XR Rig) found: " + player.name);
         }
     }
-    
+
     public void SetOfflinePlayer()
     {
         player = GameObject.Find("XR Player");
         Debug.Log("XR Player found: " + player.name);
     }
+
+    
 }

@@ -1,8 +1,9 @@
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using thread = System.Threading.Tasks;
+using Photon.Pun;
 
-public class Menu31Functions : MonoBehaviour
+public class Menu31Functions : MonoBehaviourPun
 {
 
     [SerializeField] private GameObject Player;
@@ -49,12 +50,49 @@ public class Menu31Functions : MonoBehaviour
             Debug.LogError("XR Origin (XR Rig) not found in the scene.");
         }
     }
-    
+
     public void SetOfflinePlayer()
     {
         Player = GameObject.Find("XR Player");
         Debug.Log("XR Player found: " + Player.name);
     }
 
+    [PunRPC]
+    public void StartPlayerAndRollerCoaster3()
+    {
+        // Cart.GetComponent<MovementSpeed3>().isReady3 = true;
+        // Cart.GetComponent<MovementSpeed3>().Observing3 = false;
+        // Cart.GetComponent<MovementSpeed3>().isFollowing3 = true;
+    }
+
+    [PunRPC]
+    public void StartOnlyRollerCoaster3()
+    {
+        // Cart.GetComponent<MovementSpeed3>().isReady3 = true;
+        // Cart.GetComponent<MovementSpeed3>().isObserving3 = false;
+        // Cart.GetComponent<MovementSpeed3>().isFollowing3 = false;
+    }
+
+    [PunRPC]
+    public void CartAlreadyMoving3()
+    {
+        // Cart.GetComponent<MovementSpeed3>().isObserving3 = false;
+        // Cart.GetComponent<MovementSpeed3>().isFollowing3 = true;
+    }
+
+    [PunRPC]
+    public void StartOnObserver()
+    {
+        // Cart.GetComponent<MovementSpeed3>().isReady3 = true;
+        // Cart.GetComponent<MovementSpeed3>().isObserving3 = true;
+        // Cart.GetComponent<MovementSpeed3>().isFollowing3 = false;
+    }
+
+    [PunRPC]
+    public void CartAlreadyMovingOnObserver()
+    {
+        // Cart.GetComponent<MovementSpeed3>().isObserving3 = true;
+        // Cart.GetComponent<MovementSpeed3>().isFollowing3 = false;
+    }
 
 }
