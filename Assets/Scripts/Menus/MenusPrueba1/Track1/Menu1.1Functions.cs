@@ -31,7 +31,7 @@ public class Menu11Functions : MonoBehaviourPun
     }
     async public void Ridding()
     {
-
+        Debug.Log("Ridding function called.");
         if (CartMovementManager != null)
         {
             Debug.Log("isMoving state is: " + Cart.GetComponent<MovementSpeed1>().isMoving);
@@ -50,7 +50,8 @@ public class Menu11Functions : MonoBehaviourPun
                 Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
                 Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
                 Cart.GetComponent<MovementSpeed1>().isObserving = false;
-                
+                Cart.GetComponent<MovementSpeed1>().SetIsReady(true);
+                Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
                 Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
                 Debug.Log("isMoving set to true");
                 Cart.GetComponent<MovementSpeed1>().SetisMasterCall(true);
@@ -68,17 +69,6 @@ public class Menu11Functions : MonoBehaviourPun
 
         }
 
-    }
-
-    async public void OfflineRiding()
-    {
-        await thread.Task.Delay(3000);
-        cartlocation = Cart.transform.position;
-        Player.transform.position = cartlocation;
-        Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
-        Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
-        Cart.GetComponent<OfflineMovementSpeed1>().OfflineObserving = false;
-        Cart.GetComponent<OfflineMovementSpeed1>().OfflineisReady = true;
     }
 
     async public void Observing()
@@ -114,6 +104,19 @@ public class Menu11Functions : MonoBehaviourPun
         }
         
     }
+
+    async public void OfflineRiding()
+    {
+        await thread.Task.Delay(3000);
+        cartlocation = Cart.transform.position;
+        Player.transform.position = cartlocation;
+        Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
+        Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
+        Cart.GetComponent<OfflineMovementSpeed1>().OfflineObserving = false;
+        Cart.GetComponent<OfflineMovementSpeed1>().OfflineisReady = true;
+    }
+
+    
 
     async public void OfflineObserving()
     {

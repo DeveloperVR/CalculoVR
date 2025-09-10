@@ -75,7 +75,8 @@ public class MovementSpeed1 : MonoBehaviourPun
 
     void Update()
     {
-
+        int ping = PhotonNetwork.GetPing();
+        Debug.Log("Latencia (Ping): " + ping + " ms");
         if (isMasterCall)
         {
             currentPosition = EvaluatePositionOnPath2(currentS);
