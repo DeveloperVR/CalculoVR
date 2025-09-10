@@ -108,7 +108,6 @@ public class FunctionInstantiator : MonoBehaviour
         {
             Debug.Log("Altura actual de la curva: " + h);
             ComputePointsAtHeight(mesh, h);
-
         }
         
     }
