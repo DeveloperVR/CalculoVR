@@ -14,6 +14,7 @@ public class FunctionInstantiator : MonoBehaviour
     [SerializeField] private string SavedPath;
     private String FunctionType;
     private GameObject newsurface;
+    private GameObject supportSurface;
     private GameObject s;
 
     private float curveHeight = 10f; // Altura de la curva de nivel
@@ -33,6 +34,7 @@ public class FunctionInstantiator : MonoBehaviour
         }
         FunctionType = FunctionGenerator.GetComponent<FunctionGenerator>().FunctionType;
         CreateSurface();
+        createSupportSurface();
     }
 
     // Update is called once per frame
@@ -40,7 +42,7 @@ public class FunctionInstantiator : MonoBehaviour
     {
         newsurface = new GameObject("FunctionSurface");
         newsurface.transform.position = new Vector3(-100, 100000, -100);
-        newsurface.transform.localScale = new Vector3(50, 50, 50);
+        //newsurface.transform.localScale = new Vector3(50, 50, 50);
         newsurface.AddComponent<MeshFilter>();
         newsurface.AddComponent<MeshRenderer>();
         newsurface.AddComponent<MeshCollider>();
@@ -61,13 +63,27 @@ public class FunctionInstantiator : MonoBehaviour
 
     }
 
+    public void createSupportSurface()
+    {
+        supportSurface = new GameObject("SupportSurface");
+        supportSurface.transform.position = new Vector3(-100, 99999, -100);
+        supportSurface.transform.localScale = new Vector3(50, 50, 50);
+        supportSurface.AddComponent<MeshFilter>();
+        supportSurface.AddComponent<MeshCollider>();
+        supportSurface.AddComponent<PhotonView>();
+        supportSurface.AddComponent<PhotonTransformView>();
+    }
+
     public void SetMesh()
     {
         MeshFilter GeneratorMeshFilter = FunctionGenerator.GetComponent<MeshFilter>();
         Mesh GeneratorMesh = GeneratorMeshFilter.mesh;
         newsurface.GetComponent<MeshFilter>().mesh = GeneratorMesh;
+        supportSurface.GetComponent<MeshFilter>().mesh = GeneratorMesh;
         newsurface.GetComponent<MeshCollider>().sharedMesh = GeneratorMesh;
-        newsurface.GetComponent<MeshCollider>().providesContacts = true;
+        supportSurface.GetComponent<MeshCollider>().sharedMesh = GeneratorMesh;
+        supportSurface.GetComponent<MeshCollider>().providesContacts = true;
+        newsurface.GetComponent<MeshCollider>().providesContacts = false;
         Mesh scaledmesh = GeneratorMesh;
         scaledmesh = scaleMesh(scaledmesh);
         ComputePoints(scaledmesh);
@@ -77,12 +93,32 @@ public class FunctionInstantiator : MonoBehaviour
     {
         Debug.Log("Computando puntos de intersección con la curva de nivel en y = " + curveHeight);
         intersectionPoints.Clear();
-        int contadorEpsilon = 0;
+        Bounds bounds = mesh.bounds;
+        
 
+        float minY = bounds.min.y;
+        float maxY = bounds.max.y;
+
+        minY = transform.TransformPoint(new Vector3(0, bounds.min.y, 0)).y;
+        maxY = transform.TransformPoint(new Vector3(0, bounds.max.y, 0)).y;
+
+
+
+        for (float h = minY; h <= maxY; h += 1f)
+        {
+            Debug.Log("Altura actual de la curva: " + h);
+            ComputePointsAtHeight(mesh, h);
+
+        }
+        
+    }
+
+    private void ComputePointsAtHeight(Mesh mesh, float curveHeight)
+    {
+        int contadorEpsilon = 0;
         Vector3[] vertices = mesh.vertices;
         int[] triangles = mesh.triangles;
 
-        // Recorremos los triángulos de la malla
         for (int i = 0; i < triangles.Length; i += 3)
         {
             // Cada triángulo tiene 3 vértices
@@ -94,15 +130,15 @@ public class FunctionInstantiator : MonoBehaviour
             Debug.Log("Altura curva: " + curveHeight);
             Debug.Log("Mesh bounds local Y: " + mesh.bounds.min.y + " -> " + mesh.bounds.max.y);
             Debug.Log("Mesh bounds world Y: " + (transform.position.y + mesh.bounds.min.y) + " -> " + (transform.position.y + mesh.bounds.max.y));
-            CheckEdge(p1, p2, ref contadorEpsilon);
-            CheckEdge(p2, p3, ref contadorEpsilon);
-            CheckEdge(p3, p1, ref contadorEpsilon);
+            CheckEdge(p1, p2, curveHeight, ref contadorEpsilon);
+            CheckEdge(p2, p3, curveHeight, ref contadorEpsilon);
+            CheckEdge(p3, p1, curveHeight, ref contadorEpsilon);
         }
 
         Debug.Log("Contador: " + contadorEpsilon);
     }
 
-    private void CheckEdge(Vector3 p1, Vector3 p2, ref int contadorEpsilon)
+    private void CheckEdge(Vector3 p1, Vector3 p2, float curveHeight, ref int contadorEpsilon)
     {
         float y1 = p1.y;
         float y2 = p2.y;
