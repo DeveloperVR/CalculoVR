@@ -270,7 +270,7 @@ public class DrawLine1 : MonoBehaviour
             //GameObject point = GameObject.CreatePrimitive(PrimitiveType.Cube);
             Vector3 V1 = ((sphereList[NextPoint].transform.position) - (sphereList[CurrentPoint].transform.position)).normalized;
             Vector3 V2 = ((sphereList[PreviousPoint].transform.position) - (sphereList[CurrentPoint].transform.position)).normalized;
-            Vector3 centripetal = (V1 + V2).normalized * 5;
+            Vector3 centripetal = (V1 + V2).normalized * 2;
             point.transform.position = sphereList[CurrentPoint].transform.position + centripetal;
             point.transform.Translate(centripetal, Space.World);
             centripetalList.Add(point);
