@@ -25,6 +25,8 @@ public class MovementSpeed1 : MonoBehaviourPun
     private AudioManager audioManager;
     [SerializeField] private AudioSource railing;
 
+    [SerializeField] private GameObject VectorsModel;
+
     private List<GameObject> sphereList = new List<GameObject>();
     private List<GameObject> SphereListCopy = new List<GameObject>();
     private float initialHeight = 0f;
@@ -94,6 +96,10 @@ public class MovementSpeed1 : MonoBehaviourPun
         if (isObserving == false && isFollowing == true)
         {
             PlayerMovementAndRotation(PlayerCalculatedRotation, currentVelocity, currentPosition);
+
+            Vector3 targetPosition = currentPosition + Player.transform.forward * 2 + Vector3.up * 0.5f;
+            VectorsModel.transform.position = targetPosition;
+            VectorsModel.transform.rotation = PlayerCalculatedRotation * Quaternion.Euler(0f, 180f, 0f);
         }
 
         // Avanzar distancia S
@@ -146,6 +152,7 @@ public class MovementSpeed1 : MonoBehaviourPun
             Debug.Log("isMoving set to false");
             SetisFollowing(false);
             Debug.Log("isFollowing set to false");
+            VectorsModel.transform.position = new Vector3(0, -20, 0);
             //photonView.RPC("TakeOffPlayer", RpcTarget.AllBuffered);
 
 

@@ -21,6 +21,7 @@ public class MovementSpeed3 : MonoBehaviour
     [SerializeField] private XROriginRecentering centrado;
     private AudioManager audioManager;
     [SerializeField] private AudioSource railing;
+    [SerializeField] private GameObject VectorsModel;
     private List<GameObject> SphereList3sphereList3Copy = new List<GameObject>();
     private float initialHeight = 0f;
     public float initialVelocity3 = 10f;
@@ -74,9 +75,12 @@ public class MovementSpeed3 : MonoBehaviour
         PlayerCalculatedRotation = Quaternion.LookRotation(moveDirection.normalized);
         SetPlayerCalculatedRotation3(PlayerCalculatedRotation);
         CartCurrentMovement3(currentPosition);
-        if(isObserving3 == false && isFollowing3 == true)
+        if (isObserving3 == false && isFollowing3 == true)
         {
             PlayerMovementAndRotation3(PlayerCalculatedRotation, currentVelocity3, currentPosition);
+            Vector3 targetPosition = currentPosition + player.transform.forward * 2 + Vector3.up * 0.5f;
+            VectorsModel.transform.position = targetPosition;
+            VectorsModel.transform.rotation = PlayerCalculatedRotation * Quaternion.Euler(0f, 180f, 0f);
         }
 
         // Avanzar distancia S
@@ -125,6 +129,7 @@ public class MovementSpeed3 : MonoBehaviour
             menu.gameObject.SetActive(true);
             checkpoint = false;
             centrado.RecenterToHeadset();
+            VectorsModel.transform.position = new Vector3(0, -20, 0);
             return;
         }
 

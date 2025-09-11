@@ -22,6 +22,7 @@ public class MovementSpeed2 : MonoBehaviourPun
     [SerializeField] private XROriginRecentering centrado;
     private AudioManager audioManager;
     [SerializeField] private AudioSource railing;
+    [SerializeField] private GameObject VectorsModel;
     private List<GameObject> sphereList2 = new List<GameObject>();
     private List<GameObject> SphereList2sphereList2Copy = new List<GameObject>();
     private float initialHeight = 0f;
@@ -86,6 +87,9 @@ public class MovementSpeed2 : MonoBehaviourPun
         if (isObserving2 == false && isFollowing2 == true)
         {
             PlayerMovementAndRotation2(PlayerCalculatedRotation, currentVelocity2, currentPosition);
+            Vector3 targetPosition = currentPosition + player.transform.forward * 2 + Vector3.up * 0.5f;
+            VectorsModel.transform.position = targetPosition;
+            VectorsModel.transform.rotation = PlayerCalculatedRotation * Quaternion.Euler(0f, 180f, 0f);
         }
 
         // Avanzar distancia S
@@ -135,6 +139,7 @@ public class MovementSpeed2 : MonoBehaviourPun
             checkpoint = false;
             centrado.RecenterToHeadset();
             isFollowing2 = false;
+            VectorsModel.transform.position = new Vector3(0, -20, 0);
             return;
         }
 
