@@ -15,6 +15,7 @@ public class SubtitlesLibrary : MonoBehaviour
     [SerializeField] private TMP_Text subtitlesText;
     [SerializeField] private Canvas subtitlescanvas;
     [SerializeField] private Transform cam;
+    private GameObject Player;
     private bool active;
     private int duration;
 
@@ -122,6 +123,16 @@ public class SubtitlesLibrary : MonoBehaviour
     {
         GameObject Player = GameObject.Find("XR Player");
         cam = Player.transform.Find("Camera Offset/Main Camera");
+    }
+
+    public void SetPlayer()
+    {
+        Player = RCGameManager.Instance.LocalPlayer;
+        cam = Player.transform.Find("Camera Offset/Main Camera");
+        if (Player == null)
+        {
+            Debug.LogError("XR Origin (XR Rig) not found in the scene.");
+        }
     }
 
 }
