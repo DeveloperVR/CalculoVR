@@ -65,6 +65,7 @@ MonoBehaviour:
   - StartPlayerAndRollerCoaster3
   - StartRollerCoaster3
   - StartRollerCoaster2
+  - StartRollerCoaster
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

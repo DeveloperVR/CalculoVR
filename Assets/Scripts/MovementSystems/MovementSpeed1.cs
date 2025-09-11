@@ -57,13 +57,10 @@ public class MovementSpeed1 : MonoBehaviourPun
     public bool isObserving = false;
     private bool checkpoint = false;
 
-    public bool isMasterCall { get; private set; } = false;
-
     private Dictionary<GameObject, GameObject> sphereToTangent = new Dictionary<GameObject, GameObject>();
 
     private Quaternion PlayerCalculatedRotation;
     public bool isFollowing { get; private set; }
-    public bool isMoving = false;
     private GameObject PlayerAfterCartPosition;
 
     void Start()
@@ -77,27 +74,27 @@ public class MovementSpeed1 : MonoBehaviourPun
     {
         int ping = PhotonNetwork.GetPing();
         Debug.Log("Latencia (Ping): " + ping + " ms");
-        if (isMasterCall)
-        {
-            currentPosition = EvaluatePositionOnPath2(currentS);
-            //Sends te value of the Position to all the clients
-            photonView.RPC("SetCurrentPosition", RpcTarget.AllBuffered, currentPosition);
-            moveDirection = currentPosition - lastPosition;
-            PlayerCalculatedRotation = Quaternion.LookRotation(moveDirection.normalized);
-            //Sends the value of the PlayerCalculatedRotation to all the clients
-            photonView.RPC("SetPlayerCalculatedRotation", RpcTarget.AllBuffered, PlayerCalculatedRotation);
-            photonView.RPC("CartCurrentMovement", RpcTarget.AllBuffered, currentPosition);
-        }
+        
+            
 
-        if (isObserving == false && isFollowing == true)
-        {
-            PlayerMovementAndRotation(PlayerCalculatedRotation, currentVelocity, currentPosition);
-        }
+        
         if (!isReady) return;
         ///////////////////////////////////////////////if the movement starts/////////////////////////////////////////////
         if (pathPoints.Count < 2) return;
         float deltaTime = Time.deltaTime;
         PlayingAudio();
+
+        currentPosition = EvaluatePositionOnPath2(currentS);
+        SetCurrentPosition(currentPosition);
+        moveDirection = currentPosition - lastPosition;
+        PlayerCalculatedRotation = Quaternion.LookRotation(moveDirection.normalized);
+        SetPlayerCalculatedRotation(PlayerCalculatedRotation);
+        CartCurrentMovement(currentPosition);
+
+        if (isObserving == false && isFollowing == true)
+        {
+            PlayerMovementAndRotation(PlayerCalculatedRotation, currentVelocity, currentPosition);
+        }
 
         // Avanzar distancia S
         currentS = lastS + lastVelocity * deltaTime;
@@ -141,14 +138,13 @@ public class MovementSpeed1 : MonoBehaviourPun
             StopAudio();
 
             //Determines where tu put the button at the end of the ride
-            photonView.RPC("PlaceEndingButton", RpcTarget.AllBuffered);
+            PlaceEndingButton();
             isObserving = false;
             menu.gameObject.SetActive(true);
             checkpoint = false;
             centrado.RecenterToHeadset();
-            photonView.RPC("SetisMoving", RpcTarget.AllBuffered, false);
             Debug.Log("isMoving set to false");
-            photonView.RPC("SetisFollowing", RpcTarget.AllBuffered, false);
+            SetisFollowing(false);
             Debug.Log("isFollowing set to false");
             //photonView.RPC("TakeOffPlayer", RpcTarget.AllBuffered);
 
@@ -331,13 +327,6 @@ public class MovementSpeed1 : MonoBehaviourPun
     }
     public float getRotationSpeed() => rotationSpeed;
 
-    [PunRPC]
-    public void SetisMasterCall(bool value)
-    {
-        isMasterCall = value;
-        Debug.Log("isMasterCall set to: " + isMasterCall);
-    }
-
     public void SetPlayer()
     {
         Player = RCGameManager.Instance.LocalPlayer;
@@ -370,24 +359,16 @@ public class MovementSpeed1 : MonoBehaviourPun
         }
     }
 
-    [PunRPC]
     public void SetIsReady(bool value)
     {
         isReady = value;
         Debug.Log("Is ready set to: " + value);
     }
-    [PunRPC]
+
     public void SetisFollowing(bool value)
     {
         isFollowing = value;
         Debug.Log("Is following set to: " + value);
-    }
-
-    [PunRPC]
-    public void SetisMoving(bool value)
-    {
-        isMoving = value;
-        Debug.Log("Cart movement state changed: " + isMoving);
     }
 
     public void TakeOffPlayer()
@@ -397,7 +378,6 @@ public class MovementSpeed1 : MonoBehaviourPun
 
     }
 
-    [PunRPC]
     public void PlaceEndingButton()
     {
         if (isObserving == true)

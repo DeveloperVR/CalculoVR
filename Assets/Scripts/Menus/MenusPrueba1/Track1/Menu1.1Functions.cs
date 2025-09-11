@@ -29,80 +29,38 @@ public class Menu11Functions : MonoBehaviourPun
             Debug.LogError("CartMovementManager not found in RCGameManager.");
         }
     }
-    async public void Ridding()
+    public void Ridding()
     {
-        Debug.Log("Ridding function called.");
-        if (CartMovementManager != null)
+        if (Cart.GetComponent<MovementSpeed1>().isReady == true)
         {
-            Debug.Log("isMoving state is: " + Cart.GetComponent<MovementSpeed1>().isMoving);
-            //Si el carro ya se está moviendo, solo se ajusta la posición del jugador al carro
-            if (Cart.GetComponent<MovementSpeed1>().isMoving == true)
-            {
-                Debug.Log("Cart is already moving, setting player position.");
-                Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
-                return;
-            }
-            //Si el carro no se está moviendo, y quien seleccionó el boton es el master, se espera 3 segundos y se inicia el movimiento del carro
-            else if (PhotonNetwork.IsMasterClient)
-            {
-                Debug.Log("Master client is setting up the cart movement.");
-                await thread.Task.Delay(3000);
-                Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
-                Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
-                Cart.GetComponent<MovementSpeed1>().isObserving = false;
-                Cart.GetComponent<MovementSpeed1>().SetIsReady(true);
-                Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
-                Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
-                Debug.Log("isMoving set to true");
-                Cart.GetComponent<MovementSpeed1>().SetisMasterCall(true);
-                //audioManager.SeleccionAudio(4, 0.3f, true);
-            }
-            else
-            {
-                Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetIsReady", RpcTarget.MasterClient, true);
-                Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
-                Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMasterCall", RpcTarget.MasterClient, true);
-                Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
-                Debug.Log("isMoving set to true by non-master client");
-                Cart.GetComponent<MovementSpeed1>().isObserving = false;
-            }
-
-        }
-
-    }
-
-    async public void Observing()
-    {
-        Vector3 observinglocation = visualizationplataform.transform.position;
-        if (Cart.GetComponent<MovementSpeed1>().isMoving == true)
-        {
-            Player.transform.position = observinglocation;
-            Cart.GetComponent<MovementSpeed1>().isObserving = true;
-            return;
-        }
-        else if (PhotonNetwork.IsMasterClient)
-        {
-            Debug.Log("Master client is setting up observing mode.");
-            Player.transform.position = observinglocation;
-            await thread.Task.Delay(3000);
-            Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
-            Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
-            Cart.GetComponent<MovementSpeed1>().SetIsReady(true);
             Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
-            Cart.GetComponent<MovementSpeed1>().isObserving = true;
-            Cart.GetComponent<MovementSpeed1>().SetisMasterCall(true);
-            Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetIsMoving", RpcTarget.AllBuffered, true);
+            Cart.GetComponent<MovementSpeed1>().isObserving = false;
         }
         else
         {
-            Player.transform.position = observinglocation;
+
+            photonView.RPC("StartRollerCoaster", RpcTarget.AllBuffered);
+            Cart.GetComponent<MovementSpeed1>().SetisFollowing(true);
+            Cart.GetComponent<MovementSpeed1>().isObserving = false;
+        }
+    }
+
+    public void Observing()
+    {
+        Vector3 observinglocation = visualizationplataform.transform.position;
+        if (Cart.GetComponent<MovementSpeed1>().isReady == true)
+        {
             Cart.GetComponent<MovementSpeed1>().SetisFollowing(false);
             Cart.GetComponent<MovementSpeed1>().isObserving = true;
-            Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetIsReady", RpcTarget.MasterClient, true);
-            Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMasterCall", RpcTarget.MasterClient, true);
-            Cart.GetComponent<MovementSpeed1>().photonView.RPC("SetisMoving", RpcTarget.AllBuffered, true);
+            Player.transform.position = observinglocation;
         }
-        
+        else
+        {
+            photonView.RPC("StartRollerCoaster", RpcTarget.AllBuffered);
+            Cart.GetComponent<MovementSpeed1>().SetisFollowing(false);
+            Cart.GetComponent<MovementSpeed1>().isObserving = true;
+            Player.transform.position = observinglocation;
+        }
     }
 
     async public void OfflineRiding()
@@ -116,7 +74,7 @@ public class Menu11Functions : MonoBehaviourPun
         Cart.GetComponent<OfflineMovementSpeed1>().OfflineisReady = true;
     }
 
-    
+
 
     async public void OfflineObserving()
     {
@@ -175,5 +133,11 @@ public class Menu11Functions : MonoBehaviourPun
     {
         Player = GameObject.Find("XR Player");
         Debug.Log("XR Player found: " + Player.name);
+    }
+    
+    [PunRPC]
+    public void StartRollerCoaster()
+    {
+        Cart.GetComponent<MovementSpeed1>().isReady = true;
     }
 }
