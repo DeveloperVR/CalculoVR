@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.ProBuilder.Shapes;
 
 public class MovementSpeed3 : MonoBehaviour
@@ -44,10 +45,15 @@ public class MovementSpeed3 : MonoBehaviour
     List<float> segmentLengths = new List<float>();
     List<float> cumulativeLengths = new List<float>();
     private int i = 0;
-    public bool Observing3 = false;
+    public bool isObserving3 = false;
+    private bool isFollowing3 = false;
     private bool checkpoint = false;
 
     private Dictionary<GameObject, GameObject> sphereToTangent = new Dictionary<GameObject, GameObject>();
+
+    private Vector3 currentPosition;
+    private Vector3 moveDirection;
+    private Quaternion PlayerCalculatedRotation;
 
     void Start()
     {
@@ -57,21 +63,25 @@ public class MovementSpeed3 : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            isReady3 = true;
-        }
         if (!isReady3) return;
         if (pathPoints.Count < 2) return;
         float deltaTime = Time.deltaTime;
         PlayAudio();
 
+        currentPosition = EvaluatePositionOnPath2(currentS);
+        SetCurrentPosition3(currentPosition);
+        moveDirection = currentPosition - lastPosition;
+        PlayerCalculatedRotation = Quaternion.LookRotation(moveDirection.normalized);
+        SetPlayerCalculatedRotation3(PlayerCalculatedRotation);
+        CartCurrentMovement3(currentPosition);
+        if(isObserving3 == false && isFollowing3 == true)
+        {
+            PlayerMovementAndRotation3(PlayerCalculatedRotation, currentVelocity3, currentPosition);
+        }
+
         // Avanzar distancia S
         currentS = lastS + lastVelocity * deltaTime;
 
-
-        // Obtener posición actual en la curva según S
-        Vector3 currentPosition = EvaluatePositionOnPath2(currentS);
 
         // Actualizar altura y velocidad usando conservación de energía
         currentHeight = currentPosition.y;
@@ -89,17 +99,9 @@ public class MovementSpeed3 : MonoBehaviour
 
 
         // Mover objeto y rotarlo en la dirección del movimiento
-        transform.position = currentPosition;
-        Vector3 moveDirection = currentPosition - lastPosition;
         Quaternion lookRotation = Quaternion.LookRotation(moveDirection.normalized);
-        Quaternion playerRotation = Quaternion.LookRotation(moveDirection.normalized);
         lookRotation *= Quaternion.Euler(0f, 90f, 0f);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime * rotationSpeed);
-        if (Observing3 == false)
-        {
-            player.transform.position = currentPosition;
-            player.transform.rotation = Quaternion.Slerp(player.transform.rotation, playerRotation, rotationSpeed * Time.deltaTime * currentVelocity3);
-        }
 
         if (currentPosition == pathPoints[pathPoints.Count - 1])
         { checkpoint = true; }
@@ -116,15 +118,10 @@ public class MovementSpeed3 : MonoBehaviour
             lastPosition = pathPoints[0];
             audioManager.StopAudio();
             StopAudio();
-            if (Observing3 == true)
-            {
-                menu.transform.position = ObservingMenuFinalPosition.transform.position;
-            }
-            else
-            {
-                menu.gameObject.transform.position = RidingMenuFinalPosition.transform.position;
-            }
-            Observing3 = false;
+
+            PlaceEndingButton3();
+            isFollowing3 = false;
+            isObserving3 = false;
             menu.gameObject.SetActive(true);
             checkpoint = false;
             centrado.RecenterToHeadset();
@@ -295,6 +292,51 @@ public class MovementSpeed3 : MonoBehaviour
     {
         player = GameObject.Find("XR Player");
         Debug.Log("XR Player found: " + player.name);
+    }
+    ////////////////////////////////////Logica de movimiento tanto del carrito como del jugador
+    public void SetCurrentPosition3(Vector3 position)
+    {
+        transform.position = position;
+        currentPosition = position;
+    }
+
+    public void SetPlayerCalculatedRotation3(Quaternion rotation)
+    {
+        PlayerCalculatedRotation = rotation;
+    }
+
+    public void CartCurrentMovement3(Vector3 position)
+    {
+        transform.position = position;
+    }
+
+    public void PlayerMovementAndRotation3(Quaternion playerRotation, float playerCurrentVelocity, Vector3 currentPosition)
+    {
+        player.transform.position = currentPosition;
+        Quaternion PlayerFinalRotation = Quaternion.Slerp(player.transform.rotation, playerRotation, rotationSpeed * Time.deltaTime * playerCurrentVelocity);
+        player.transform.rotation = PlayerFinalRotation;
+        //Debug.Log("Player position and rotation updated. Position: " + Player.transform.position + " Rotation: " + Player.transform.rotation);
+    }
+
+    public bool SetisFollowing3(bool state)
+    {
+        isFollowing3 = state;
+        return isFollowing3;
+    }
+
+    
+
+    public void PlaceEndingButton3()
+    {
+        if (isObserving3 == true)
+        {
+            menu.transform.position = ObservingMenuFinalPosition.transform.position;
+        }
+        else
+        {
+
+            menu.gameObject.transform.position = RidingMenuFinalPosition.transform.position;
+        }
     }
 
     

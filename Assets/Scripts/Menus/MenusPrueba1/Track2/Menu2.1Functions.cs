@@ -18,66 +18,37 @@ public class Menu21Functions : MonoBehaviourPun
         audioManager = FindObjectOfType<AudioManager>();
     }
 
-    async public void Ridding()
+    public void Ridding()
     {
-        if (Cart.GetComponent<MovementSpeed2>().isMoving2 == true)
+        if (Cart.GetComponent<MovementSpeed2>().isReady2 == true)
         {
             Cart.GetComponent<MovementSpeed2>().SetisFollowing2(true);
-            return;
-        }
-        else if (PhotonNetwork.IsMasterClient)
-        {
-            Debug.Log("Master client is setting up the cart movement.");
-            await thread.Task.Delay(3000);
-            Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
-            Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
             Cart.GetComponent<MovementSpeed2>().isObserving2 = false;
-            Cart.GetComponent<MovementSpeed2>().isReady2 = true;
-            Cart.GetComponent<MovementSpeed2>().SetisFollowing2(true);
-            Cart.GetComponent<MovementSpeed2>().photonView.RPC("SetisMoving2", RpcTarget.AllBuffered, true);
-            Cart.GetComponent<MovementSpeed2>().SetisMasterCall2(true);
         }
         else
         {
-            Cart.GetComponent<MovementSpeed2>().photonView.RPC("SetisReady2", RpcTarget.MasterClient, true);
+
+            photonView.RPC("StartRollerCoaster2", RpcTarget.AllBuffered);
             Cart.GetComponent<MovementSpeed2>().SetisFollowing2(true);
-            Cart.GetComponent<MovementSpeed2>().photonView.RPC("SetisMasterCall2", RpcTarget.MasterClient, true);
-            Cart.GetComponent<MovementSpeed2>().photonView.RPC("SetisMoving2", RpcTarget.AllBuffered, true);
             Cart.GetComponent<MovementSpeed2>().isObserving2 = false;
         }
-        
     }
 
-    async public void Observing()
+    public void Observing()
     {
-        Vector3 observinglocation = visualizationplataform.transform.position;
-        if (Cart.GetComponent<MovementSpeed2>().isMoving2 == true)
+        Vector3 observinglocation3 = visualizationplataform.transform.position;
+        if (Cart.GetComponent<MovementSpeed2>().isReady2 == true)
         {
-            Player.transform.position = observinglocation;
+            Cart.GetComponent<MovementSpeed2>().SetisFollowing2(false);
             Cart.GetComponent<MovementSpeed2>().isObserving2 = true;
-            return;
-        }
-        else if (PhotonNetwork.IsMasterClient)
-        {
-            Debug.Log("Master client is setting up observing mode.");
-            Player.transform.position = observinglocation;
-            await thread.Task.Delay(3000);
-            Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
-            Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
-            Cart.GetComponent<MovementSpeed2>().SetIsReady2(true);
-            Cart.GetComponent<MovementSpeed2>().SetisFollowing2(true);
-            Cart.GetComponent<MovementSpeed2>().isObserving2 = true;
-            Cart.GetComponent<MovementSpeed2>().SetisMasterCall2(true);
-            Cart.GetComponent<MovementSpeed2>().photonView.RPC("SetIsMoving", RpcTarget.AllBuffered, true);
+            Player.transform.position = observinglocation3;
         }
         else
         {
-            Player.transform.position = observinglocation;
+            photonView.RPC("StartRollerCoaster2", RpcTarget.AllBuffered);
             Cart.GetComponent<MovementSpeed2>().SetisFollowing2(false);
             Cart.GetComponent<MovementSpeed2>().isObserving2 = true;
-            Cart.GetComponent<MovementSpeed2>().photonView.RPC("SetIsReady2", RpcTarget.MasterClient, true);
-            Cart.GetComponent<MovementSpeed2>().photonView.RPC("SetisMasterCall2", RpcTarget.MasterClient, true);
-            Cart.GetComponent<MovementSpeed2>().photonView.RPC("SetisMoving2", RpcTarget.AllBuffered, true);
+            Player.transform.position = observinglocation3;
         }
     }
     async public void OfflineRidding()
@@ -115,12 +86,17 @@ public class Menu21Functions : MonoBehaviourPun
             Debug.LogError("XR Origin (XR Rig) not found in the scene.");
         }
     }
-    
+
     public void SetOfflinePlayer()
     {
         Player = GameObject.Find("XR Player");
         Debug.Log("XR Player found: " + Player.name);
     }
 
+    [PunRPC]
+    public void StartRollerCoaster2()
+    {
+        Cart.GetComponent<MovementSpeed2>().isReady2 = true;
+    }
 
 }

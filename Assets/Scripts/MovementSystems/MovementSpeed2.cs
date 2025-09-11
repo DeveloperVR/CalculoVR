@@ -47,9 +47,6 @@ public class MovementSpeed2 : MonoBehaviourPun
     List<float> segmentLengths = new List<float>();
     List<float> cumulativeLengths = new List<float>();
     private int i = 0;
-
-    private bool isMasterCall2 = false;
-
     public bool isObserving2 = false;
     private bool checkpoint = false;
     private Vector3 currentPosition;
@@ -57,7 +54,6 @@ public class MovementSpeed2 : MonoBehaviourPun
     private Quaternion PlayerCalculatedRotation;
 
     public bool isFollowing2 { get; private set; }
-    public bool isMoving2 { get; private set; } = false;
 
 
     private Dictionary<GameObject, GameObject> sphereToTangent = new Dictionary<GameObject, GameObject>();
@@ -70,24 +66,27 @@ public class MovementSpeed2 : MonoBehaviourPun
 
     void Update()
     {
-        if (isMasterCall2)
-        {
-            currentPosition = EvaluatePositionOnPath2(currentS);
-            photonView.RPC("SetCurrentPosition2", RpcTarget.AllBuffered, currentPosition);
-            moveDirection = currentPosition - lastPosition;
-            PlayerCalculatedRotation = Quaternion.LookRotation(moveDirection.normalized);
-            photonView.RPC("SetPlayerCalculatedRotation2", RpcTarget.AllBuffered, PlayerCalculatedRotation);
-            photonView.RPC("CartCurrentMovement2", RpcTarget.AllBuffered, currentPosition);
-        }
-        if (isObserving2 == false && isFollowing2 == true)
-        {
-            PlayerMovementAndRotation2(PlayerCalculatedRotation, currentVelocity2, currentPosition);
-        }
+        
+            
+        
+        
         if (!isReady2) return;
         ////////////////////////////////////////////////////if the movement starts/////////////////////////////////////////////
         if (pathPoints.Count < 2) return;
         float deltaTime = Time.deltaTime;
         PlaySound();
+
+        currentPosition = EvaluatePositionOnPath2(currentS);
+        SetCurrentPosition2(currentPosition);
+        moveDirection = currentPosition - lastPosition;
+        PlayerCalculatedRotation = Quaternion.LookRotation(moveDirection.normalized);
+        SetPlayerCalculatedRotation2(PlayerCalculatedRotation);
+        CartCurrentMovement2(currentPosition);
+
+        if (isObserving2 == false && isFollowing2 == true)
+        {
+            PlayerMovementAndRotation2(PlayerCalculatedRotation, currentVelocity2, currentPosition);
+        }
 
         // Avanzar distancia S
         currentS = lastS + lastVelocity * deltaTime;
@@ -130,13 +129,12 @@ public class MovementSpeed2 : MonoBehaviourPun
             audioManager.StopAudio();
             StopSound();
 
-            photonView.RPC("PlaceEndingButton2", RpcTarget.AllBuffered);
+            PlaceEndingButton2();
             isObserving2 = false;
             menu.gameObject.SetActive(true);
             checkpoint = false;
             centrado.RecenterToHeadset();
-            photonView.RPC("SetisMoving2", RpcTarget.AllBuffered, false);
-            photonView.RPC("SetisFollowing2", RpcTarget.AllBuffered, false);
+            isFollowing2 = false;
             return;
         }
 
@@ -305,20 +303,17 @@ public class MovementSpeed2 : MonoBehaviourPun
         Debug.Log("XR Player found: " + player.name);
     }
 
-    [PunRPC]
     public void SetCurrentPosition2(Vector3 position)
     {
         transform.position = position;
         currentPosition = position;
     }
 
-    [PunRPC]
     public void SetPlayerCalculatedRotation2(Quaternion rotation)
     {
         PlayerCalculatedRotation = rotation;
     }
 
-    [PunRPC]
     public void CartCurrentMovement2(Vector3 position)
     {
         transform.position = position;
@@ -332,35 +327,20 @@ public class MovementSpeed2 : MonoBehaviourPun
         //Debug.Log("Player position and rotation updated. Position: " + Player.transform.position + " Rotation: " + Player.transform.rotation);
     }
 
-    [PunRPC]
+   
     public void SetIsReady2(bool value)
     {
         isReady2 = value;
         Debug.Log("Is ready set to: " + value);
     }
 
-    [PunRPC]
-    public void SetisMoving2(bool value)
-    {
-        isMoving2 = value;
-        Debug.Log("Cart movement state changed: " + isMoving2);
-    }
-
-    [PunRPC]
     public void SetisFollowing2(bool value)
     {
         isFollowing2 = value;
         Debug.Log("Is following set to: " + value);
     }
 
-    [PunRPC]
-    public void SetisMasterCall2(bool value)
-    {
-        isMasterCall2 = value;
-        Debug.Log("isMasterCall2 set to: " + isMasterCall2);
-    }
     
-    [PunRPC]
     public void PlaceEndingButton2()
     {
         if (isObserving2 == true)
