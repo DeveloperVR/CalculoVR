@@ -22,7 +22,6 @@ public class Menu22Function : MonoBehaviour
         Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
         centrado.RecenterToHeadset();
         audioManager.StopAudio();
-        audioManager.SeleccionAudio(0, 0.8f, false);
     }
 
     public void SetPlayer()
