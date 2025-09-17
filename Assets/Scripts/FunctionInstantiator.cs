@@ -15,6 +15,7 @@ public class FunctionInstantiator : MonoBehaviour
     private GameObject newsurface;
     private GameObject supportSurface;
     private GameObject s;
+    private GameObject LinerenderObject;
 
     private float curveHeight = 10f; // Altura de la curva de nivel
                                      // Tolerancia para considerar un punto
@@ -35,6 +36,8 @@ public class FunctionInstantiator : MonoBehaviour
         CreateSurface();
         createSupportSurface();
     }
+
+
 
     // Update is called once per frame
     public void CreateSurface()
@@ -94,8 +97,31 @@ public class FunctionInstantiator : MonoBehaviour
             Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
             Vector2 grad = GradienteCalculator.CalculateGradient(pointXY, surface);
             Debug.Log("Gradiente en punto " + pointXY + ": " + grad);
+            Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.5f;
+            CreateLineRendererObject();
+            LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
+            lr.positionCount = 2;
+            lr.SetPosition(0, v);
+            lr.SetPosition(1, end);
         }
     }
+
+    private void CreateLineRendererObject()
+    {
+        LinerenderObject = new GameObject("CurveLineRenderer");
+        LineRenderer lineRenderer = LinerenderObject.AddComponent<LineRenderer>();
+        lineRenderer.positionCount = 0;
+        lineRenderer.startWidth = 0.1f;
+        lineRenderer.endWidth = 0.1f;
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        lineRenderer.startColor = Color.red;
+        lineRenderer.endColor = Color.red;
+        lineRenderer.useWorldSpace = true;
+        lineRenderer.shadowCastingMode = ShadowCastingMode.Off;
+        lineRenderer.receiveShadows = false;
+    }
+
+    //-------------------------------------LevelCurves-------------------------------------
 
     public void ComputePoints(Mesh mesh)
     {
@@ -172,6 +198,7 @@ public class FunctionInstantiator : MonoBehaviour
 
                 Vector3 worldPoint = transform.TransformPoint(localPoint);
                 s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                s.AddComponent<PhotonView>();
                 s.transform.position = (worldPoint);
                 s.GetComponent<SphereCollider>().enabled = false;
                 s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
@@ -187,6 +214,7 @@ public class FunctionInstantiator : MonoBehaviour
             Vector3 worldP1 = transform.TransformPoint(p1);
             Debug.Log("Punto de intersección: " + p1.ToString());
             s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            s.AddComponent<PhotonView>();
             s.transform.position = worldP1;
             s.GetComponent<SphereCollider>().enabled = false;
             s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
@@ -200,6 +228,7 @@ public class FunctionInstantiator : MonoBehaviour
             Vector3 worldP2 = transform.TransformPoint(p2);
             Debug.Log("Punto de intersección: " + p2.ToString());
             s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            s.AddComponent<PhotonView>();
             s.transform.position = worldP2;
             s.GetComponent<SphereCollider>().enabled = false;
             s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
@@ -220,6 +249,8 @@ public class FunctionInstantiator : MonoBehaviour
     }
 
 }
+
+//-------------------------------------Gradiente Calculator-------------------------------------
 
 public class GradienteCalculator
 {
