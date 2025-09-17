@@ -23,4 +23,9 @@ public class SkinsCounter : ScriptableObject
             numberOfPlayersConnected--;
         }
     }
+    public int SetNumberOfPlayersConnected(int number)
+    {
+        numberOfPlayersConnected = number;
+        return numberOfPlayersConnected;
+    }
 }
