@@ -69,11 +69,16 @@ public class CentripetalPool1 : MonoBehaviour
         Vector3 direccion = end - start;
         float distance = direccion.magnitude;
 
-        arrow.transform.position = start + direccion / 2;
+        arrow.transform.position = start;
 
         arrow.transform.rotation = Quaternion.LookRotation(-direccion);
 
         arrow.transform.localScale = new Vector3(32, 32, distance);
+        if (arrow.transform.localScale.z > 15)
+        {
+            arrow.transform.localScale = new Vector3(32, 32, 15);
+            arrow.transform.position = start;
+        }
 
         currentDrawerIndex++;
         if (currentDrawerIndex >= poolSize)

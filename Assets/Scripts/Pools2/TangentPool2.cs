@@ -75,6 +75,10 @@ public class TangentPool2 : MonoBehaviour
         arrow.transform.rotation = Quaternion.LookRotation(-direccion);
 
         arrow.transform.localScale = new Vector3(32, 32, distance);
+        if (arrow.transform.localScale.z > 24)
+        {
+            arrow.transform.localScale = new Vector3(32, 32, 24);
+        }
 
         currentDrawerIndex++;
         if (currentDrawerIndex >= poolSize)
