@@ -1,0 +1,155 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 19.02.2020 03:41:34
+
+newmtl Sink_Mat
+	Ns 100.0000
+	Ni 6.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Sink_Diffuse.png
+	map_Kd textures/Sink_Diffuse.png
+	map_Ks textures/Sink_Specular.png
+	map_bump textures/Sink_Normal.png
+	bump textures/Sink_Normal.png
+
+newmtl Cash_Box_Mat
+	Ns 100.0000
+	Ni 4.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Box_Diffuse.png
+	map_Kd textures/Box_Diffuse.png
+	map_Ks textures/Box_Specular.png
+	map_bump textures/Box_Normal.png
+	bump textures/Box_Normal.png
+
+newmtl Dry_heater_mat
+	Ns 100.0000
+	Ni 24.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Dry_heater_Diffuse.png
+	map_Kd textures/Dry_heater_Diffuse.png
+	map_Ks textures/Dry_heater_Specular.png
+	map_bump textures/Dry_heater_Normal.png
+	bump textures/Dry_heater_Normal.png
+
+newmtl Coffee_Cart_02_Mat
+	Ns 100.0000
+	Ni 24.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Food_Cart_02_Diffuse.png
+	map_Kd textures/Food_Cart_02_Diffuse.png
+	map_Ks textures/Food_Cart_02_Specular.png
+	map_bump textures/Food_Cart_02_Normal.png
+	bump textures/Food_Cart_02_Normal.png
+
+newmtl Cart_Fabric_mat
+	Ns 100.0000
+	Ni 1.6000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Food_Cart_Fabric_Diffuse.png
+	map_Kd textures/Food_Cart_Fabric_Diffuse.png
+	map_Ks textures/Food_Cart_Fabric_Specular.png
+	map_bump textures/Food_Cart_Fabric_Normal.png
+	bump textures/Food_Cart_Fabric_Normal.png
+
+newmtl Cart_Metal_Parts_Mat
+	Ns 100.0000
+	Ni 24.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Food_Cart_Crome_diffuse.png
+	map_Kd textures/Food_Cart_Crome_diffuse.png
+	map_Ks textures/Food_Cart_Crome_Specular.png
+	map_bump textures/Food_Cart_Crome_Normal.png
+	bump textures/Food_Cart_Crome_Normal.png
+
+newmtl CastorMaterial
+	Ns 100.0000
+	Ni 6.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Castor_Diffuse.png
+	map_Kd textures/Castor_Diffuse.png
+	map_Ks textures/Castor_Specular.png
+	map_bump textures/Castor_Normal.png
+	bump textures/Castor_Normal.png
+
+newmtl Cart_Wheel_mat
+	Ns 100.0000
+	Ni 24.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Food_Cart_Wheels_Diffuse.png
+	map_Kd textures/Food_Cart_Wheels_Diffuse.png
+	map_Ks textures/Food_Cart_Wheels_Specular.png
+	map_bump textures/Food_Cart_Wheels_Normal.png
+	bump textures/Food_Cart_Wheels_Normal.png
+
+newmtl Coffe_Cart_Mat
+	Ns 100.0000
+	Ni 1.6000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Food_Cart_Diffuse.png
+	map_Kd textures/Food_Cart_Diffuse.png
+	map_Ks textures/Food_Cart_Specular.png
+	map_bump textures/Food_Cart_Normal.png
+	bump textures/Food_Cart_Normal.png

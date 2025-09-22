@@ -1,0 +1,190 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 09.01.2021 07:44:44
+
+newmtl Ride_Lights_Mat
+	Ns 100.0000
+	Ni 1.6000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Lights_Pannel_Diffuse.png
+	map_Kd textures/Lights_Pannel_Diffuse.png
+	map_Ks textures/Lights_Pannel_Specular.png
+	map_bump textures/Lights_Pannel_Normal.png
+	bump textures/Lights_Pannel_Normal.png
+
+newmtl Tower_Mat
+	Ns 100.0000
+	Ni 1.6000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Tower_Diffuse.png
+	map_Kd textures/Tower_Diffuse.png
+	map_Ks textures/Tower_Specular.png
+	map_bump textures/Tower_Normal.png
+	bump textures/Tower_Normal.png
+
+newmtl Bulb_Light_Mat
+	Ns 100.0000
+	Ni 1.6000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Bulb_Light_diffuse.png
+	map_Kd textures/Bulb_Light_diffuse.png
+	map_Ks textures/Bulb_Light_Specular.png
+	map_Ke textures/Bulb_Light_Emissive.png
+	map_bump textures/Bulb_Light_Normal.png
+	bump textures/Bulb_Light_Normal.png
+
+newmtl Ride_Part_Mat
+	Ns 100.0000
+	Ni 12.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Ride_Diffuse.png
+	map_Kd textures/Ride_Diffuse.png
+	map_Ks textures/Ride_Specular.png
+	map_bump textures/Ride_Normal.png
+	bump textures/Ride_Normal.png
+
+newmtl Chair_Mat
+	Ns 100.0000
+	Ni 3.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.6039 0.6039 0.6039
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Chair_Diffuse.png
+	map_Kd textures/Chair_Diffuse.png
+	map_Ks textures/Chair_Specular.png
+	map_bump textures/Chair_Normal.png
+	bump textures/Chair_Normal.png
+
+newmtl Chair_Fabric_Mat
+	Ns 100.0000
+	Ni 2.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.3569 0.3569 0.3569
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Chair_fabric_Diffuse.png
+	map_Kd textures/Chair_fabric_Diffuse.png
+	map_Ks textures/Chair_fabric_Specular.png
+	map_bump textures/Chair_fabric_Normal.png
+	bump textures/Chair_fabric_Normal.png
+
+newmtl Base_Mat
+	Ns 100.0000
+	Ni 3.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Ride_Base_Diffuse.png
+	map_Kd textures/Ride_Base_Diffuse.png
+	map_Ks textures/Ride_Base_Specular.png
+	map_bump textures/Ride_Base_Normal.png
+	bump textures/Ride_Base_Normal.png
+
+newmtl Ticket_Booth_Metal_Mat
+	Ns 100.0000
+	Ni 8.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Ticket_Booth_Diffuse.png
+	map_Kd textures/Ticket_Booth_Diffuse.png
+	map_Ks textures/Ticket_Booth_Specular.png
+	map_bump textures/Ticket_Booth_Normal.png
+	bump textures/Ticket_Booth_Normal.png
+
+newmtl Ticket_Booth_Mat
+	Ns 100.0000
+	Ni 2.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Ticket_Booth_Diffuse.png
+	map_Kd textures/Ticket_Booth_Diffuse.png
+	map_Ks textures/Ticket_Booth_Specular.png
+	map_bump textures/Ticket_Booth_Normal.png
+	bump textures/Ticket_Booth_Normal.png
+
+newmtl Stairs_Mat
+	Ns 100.0000
+	Ni 8.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Stairs_Base_Diffuse.png
+	map_Kd textures/Stairs_Base_Diffuse.png
+	map_Ks textures/Stairs_Base_Specular.png
+	map_bump textures/Stairs_Base_Normal.png
+	bump textures/Stairs_Base_Normal.png
+
+newmtl Circus_Sign_Mat
+	Ns 100.0000
+	Ni 24.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Circus_Sign_Diffuse.png
+	map_Kd textures/Circus_Sign_Diffuse.png
+	map_Ks textures/Circus_Sign_Specular.png
+	map_bump textures/Circus_Sign_Normal.png
+	bump textures/Circus_Sign_Normal.png

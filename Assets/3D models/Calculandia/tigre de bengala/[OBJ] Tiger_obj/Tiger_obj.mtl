@@ -1,0 +1,38 @@
+newmtl eyeShaderSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 0.03 0.03 0.03
+Ni 1.00
+Ks 0.65 0.65 0.65
+newmtl irisShaderSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd body_diff.png
+Ni 1.00
+newmtl irisShaderSG1
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl lambert2SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd body_diff.png
+bump body_Normal.png -bm 0.05
+Ni 1.00
+Ks 0.00 0.00 0.00
+map_Ks body_Specular.png
+newmtl membraneShaderSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 0.89 0.89 0.89
+map_Kd body_diff.png
+Ni 1.00
+Ks 0.65 0.65 0.65

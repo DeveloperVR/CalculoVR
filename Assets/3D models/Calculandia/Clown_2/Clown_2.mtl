@@ -1,0 +1,231 @@
+# 
+# Wavefront material file
+# Converted by the DEEP Exploration  Deep Exploration 6.5 x64 6.5.0.9182
+# Right Hemisphere, LTD
+# http://www.righthemisphere.com/
+# 
+
+newmtl Explorer_Default
+Ka 0.117647 0.117647 0.117647
+Kd 0.752941 0.752941 0.752941
+Ks 0.752941 0.752941 0.752941
+illum 2
+Ns 8
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Boot_1
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+illum 2
+Ns 64
+map_Kd color.png
+map_bump nmap.png
+bump nmap.png
+map_opacity 
+map_d 
+refl 
+map_kS specular.png
+map_kA 
+map_Ns 
+
+newmtl Boot_2
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+illum 2
+Ns 64
+map_Kd color.png
+map_bump nmap.png
+bump nmap.png
+map_opacity 
+map_d 
+refl 
+map_kS specular.png
+map_kA 
+map_Ns 
+
+newmtl COVER
+Ka 0 0 0
+Kd 0.0784314 0.0784314 0.0784314
+Ks 1 1 1
+illum 2
+Ns 776.047
+d 0.1
+map_Kd 
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl EYE_1
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+illum 2
+Ns 64
+map_Kd EYE.png
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl EYE_2
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+illum 2
+Ns 64
+map_Kd EYE.png
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Flower
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+illum 2
+Ns 64
+map_Kd Flower.png
+map_bump 
+bump 
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Glove_1
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+illum 2
+Ns 32
+map_Kd color.png
+map_bump nmap.png
+bump nmap.png
+map_opacity 
+map_d 
+refl 
+map_kS specular.png
+map_kA 
+map_Ns 
+
+newmtl Glove_2
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+illum 2
+Ns 32
+map_Kd color.png
+map_bump nmap.png
+bump nmap.png
+map_opacity 
+map_d 
+refl 
+map_kS specular.png
+map_kA 
+map_Ns 
+
+newmtl Hat
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+illum 2
+Ns 64
+map_Kd color.png
+map_bump nmap.png
+bump nmap.png
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Head
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+illum 2
+Ns 32
+map_Kd color.png
+map_bump nmap.png
+bump nmap.png
+map_opacity 
+map_d 
+refl 
+map_kS specular.png
+map_kA 
+map_Ns 
+
+newmtl Jacket
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+illum 2
+Ns 64
+map_Kd color.png
+map_bump nmap.png
+bump nmap.png
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Trousers
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+illum 2
+Ns 64
+map_Kd color.png
+map_bump nmap.png
+bump nmap.png
+map_opacity 
+map_d 
+refl 
+map_kS 
+map_kA 
+map_Ns 
+
+newmtl Vest
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+illum 2
+Ns 22.6274
+map_Kd color.png
+map_bump nmap.png
+bump nmap.png
+map_opacity 
+map_d 
+refl 
+map_kS specular.png
+map_kA 
+map_Ns 

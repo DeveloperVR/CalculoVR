@@ -1,0 +1,106 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 28.07.2014 11:00:23
+
+newmtl Pants
+	Ns 9.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0810 0.0810 0.0810
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Imperium\Desktop\_Ripper\19.04.2014_20.38.27\Frames\Frame0000\Clown Pants 2.jpg
+	map_Kd C:\Users\Imperium\Desktop\_Ripper\19.04.2014_20.38.27\Frames\Frame0000\Clown Pants 2.jpg
+	map_bump C:\Users\Imperium\Desktop\_Ripper\19.04.2014_20.38.27\Frames\Frame0000\Pants NRM.jpg
+	bump C:\Users\Imperium\Desktop\_Ripper\19.04.2014_20.38.27\Frames\Frame0000\Pants NRM.jpg
+
+newmtl Shirt
+	Ns 9.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0810 0.0810 0.0810
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Imperium\Desktop\FIFA clothing\Clown shirt 2.jpg
+	map_Kd C:\Users\Imperium\Desktop\FIFA clothing\Clown shirt 2.jpg
+	map_bump C:\Users\Imperium\Desktop\FIFA clothing\Shirt NRM.jpg
+	bump C:\Users\Imperium\Desktop\FIFA clothing\Shirt NRM.jpg
+
+newmtl Hands
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.3804 0.3804 0.3804
+	Kd 0.3804 0.3804 0.3804
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Imperium\Desktop\Urban Guerrillas\Hands W.tga
+	map_Kd C:\Users\Imperium\Desktop\Urban Guerrillas\Hands W.tga
+
+newmtl Head
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0360 0.0360 0.0360
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Imperium\Desktop\Soccer Player ULTIMATE\Head C.jpg
+	map_Kd C:\Users\Imperium\Desktop\Soccer Player ULTIMATE\Head C.jpg
+	map_bump C:\Users\Imperium\Desktop\Soccer Player ULTIMATE\Head NRM.jpg
+	bump C:\Users\Imperium\Desktop\Soccer Player ULTIMATE\Head NRM.jpg
+
+newmtl Shoes
+	Ns 43.2193
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.2000 0.2000 0.2000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.2000 0.2000 0.2000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\3dsMax projects\Clown\Textures\Shoes 2.jpg
+	map_Kd D:\3dsMax projects\Clown\Textures\Shoes 2.jpg
+
+newmtl Material__691
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Imperium\Desktop\Clown.fbm\Vest and tie.jpg
+	map_Kd C:\Users\Imperium\Desktop\Clown.fbm\Vest and tie.jpg
+
+newmtl Material__692
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Imperium\Desktop\Clown.fbm\Hat.jpg
+	map_Kd C:\Users\Imperium\Desktop\Clown.fbm\Hat.jpg
