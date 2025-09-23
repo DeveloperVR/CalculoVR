@@ -56,6 +56,10 @@ public class MovementSpeed3 : MonoBehaviour
     private Vector3 moveDirection;
     private Quaternion PlayerCalculatedRotation;
 
+    void Awake()
+    {
+        muteSound();
+    }
     void Start()
     {
         StartCoroutine(WaitForData());
@@ -290,6 +294,7 @@ public class MovementSpeed3 : MonoBehaviour
         else
         {
             Debug.Log("XR Origin (XR Rig) found: " + player.name);
+            unmuteSound();
         }
     }
 

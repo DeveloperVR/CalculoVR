@@ -28,6 +28,7 @@ public class MainMenuFunctions : MonoBehaviour
         else
         {
             Debug.Log("XR Origin (XR Rig) found: " + Player.name);
+            audioManager.SeleccionAudio(0, 0.9f, false);
         }
     }
 
@@ -35,11 +36,12 @@ public class MainMenuFunctions : MonoBehaviour
     {
         Player = GameObject.Find("XR Player");
         Debug.Log("XR Player found: " + Player.name);
+        audioManager.SeleccionAudio(0, 0.9f, false);
     }
     public void Start()
     {
         audioManager = FindObjectOfType<AudioManager>();
-        audioManager.SeleccionAudio(0, 0.9f, false);
+        
 
     }
 

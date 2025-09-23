@@ -59,6 +59,10 @@ public class MovementSpeed2 : MonoBehaviourPun
 
     private Dictionary<GameObject, GameObject> sphereToTangent = new Dictionary<GameObject, GameObject>();
 
+    void Awake()
+    {
+        muteSound();
+    }
     void Start()
     {
         StartCoroutine(WaitForData());
@@ -299,6 +303,7 @@ public class MovementSpeed2 : MonoBehaviourPun
         else
         {
             Debug.Log("XR Origin (XR Rig) found: " + player.name);
+            unmuteSound();
         }
     }
 

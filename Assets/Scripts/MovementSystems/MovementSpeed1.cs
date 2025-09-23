@@ -65,6 +65,10 @@ public class MovementSpeed1 : MonoBehaviourPun
     public bool isFollowing { get; private set; }
     private GameObject PlayerAfterCartPosition;
 
+    void Awake()
+    {
+        MuteAudio();
+    }
     void Start()
     {
         StartCoroutine(WaitForData());
@@ -344,6 +348,7 @@ public class MovementSpeed1 : MonoBehaviourPun
         else
         {
             Debug.Log("MovementSpeed 1 XR Origin (XR Rig) found: " + Player.name);
+            UnmuteAudio();
         }
     }
 
