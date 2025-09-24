@@ -78,7 +78,7 @@ public class FunctionInstantiator : MonoBehaviour
 
     public void SetMesh()
     {
-        GradienteCalculator GradientCalculator = new GradienteCalculator();
+        GradienteCalculator GradientCalculator = new();
         SurfaceEvaluator surface = new SurfaceEvaluator(FunctionGenerator.GetComponent<FunctionGenerator>().WrittenFunction);
         MeshFilter GeneratorMeshFilter = FunctionGenerator.GetComponent<MeshFilter>();
         Mesh GeneratorMesh = GeneratorMeshFilter.mesh;
@@ -89,7 +89,7 @@ public class FunctionInstantiator : MonoBehaviour
         supportSurface.GetComponent<MeshCollider>().providesContacts = true;
         newsurface.GetComponent<MeshCollider>().providesContacts = false;
         Mesh scaledmesh = GeneratorMesh;
-        scaledmesh = scaleMesh(scaledmesh);
+        scaledmesh = ScaleMesh(scaledmesh);
         ComputePoints(scaledmesh);
 
         foreach (Vector3 v in intersectionPoints)
@@ -239,7 +239,7 @@ public class FunctionInstantiator : MonoBehaviour
         }
     }
 
-    public Mesh scaleMesh(Mesh mesh)
+    public Mesh ScaleMesh(Mesh mesh)
     {
         Vector3[] vertices = mesh.vertices;
         for (int i = 0; i < vertices.Length; i++)
@@ -249,6 +249,14 @@ public class FunctionInstantiator : MonoBehaviour
         mesh.vertices = vertices;
         mesh.RecalculateBounds();
         return mesh;
+    }
+    private void DrawGradientAscencion(SurfaceEvaluator surface)
+    {
+        List<Vector3> points = new List<Vector3>();
+        Vector3 puntoinicial = new Vector3(-100, 100000, -100);
+        points.Add(puntoinicial);
+        Vector2 actual2D = new Vector2(puntoinicial.x, puntoinicial.z);
+
     }
 
 }
@@ -280,6 +288,10 @@ public class GradienteCalculator
 
     }
 }
+
+//-------------------------------------Gradient ascension-------------------------------------
+
+//-------------------------------------Surface Evaluator-------------------------------------
 
 public class SurfaceEvaluator
 {
