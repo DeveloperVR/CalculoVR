@@ -98,14 +98,17 @@ public class FunctionInstantiator : MonoBehaviour
             Vector2 grad = GradienteCalculator.CalculateGradient(pointXY, surface);
             Debug.Log("Gradiente en punto " + pointXY + ": " + grad);
             Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.5f;
+            Vector3 newend = end + new Vector3(-100, 100000.2f, -100); // elevar un poco el punto para mejor visibilidad
             CreateLineRendererObject();
             LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
             lr.positionCount = 2;
-            lr.SetPosition(0, v);
-            lr.SetPosition(1, end);
+            Vector3 newv = v + new Vector3(-100, 100000.2f, -100); // elevar un poco el punto para mejor visibilidad
+            lr.SetPosition(0, newv);
+            lr.SetPosition(1, newend);
         }
     }
 
+    [PunRPC]
     private void CreateLineRendererObject()
     {
         LinerenderObject = new GameObject("CurveLineRenderer");
