@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Inputs;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
 
 public class CXRNetworkSetup : MonoBehaviour
@@ -18,6 +19,8 @@ public class CXRNetworkSetup : MonoBehaviour
     [SerializeField] private XRInputModalityManager xrInputModalityManager;
     [SerializeField] private XRGazeAssistance xrGazeAssistance;
     [SerializeField] private OnButtonPress onButtonPress;
+    [SerializeField] private GameObject LeftSimulatedHand;
+    [SerializeField] private GameObject RightSimulatedHand;
 
     void Start()
     {
@@ -31,6 +34,9 @@ public class CXRNetworkSetup : MonoBehaviour
             LocomotionSystem.SetActive(true);
             rightHandStabilized.SetActive(true);
             leftHandStabilized.SetActive(true);
+            LeftSimulatedHand.GetComponent<MeshRenderer>().enabled = false;
+            RightSimulatedHand.GetComponent<MeshRenderer>().enabled = false;
+            
 
             characterControllerDriver.enabled = true;
             xrInputModalityManager.enabled = true;

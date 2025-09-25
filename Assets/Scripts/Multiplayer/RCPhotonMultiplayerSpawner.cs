@@ -82,7 +82,7 @@ public class PhotonMultiplayerSpawner : MonoBehaviour
         }
         yield return new WaitForSeconds(3f);
         SpawnPlayer(0); // Spawn player after connection is ready
-        SpawnTestCube(); // Spawn test cube after connection is ready
+        //SpawnTestCube(); // Spawn test cube after connection is ready
         SpawnMovementManager(); // Spawn cart movement manager after connection is ready
     }
 

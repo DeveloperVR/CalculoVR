@@ -69,6 +69,7 @@ MonoBehaviour:
   - SyncSkinsInfo
   - RPC_PaintPlayer
   - CreateLineRendererObject
+  - moveHands
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
