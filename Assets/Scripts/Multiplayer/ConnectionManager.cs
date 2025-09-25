@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public class ConnectionManager : MonoBehaviourPunCallbacks
 {
@@ -12,6 +13,7 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
     public static ConnectionManager Instance { get; private set; }
     private GameObject DebugAudio;
     private string roomName;
+    [SerializeField] private GameObject confirmationButton;
 
     void Awake()
     {
@@ -29,6 +31,8 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
     void Start()
     {
         DebugAudio = GameObject.Find("DebugAudio");
+        confirmationButton.GetComponent<Button>().interactable = false;
+        confirmationButton.GetComponent<BoxCollider>().enabled = false;
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -70,6 +74,8 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
         base.OnJoinedLobby();
         Debug.Log("Joined lobby");
         DebugAudio.GetComponent<DebugAudio>().SuccesAudio();
+        confirmationButton.GetComponent<Button>().interactable = true;
+        confirmationButton.GetComponent<BoxCollider>().enabled = true;
     }
 
     public override void OnJoinedRoom()
