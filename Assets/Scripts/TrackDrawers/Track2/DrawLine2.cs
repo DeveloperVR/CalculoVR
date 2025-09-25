@@ -296,9 +296,9 @@ public class DrawLine2 : MonoBehaviour
             }
             GameObject point = new GameObject("Track2Normal" + counter);
             //GameObject point = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            Vector3 V1 = tangentList2[position].transform.position;
-            Vector3 V2 = centripetalList2[position].transform.position;
-            Vector3 normal = Vector3.Cross(V1, V2).normalized * 2f;
+            Vector3 V1 = tangentList2[position].transform.position - sphereList2[position].transform.position;
+            Vector3 V2 = centripetalList2[position].transform.position - sphereList2[position].transform.position;
+            Vector3 normal = Vector3.Cross(V2, V1).normalized * 2f;
             point.transform.position = sphereList2[position].transform.position + normal;
             point.transform.Translate(normal, Space.World);
             normalList2.Add(point);

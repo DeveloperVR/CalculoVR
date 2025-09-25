@@ -304,9 +304,11 @@ public class DrawLine1 : MonoBehaviour
             }
             GameObject point = new GameObject("Point" + counter);
             //GameObject point = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            Vector3 V1 = tangentList[position].transform.position;
-            Vector3 V2 = centripetalList[position].transform.position;
-            Vector3 normal = Vector3.Cross(V1, V2).normalized * 2f;
+            //Vector3 V1 = tangentList[position].transform.position; 
+            //Vector3 V2 = centripetalList[position].transform.position;
+            Vector3 V1 = tangentList[position].transform.position - sphereList[position].transform.position;
+            Vector3 V2 = centripetalList[position].transform.position - sphereList[position].transform.position;
+            Vector3 normal = Vector3.Cross(V2, V1).normalized * 2f;
             point.transform.position = sphereList[position].transform.position + normal;
             point.transform.Translate(normal, Space.World);
             normalList.Add(point);
