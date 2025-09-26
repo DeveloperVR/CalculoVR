@@ -19,7 +19,7 @@ public class ParkAudio : MonoBehaviour
             if (!controlAudio.isPlaying)
             {
                 controlAudio.Play();
-                controlAudio.volume = 0.5f;
+                controlAudio.volume = 0.3f;
             }
             else
             {

@@ -18,7 +18,7 @@ public class MovementSpeed1 : MonoBehaviourPun
     [SerializeField] private NormalPool1 normalPool;
     [SerializeField] private ObsculatorPool1 obsculatorPool;
     [SerializeField] private GameObject menu;
-    [SerializeField] private Transform RidingMenuFinalPosition;
+    [SerializeField] private Transform RidingPlaceFinalPosition;
     [SerializeField] private Transform ObservingMenuFinalPosition;
     [SerializeField] private XROriginRecentering centrado;
     private GameObject CartMovementManager;
@@ -80,10 +80,10 @@ public class MovementSpeed1 : MonoBehaviourPun
     {
         int ping = PhotonNetwork.GetPing();
         Debug.Log("Latencia (Ping): " + ping + " ms");
-        
-            
 
-        
+
+
+
         if (!isReady) return;
         ///////////////////////////////////////////////if the movement starts/////////////////////////////////////////////
         if (pathPoints.Count < 2) return;
@@ -148,9 +148,9 @@ public class MovementSpeed1 : MonoBehaviourPun
             StopAudio();
 
             //Determines where tu put the button at the end of the ride
+            PlacePlayerAtEnding();
             PlaceEndingButton();
             isObserving = false;
-            menu.gameObject.SetActive(true);
             checkpoint = false;
             centrado.RecenterToHeadset();
             Debug.Log("isMoving set to false");
@@ -392,14 +392,23 @@ public class MovementSpeed1 : MonoBehaviourPun
 
     public void PlaceEndingButton()
     {
+        if (isObserving == true || isFollowing == true)
+        {
+            menu.gameObject.SetActive(true);
+            menu.transform.position = Player.transform.position + Player.transform.forward * 2 + Vector3.up * 0.5f;
+        }
+    }
+
+    public void PlacePlayerAtEnding()
+    {
         if (isObserving == true)
         {
-            menu.transform.position = ObservingMenuFinalPosition.transform.position;
+            return;
         }
-        else
-        {
-
-            menu.gameObject.transform.position = RidingMenuFinalPosition.transform.position;
+        else if (isFollowing == true)
+        { 
+            Player.transform.position =  RidingPlaceFinalPosition.position;
+            Player.transform.rotation = RidingPlaceFinalPosition.rotation;
         }
     }
 }

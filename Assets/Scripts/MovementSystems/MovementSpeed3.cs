@@ -16,7 +16,7 @@ public class MovementSpeed3 : MonoBehaviour
     [SerializeField] private NormalPool3 normalPool;
     [SerializeField] private ObsculatorPool3 obsculatorPool;
     [SerializeField] private GameObject menu;
-    [SerializeField] private Transform RidingMenuFinalPosition;
+    [SerializeField] private Transform RidingPlaceFinalPosition;
     [SerializeField] private Transform ObservingMenuFinalPosition;
     [SerializeField] private XROriginRecentering centrado;
     private AudioManager audioManager;
@@ -127,10 +127,10 @@ public class MovementSpeed3 : MonoBehaviour
             audioManager.StopAudio();
             StopAudio();
 
+            PlacePlayerAtEnding3();
             PlaceEndingButton3();
             isFollowing3 = false;
             isObserving3 = false;
-            menu.gameObject.SetActive(true);
             checkpoint = false;
             centrado.RecenterToHeadset();
             VectorsModel.transform.position = new Vector3(0, -20, 0);
@@ -334,18 +334,29 @@ public class MovementSpeed3 : MonoBehaviour
         return isFollowing3;
     }
 
-    
 
+
+    
+    
     public void PlaceEndingButton3()
+    {
+        if (isObserving3 == true || isFollowing3 == true)
+        {
+            menu.gameObject.SetActive(true);
+            menu.transform.position = player.transform.position + player.transform.forward * 2 + Vector3.up * 0.5f;
+        }
+    }
+
+    public void PlacePlayerAtEnding3()
     {
         if (isObserving3 == true)
         {
-            menu.transform.position = ObservingMenuFinalPosition.transform.position;
+            return;
         }
-        else
+        else if (isFollowing3 == true)
         {
-
-            menu.gameObject.transform.position = RidingMenuFinalPosition.transform.position;
+            player.transform.position = RidingPlaceFinalPosition.position;
+            player.transform.rotation = RidingPlaceFinalPosition.rotation;
         }
     }
 

@@ -51,6 +51,7 @@ public class MainMenuFunctions : MonoBehaviour
         audioManager.SeleccionAudio(2, 0.9f, false);
         cartlocation = Cart1.transform.position;
         Player.transform.position = EntradaPista1.transform.position;
+        Player.transform.rotation = EntradaPista1.transform.rotation;
         Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
         Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
 
@@ -61,6 +62,7 @@ public class MainMenuFunctions : MonoBehaviour
         audioManager.SeleccionAudio(2, 0.9f, false);
         cartlocation = Cart2.transform.position;
         Player.transform.position = EntradaPista2.transform.position;
+        Player.transform.rotation = EntradaPista2.transform.rotation;
         Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
         Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
 
@@ -71,6 +73,7 @@ public class MainMenuFunctions : MonoBehaviour
         audioManager.SeleccionAudio(2, 0.9f, false);
         cartlocation = Cart3.transform.position;
         Player.transform.position = EntradaPista3.transform.position;
+        Player.transform.rotation = EntradaPista3.transform.rotation;
         Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
         Player.GetComponent<XROrigin>().RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
 
