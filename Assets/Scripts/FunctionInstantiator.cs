@@ -13,6 +13,7 @@ public class FunctionInstantiator : MonoBehaviour
     [SerializeField] private string SavedPath;
     private String FunctionType;
     private GameObject newsurface;
+    private float surfaceMinX, surfaceMaxX, surfaceMinZ, surfaceMaxZ, surfaceMinY, surfaceMaxY;
     private GameObject supportSurface;
     private GameObject s;
     private GameObject LinerenderObject;
@@ -21,6 +22,7 @@ public class FunctionInstantiator : MonoBehaviour
                                      // Tolerancia para considerar un punto
 
     public List<Vector3> intersectionPoints = new List<Vector3>();
+    public List<GameObject> gradientObjects = new List<GameObject>();
 
 
     void Start()
@@ -96,7 +98,6 @@ public class FunctionInstantiator : MonoBehaviour
         {
             Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
             Vector2 grad = GradienteCalculator.CalculateGradient(pointXY, surface);
-            Debug.Log("Gradiente en punto " + pointXY + ": " + grad);
             Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.5f;
             Vector3 newend = end + new Vector3(-100, 100000.2f, -100); // elevar un poco el punto para mejor visibilidad
             CreateLineRendererObject();
@@ -106,12 +107,14 @@ public class FunctionInstantiator : MonoBehaviour
             lr.SetPosition(0, newv);
             lr.SetPosition(1, newend);
         }
+        DrawGradientAscencion(surface);
     }
 
     [PunRPC]
     private void CreateLineRendererObject()
     {
         LinerenderObject = new GameObject("CurveLineRenderer");
+        LinerenderObject.layer = LayerMask.NameToLayer("Gradients");
         LineRenderer lineRenderer = LinerenderObject.AddComponent<LineRenderer>();
         lineRenderer.positionCount = 0;
         lineRenderer.startWidth = 0.1f;
@@ -122,6 +125,8 @@ public class FunctionInstantiator : MonoBehaviour
         lineRenderer.useWorldSpace = true;
         lineRenderer.shadowCastingMode = ShadowCastingMode.Off;
         lineRenderer.receiveShadows = false;
+        //LinerenderObject.setActive(false);
+        gradientObjects.Add(LinerenderObject);
     }
 
     //-------------------------------------LevelCurves-------------------------------------
@@ -132,12 +137,21 @@ public class FunctionInstantiator : MonoBehaviour
         intersectionPoints.Clear();
         Bounds bounds = mesh.bounds;
 
-
+        // Obtener los límites del mesh
         float minY = bounds.min.y;
         float maxY = bounds.max.y;
+        float minZ = bounds.min.z;
+        float maxZ = bounds.max.z;
+        float minX = bounds.min.x;
+        float maxX = bounds.max.x;
 
+        // Ajustar los límites al espacio mundial
         minY = (new Vector3(0, bounds.min.y, 0)).y;
         maxY = (new Vector3(0, bounds.max.y, 0)).y;
+        surfaceMinX = (new Vector3(bounds.min.x, 0, 0)).x;
+        surfaceMaxX = (new Vector3(bounds.max.x, 0, 0)).x;
+        surfaceMinZ = (new Vector3(0, 0, bounds.min.z)).z;
+        surfaceMaxZ = (new Vector3(0, 0, bounds.max.z)).z;
 
 
 
@@ -250,12 +264,62 @@ public class FunctionInstantiator : MonoBehaviour
         mesh.RecalculateBounds();
         return mesh;
     }
+    //Metodo para dibujar la ascencion por gradiente, con este metodo se obtiene una lista de puntos que representan la linea, y que seben ser unidos por un line renderer.
     private void DrawGradientAscencion(SurfaceEvaluator surface)
     {
+        //Se crea una lista de puntos para la linea.
         List<Vector3> points = new List<Vector3>();
-        Vector3 puntoinicial = new Vector3(-100, 100000, -100);
+        Vector3 puntoinicial = new Vector3(-103, 100000, -103);
+        Debug.Log("Punto inicial: " + puntoinicial);
         points.Add(puntoinicial);
         Vector2 actual2D = new Vector2(puntoinicial.x, puntoinicial.z);
+        //Se calcula la y del punto inicial en base a la formula de la funcion ingresada por el profesor.
+        double y = surface.ComputeZ(actual2D.x, actual2D.y);
+        Vector3 actual3D = new Vector3(actual2D.x, (float)y, actual2D.y);
+        Debug.Log("Punto inicial 3D corregido: " + actual3D);
+        points.Add(actual3D);
+        actual2D = new Vector2(actual3D.x, actual3D.z);
+        
+        //Se calcula el gradiente en el punto inicial.
+        Vector2 gradiente = GradienteCalculator.CalculateGradient(actual2D, surface);
+        //Se calcula el siguiente X Y Z
+        double siguienteX = actual3D.x + gradiente.x * 0.1f;
+        double siguienteZ = actual3D.z + gradiente.y * 0.1f;
+        double siguienteY = surface.ComputeZ(siguienteX, siguienteZ);
+        Vector3 siguiente3D = new Vector3((float)siguienteX, (float)siguienteY, (float)siguienteZ);
+        while (siguiente3D.y > actual3D.y)
+        {
+            //Se añade el siguiente punto a la lista de puntos.
+            Debug.Log("Punto siguiente 3D: " + siguiente3D);
+            points.Add(siguiente3D);
+            actual3D = siguiente3D;
+            //Se calcula el siguiente punto
+            actual2D = new Vector2(actual3D.x, actual3D.z);
+            gradiente = GradienteCalculator.CalculateGradient(actual2D, surface);
+            siguienteX = actual3D.x + (gradiente.x) * 0.1f;
+            siguienteZ = actual3D.z + (gradiente.y) * 0.1f;
+            siguienteY = surface.ComputeZ(siguienteX, siguienteZ);
+            siguiente3D = new Vector3((float)siguienteX, (float)siguienteY, (float)siguienteZ);
+            //Revisar si el siguiente punto está fuera de los límites de la superficie
+            if (siguiente3D.x < surfaceMinX || siguiente3D.x > surfaceMaxX || siguiente3D.z < surfaceMinZ || siguiente3D.z > surfaceMaxZ || siguiente3D.y < surfaceMinY || siguiente3D.y > surfaceMaxY) break;
+        }
+        //Se crea el line renderer y se le asignan los puntos.
+        GameObject lineObject = new GameObject("GradientAscensionLine");
+        LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
+        lineRenderer.positionCount = points.Count;
+        lineRenderer.startWidth = 0.1f;
+        lineRenderer.endWidth = 0.1f;
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        lineRenderer.startColor = Color.blue;
+        lineRenderer.endColor = Color.blue;
+        lineRenderer.useWorldSpace = true;
+        lineRenderer.shadowCastingMode = ShadowCastingMode.Off;
+        lineRenderer.receiveShadows = false;
+        for (int i = 0; i < points.Count; i++)
+        {
+            lineRenderer.SetPosition(i, points[i]);
+            Debug.Log("Punto " + i + ": " + points[i]);
+        }
 
     }
 
@@ -303,12 +367,12 @@ public class SurfaceEvaluator
         ast = parser.Parse();
     }
 
-    public double ComputeZ(double x, double y)
+    public double ComputeZ(double x, double z)
     {
         var variables = new Dictionary<string, double>
         {
             { "x", x },
-            { "y", y }
+            { "y", z }
         };
         return ast.Evaluate(variables);
     }
