@@ -99,11 +99,14 @@ public class FunctionInstantiator : MonoBehaviour
             Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
             Vector2 grad = GradienteCalculator.CalculateGradient(pointXY, surface);
             Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.5f;
-            Vector3 newend = end + new Vector3(-100, 100000.2f, -100); // elevar un poco el punto para mejor visibilidad
+            Vector3 newend = end + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
+            GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            detector.transform.position = newend;
+
             CreateLineRendererObject();
             LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
             lr.positionCount = 2;
-            Vector3 newv = v + new Vector3(-100, 100000.2f, -100); // elevar un poco el punto para mejor visibilidad
+            Vector3 newv = v + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
             lr.SetPosition(0, newv);
             lr.SetPosition(1, newend);
         }
@@ -177,9 +180,7 @@ public class FunctionInstantiator : MonoBehaviour
             Vector3 p3 = (vertices[triangles[i + 2]]);
 
             // Revisar las aristas del triángulo
-            Debug.Log("Altura curva: " + curveHeight);
-            Debug.Log("Mesh bounds local Y: " + mesh.bounds.min.y + " -> " + mesh.bounds.max.y);
-            Debug.Log("Mesh bounds world Y: " + (transform.position.y + mesh.bounds.min.y) + " -> " + (transform.position.y + mesh.bounds.max.y));
+            Debug.Log("p1: " + p1.ToString() + " p2: " + p2.ToString() + " p3: " + p3.ToString());
             CheckEdge(p1, p2, curveHeight, ref contadorEpsilon);
             CheckEdge(p2, p3, curveHeight, ref contadorEpsilon);
             CheckEdge(p3, p1, curveHeight, ref contadorEpsilon);
@@ -348,7 +349,8 @@ public class GradienteCalculator
         float dzdy = (float)(dzy / epsilon);
 
         Vector2 gradient = new Vector2(dzdx, dzdy).normalized;
-        return gradient;
+        Vector2 ScaledGradient = gradient * 10f; // Escalar el gradiente para mejor visibilidad
+        return ScaledGradient;
 
     }
 }
