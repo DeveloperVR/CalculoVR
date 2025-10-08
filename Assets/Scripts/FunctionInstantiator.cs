@@ -3,6 +3,7 @@ using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
+using JetBrains.Annotations;
 
 public class FunctionInstantiator : MonoBehaviour
 {
@@ -155,6 +156,8 @@ public class FunctionInstantiator : MonoBehaviour
         surfaceMaxX = (new Vector3(bounds.max.x, 0, 0)).x;
         surfaceMinZ = (new Vector3(0, 0, bounds.min.z)).z;
         surfaceMaxZ = (new Vector3(0, 0, bounds.max.z)).z;
+        Debug.Log("Límites del mesh - minY: " + minY + ", maxY: " + maxY + ", minX: " + minX + ", maxX: " + maxX + ", minZ: " + minZ + ", maxZ: " + maxZ);
+        Debug.Log("Su posición en el mund del limite inferior de y es: " + (new Vector3(0, bounds.min.y, 0)).y);
 
 
 
@@ -178,6 +181,7 @@ public class FunctionInstantiator : MonoBehaviour
             Vector3 p1 = (vertices[triangles[i]]);
             Vector3 p2 = (vertices[triangles[i + 1]]);
             Vector3 p3 = (vertices[triangles[i + 2]]);
+    
 
             // Revisar las aristas del triángulo
             Debug.Log("p1: " + p1.ToString() + " p2: " + p2.ToString() + " p3: " + p3.ToString());
@@ -270,7 +274,7 @@ public class FunctionInstantiator : MonoBehaviour
     {
         //Se crea una lista de puntos para la linea.
         List<Vector3> points = new List<Vector3>();
-        Vector3 puntoinicial = new Vector3(-103, 100000, -103);
+        Vector3 puntoinicial = new Vector3(0.1f, 0 , 20);
         Debug.Log("Punto inicial: " + puntoinicial);
         points.Add(puntoinicial);
         Vector2 actual2D = new Vector2(puntoinicial.x, puntoinicial.z);
@@ -318,7 +322,7 @@ public class FunctionInstantiator : MonoBehaviour
         lineRenderer.receiveShadows = false;
         for (int i = 0; i < points.Count; i++)
         {
-            lineRenderer.SetPosition(i, points[i]);
+            lineRenderer.SetPosition(i, points[i] + new Vector3(-100, 100000, -100));
             Debug.Log("Punto " + i + ": " + points[i]);
         }
 
