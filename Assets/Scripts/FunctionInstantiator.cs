@@ -4,6 +4,8 @@ using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 using JetBrains.Annotations;
+using Unity.VisualScripting;
+using UnityEngine.ProBuilder.Shapes;
 
 public class FunctionInstantiator : MonoBehaviour
 {
@@ -98,13 +100,21 @@ public class FunctionInstantiator : MonoBehaviour
         foreach (Vector3 v in intersectionPoints)
         {
             Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
-            Vector2 grad = GradienteCalculator.CalculateGradient(pointXY, surface);
+            Vector2 grad = GradienteCalculator.CalculateScaledGradient(pointXY, surface);
             Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.5f;
             Vector3 newend = end + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
-            GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            //Se crea un detector de gradiente en el punto de intersección para que solo las gradientes cercanas al jugador se activen.
+            GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            detector.name = "GradientDetector";
             detector.transform.position = newend;
+            detector.GetComponent<Renderer>().enabled = false;
+            detector.GetComponent<Collider>().isTrigger = true;
+            detector.GetComponent<Collider>().providesContacts = false;
+            detector.transform.localScale = new Vector3(4, 50, 4);
+            detector.AddComponent<GradientDetector>();
 
-            CreateLineRendererObject();
+
+            CreateLineRendererObject(detector);
             LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
             lr.positionCount = 2;
             Vector3 newv = v + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
@@ -115,9 +125,10 @@ public class FunctionInstantiator : MonoBehaviour
     }
 
     [PunRPC]
-    private void CreateLineRendererObject()
+    private void CreateLineRendererObject(GameObject detector)
     {
         LinerenderObject = new GameObject("CurveLineRenderer");
+        LinerenderObject.transform.SetParent(this.transform);
         LinerenderObject.layer = LayerMask.NameToLayer("Gradients");
         LineRenderer lineRenderer = LinerenderObject.AddComponent<LineRenderer>();
         lineRenderer.positionCount = 0;
@@ -130,7 +141,9 @@ public class FunctionInstantiator : MonoBehaviour
         lineRenderer.shadowCastingMode = ShadowCastingMode.Off;
         lineRenderer.receiveShadows = false;
         //LinerenderObject.setActive(false);
+        LinerenderObject.SetActive(false);
         gradientObjects.Add(LinerenderObject);
+        detector.GetComponent<GradientDetector>().SetLine(LinerenderObject);
     }
 
     //-------------------------------------LevelCurves-------------------------------------
@@ -272,10 +285,10 @@ public class FunctionInstantiator : MonoBehaviour
     //Metodo para dibujar la ascencion por gradiente, con este metodo se obtiene una lista de puntos que representan la linea, y que seben ser unidos por un line renderer.
     private void DrawGradientAscencion(SurfaceEvaluator surface)
     {
+        float EPSILON = 0.05f;
         //Se crea una lista de puntos para la linea.
         List<Vector3> points = new List<Vector3>();
-        Vector3 puntoinicial = new Vector3(0.1f, 0 , 20);
-        Debug.Log("Punto inicial: " + puntoinicial);
+        Vector3 puntoinicial = new Vector3(1.5f, 0 , 1.5f);
         points.Add(puntoinicial);
         Vector2 actual2D = new Vector2(puntoinicial.x, puntoinicial.z);
         //Se calcula la y del punto inicial en base a la formula de la funcion ingresada por el profesor.
@@ -286,10 +299,10 @@ public class FunctionInstantiator : MonoBehaviour
         actual2D = new Vector2(actual3D.x, actual3D.z);
         
         //Se calcula el gradiente en el punto inicial.
-        Vector2 gradiente = GradienteCalculator.CalculateGradient(actual2D, surface);
+        Vector2 gradiente = GradienteCalculator.CalculateNeutralGradient(actual2D, surface);
         //Se calcula el siguiente X Y Z
-        double siguienteX = actual3D.x + gradiente.x * 0.1f;
-        double siguienteZ = actual3D.z + gradiente.y * 0.1f;
+        double siguienteX = actual3D.x + gradiente.x * EPSILON;
+        double siguienteZ = actual3D.z + gradiente.y * EPSILON;
         double siguienteY = surface.ComputeZ(siguienteX, siguienteZ);
         Vector3 siguiente3D = new Vector3((float)siguienteX, (float)siguienteY, (float)siguienteZ);
         while (siguiente3D.y > actual3D.y)
@@ -300,13 +313,17 @@ public class FunctionInstantiator : MonoBehaviour
             actual3D = siguiente3D;
             //Se calcula el siguiente punto
             actual2D = new Vector2(actual3D.x, actual3D.z);
-            gradiente = GradienteCalculator.CalculateGradient(actual2D, surface);
-            siguienteX = actual3D.x + (gradiente.x) * 0.1f;
-            siguienteZ = actual3D.z + (gradiente.y) * 0.1f;
+            gradiente = GradienteCalculator.CalculateNeutralGradient(actual2D, surface);
+            siguienteX = actual3D.x + gradiente.x * EPSILON;
+            siguienteZ = actual3D.z + gradiente.y * EPSILON;
             siguienteY = surface.ComputeZ(siguienteX, siguienteZ);
             siguiente3D = new Vector3((float)siguienteX, (float)siguienteY, (float)siguienteZ);
             //Revisar si el siguiente punto está fuera de los límites de la superficie
-            if (siguiente3D.x < surfaceMinX || siguiente3D.x > surfaceMaxX || siguiente3D.z < surfaceMinZ || siguiente3D.z > surfaceMaxZ || siguiente3D.y < surfaceMinY || siguiente3D.y > surfaceMaxY) break;
+            if (siguiente3D.x < surfaceMinX || siguiente3D.x > surfaceMaxX || siguiente3D.z < surfaceMinZ || siguiente3D.z > surfaceMaxZ)
+            {
+                Debug.Log("El siguiente punto está fuera de los límites de la superficie. Terminando la ascensión.");
+                break;
+            }
         }
         //Se crea el line renderer y se le asignan los puntos.
         GameObject lineObject = new GameObject("GradientAscensionLine");
@@ -322,7 +339,9 @@ public class FunctionInstantiator : MonoBehaviour
         lineRenderer.receiveShadows = false;
         for (int i = 0; i < points.Count; i++)
         {
-            lineRenderer.SetPosition(i, points[i] + new Vector3(-100, 100000, -100));
+            Vector3 modifiedPoint = points[i];
+            modifiedPoint.y /= 48;
+            lineRenderer.SetPosition(i, modifiedPoint + new Vector3(-100, 100000, -100)); // elevar un poco el punto para mejor visibilidad
             Debug.Log("Punto " + i + ": " + points[i]);
         }
 
@@ -337,7 +356,29 @@ public class GradienteCalculator
 
     public static float epsilon = 0.01f;
 
-    public static Vector2 CalculateGradient(Vector2 point, SurfaceEvaluator
+    //Se calcula el gradiente en un punto dado, usando la formula del gradiente.
+    public static Vector2 CalculateNormalizedGradient(Vector2 point, SurfaceEvaluator
+     surface)
+    {
+        float x1 = point.x;
+        float z1 = point.y;
+
+        float x2 = x1 + epsilon;
+        float z2 = z1 + epsilon;
+
+        double dyx = surface.ComputeZ(x2, z1) - surface.ComputeZ(x1, z1);
+        double dyz = surface.ComputeZ(x1, z2) - surface.ComputeZ(x1, z1);
+
+        float dydx = (float)(dyx / epsilon);
+        float dydz = (float)(dyz / epsilon);
+
+        Vector2 gradient = new Vector2(dydx, dydz).normalized;
+        return gradient;
+
+    }
+
+    //Se calcula el gradiente escalado en un punto dado, usando la formula del gradiente.
+    public static Vector2 CalculateScaledGradient(Vector2 point, SurfaceEvaluator
      surface)
     {
         float x1 = point.x;
@@ -355,6 +396,26 @@ public class GradienteCalculator
         Vector2 gradient = new Vector2(dzdx, dzdy).normalized;
         Vector2 ScaledGradient = gradient * 10f; // Escalar el gradiente para mejor visibilidad
         return ScaledGradient;
+
+    }
+
+    public static Vector2 CalculateNeutralGradient(Vector2 point, SurfaceEvaluator
+     surface)
+    {
+        float x1 = point.x;
+        float y1 = point.y;
+
+        float x2 = x1 + epsilon;
+        float y2 = y1 + epsilon;
+
+        double dzx = surface.ComputeZ(x2, y1) - surface.ComputeZ(x1, y1);
+        double dzy = surface.ComputeZ(x1, y2) - surface.ComputeZ(x1, y1);
+
+        float dzdx = (float)(dzx / epsilon);
+        float dzdy = (float)(dzy / epsilon);
+
+        Vector2 gradient = new Vector2(dzdx, dzdy);
+        return gradient;
 
     }
 }
