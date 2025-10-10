@@ -194,7 +194,7 @@ public class FunctionInstantiator : MonoBehaviour
             Vector3 p1 = (vertices[triangles[i]]);
             Vector3 p2 = (vertices[triangles[i + 1]]);
             Vector3 p3 = (vertices[triangles[i + 2]]);
-    
+
 
             // Revisar las aristas del triángulo
             Debug.Log("p1: " + p1.ToString() + " p2: " + p2.ToString() + " p3: " + p3.ToString());
@@ -288,7 +288,7 @@ public class FunctionInstantiator : MonoBehaviour
         float EPSILON = 0.05f;
         //Se crea una lista de puntos para la linea.
         List<Vector3> points = new List<Vector3>();
-        Vector3 puntoinicial = new Vector3(1.5f, 0 , 1.5f);
+        Vector3 puntoinicial = new Vector3(1.5f, 0, 1.5f);
         points.Add(puntoinicial);
         Vector2 actual2D = new Vector2(puntoinicial.x, puntoinicial.z);
         //Se calcula la y del punto inicial en base a la formula de la funcion ingresada por el profesor.
@@ -297,7 +297,7 @@ public class FunctionInstantiator : MonoBehaviour
         Debug.Log("Punto inicial 3D corregido: " + actual3D);
         points.Add(actual3D);
         actual2D = new Vector2(actual3D.x, actual3D.z);
-        
+
         //Se calcula el gradiente en el punto inicial.
         Vector2 gradiente = GradienteCalculator.CalculateNeutralGradient(actual2D, surface);
         //Se calcula el siguiente X Y Z
@@ -345,6 +345,18 @@ public class FunctionInstantiator : MonoBehaviour
             Debug.Log("Punto " + i + ": " + points[i]);
         }
 
+    }
+
+    public void DrawLevelCurves(List<GameObject> gradientObjects)
+    {
+        //Logica para dibujar un LineRenderer con los puntos de la curva de nivel.
+        float MaxY = surfaceMaxY;
+        float MinY = surfaceMinY;
+        float i = MinY;
+        while (i <= MaxY)
+        { 
+            
+        }
     }
 
 }
