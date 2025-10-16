@@ -34,7 +34,7 @@ public class DektopNetworkSetup : MonoBehaviour
             Orientation.SetActive(false);
             CameraPos.SetActive(false);
             CameraHolder.SetActive(false);
-            StandardPlayer.SetActive(false);
+            StandardPlayer.SetActive(true);
             ExternalPlayerModel.SetActive(true);
         }
 

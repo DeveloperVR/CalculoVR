@@ -17,6 +17,7 @@ public class FunctionInstantiator : MonoBehaviour
     private String FunctionType;
     private GameObject newsurface;
     private float surfaceMinX, surfaceMaxX, surfaceMinZ, surfaceMaxZ, surfaceMinY, surfaceMaxY;
+    private float LevelCurvesIterations = 0;
     private GameObject supportSurface;
     private GameObject s;
     private GameObject LinerenderObject;
@@ -26,6 +27,8 @@ public class FunctionInstantiator : MonoBehaviour
 
     public List<Vector3> intersectionPoints = new List<Vector3>();
     public List<GameObject> gradientObjects = new List<GameObject>();
+    private bool isLevelCurvesReady = false;
+    private bool LineRendererCurvesReady = false;
 
 
     void Start()
@@ -42,7 +45,14 @@ public class FunctionInstantiator : MonoBehaviour
         createSupportSurface();
     }
 
-
+    // void Update()
+    // {
+    //     if(isLevelCurvesReady == true && LineRendererCurvesReady == false)
+    //     {
+    //         Debug.Log("Dibujando curvas de nivel en el update.");
+    //         DrawLevelCurves(intersectionPoints);
+    //     }
+    // }
 
     // Update is called once per frame
     public void CreateSurface()
@@ -150,9 +160,9 @@ public class FunctionInstantiator : MonoBehaviour
 
     public void ComputePoints(Mesh mesh)
     {
-        Debug.Log("Computando puntos de intersección con la curva de nivel en y = " + curveHeight);
         intersectionPoints.Clear();
         Bounds bounds = mesh.bounds;
+        int levelCurveIndex = 0;
 
         // Obtener los límites del mesh
         float minY = bounds.min.y;
@@ -169,24 +179,26 @@ public class FunctionInstantiator : MonoBehaviour
         surfaceMaxX = (new Vector3(bounds.max.x, 0, 0)).x;
         surfaceMinZ = (new Vector3(0, 0, bounds.min.z)).z;
         surfaceMaxZ = (new Vector3(0, 0, bounds.max.z)).z;
-        Debug.Log("Límites del mesh - minY: " + minY + ", maxY: " + maxY + ", minX: " + minX + ", maxX: " + maxX + ", minZ: " + minZ + ", maxZ: " + maxZ);
-        Debug.Log("Su posición en el mund del limite inferior de y es: " + (new Vector3(0, bounds.min.y, 0)).y);
+        // Debug.Log("Límites del mesh - minY: " + minY + ", maxY: " + maxY + ", minX: " + minX + ", maxX: " + maxX + ", minZ: " + minZ + ", maxZ: " + maxZ);
+        // Debug.Log("Su posición en el mund del limite inferior de y es: " + (new Vector3(0, bounds.min.y, 0)).y);
 
 
 
         for (float h = minY; h <= maxY + 1e-4f; h += 3f)
         {
-            Debug.Log("Altura actual de la curva: " + h);
+            //Debug.Log("Altura actual de la curva: " + h);
             ComputePointsAtHeight(mesh, h);
+            levelCurveIndex++;
         }
-
     }
 
     private void ComputePointsAtHeight(Mesh mesh, float curveHeight)
     {
+        intersectionPoints.Clear();
         int contadorEpsilon = 0;
         Vector3[] vertices = mesh.vertices;
         int[] triangles = mesh.triangles;
+        int iteration = 0;
 
         for (int i = 0; i < triangles.Length; i += 3)
         {
@@ -197,13 +209,25 @@ public class FunctionInstantiator : MonoBehaviour
 
 
             // Revisar las aristas del triángulo
-            Debug.Log("p1: " + p1.ToString() + " p2: " + p2.ToString() + " p3: " + p3.ToString());
+            //Debug.Log("p1: " + p1.ToString() + " p2: " + p2.ToString() + " p3: " + p3.ToString());
             CheckEdge(p1, p2, curveHeight, ref contadorEpsilon);
             CheckEdge(p2, p3, curveHeight, ref contadorEpsilon);
             CheckEdge(p3, p1, curveHeight, ref contadorEpsilon);
         }
+        if (intersectionPoints.Count > 1)
+        {
+            List<Vector3> orderedPoints = OrderPointsByProximity(intersectionPoints);
+            GameObject lineObj = CreateLevelCurveLine(iteration, orderedPoints.Count);
+            LineRenderer lineRenderer = lineObj.GetComponent<LineRenderer>();
+            lineRenderer.SetPositions(orderedPoints.ToArray());
+            for (int i = 0; i < orderedPoints.Count; i++)
+            {
+                Vector3 modifiedPoint = orderedPoints[i];
+                lineRenderer.SetPosition(i, modifiedPoint + new Vector3(-100, 100000, -100)); // elevar un poco el punto para mejor visibilidad
+            }
+        }
 
-        Debug.Log("Contador: " + contadorEpsilon);
+        //Debug.Log("Contador: " + contadorEpsilon);
     }
 
     private void CheckEdge(Vector3 p1, Vector3 p2, float curveHeight, ref int contadorEpsilon)
@@ -215,13 +239,13 @@ public class FunctionInstantiator : MonoBehaviour
         // Caso 1: la arista cruza el plano
         if ((y1 < curveHeight && y2 > curveHeight) || (y1 > curveHeight && y2 < curveHeight))
         {
-            Debug.Log("Entró al caso 1");
+            //Debug.Log("Entró al caso 1");
             Vector3 dir = p2 - p1;
             float dy = dir.y;
 
             if (Mathf.Abs(dy) > 1e-6f) // evitar división por cero
             {
-                Debug.Log("Entró al caso 1.1");
+                //Debug.Log("Entró al caso 1.1");
                 float yc = curveHeight - p1.y;
                 float t = yc / dy; // interpolación [0,1]
                 float x = p1.x + dir.x * t;
@@ -237,17 +261,17 @@ public class FunctionInstantiator : MonoBehaviour
                 s.transform.position = (worldPoint);
                 s.GetComponent<SphereCollider>().enabled = false;
                 s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
-                Debug.Log("Punto de intersección: " + localPoint.ToString());
+                //Debug.Log("Punto de intersección: " + localPoint.ToString());
             }
         }
         // Caso 2: uno de los extremos está en el plano
         else if (Mathf.Abs(p1.y - curveHeight) < epsilon)
         {
-            Debug.Log("Entró al caso 2");
+            //Debug.Log("Entró al caso 2");
             intersectionPoints.Add(p1);
 
             Vector3 worldP1 = transform.TransformPoint(p1);
-            Debug.Log("Punto de intersección: " + p1.ToString());
+            //Debug.Log("Punto de intersección: " + p1.ToString());
             s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             s.AddComponent<PhotonView>();
             s.transform.position = worldP1;
@@ -257,11 +281,11 @@ public class FunctionInstantiator : MonoBehaviour
         }
         else if (Mathf.Abs(p2.y - curveHeight) < epsilon)
         {
-            Debug.Log("Entró al caso 2.1");
+            //Debug.Log("Entró al caso 2.1");
             intersectionPoints.Add(p2);
 
             Vector3 worldP2 = transform.TransformPoint(p2);
-            Debug.Log("Punto de intersección: " + p2.ToString());
+            //  Debug.Log("Punto de intersección: " + p2.ToString());
             s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             s.AddComponent<PhotonView>();
             s.transform.position = worldP2;
@@ -270,6 +294,55 @@ public class FunctionInstantiator : MonoBehaviour
             contadorEpsilon++;
         }
     }
+    //Se ordenan los puntos por proximidad para dibujar el objeto curva de nivel.
+    private List<Vector3> OrderPointsByProximity(List<Vector3> points)
+{
+    if (points.Count <= 2)
+        return points;
+
+    List<Vector3> ordered = new List<Vector3>();
+    HashSet<int> used = new HashSet<int>();
+
+    // Empezamos desde el primer punto
+    Vector3 current = points[0];
+    ordered.Add(current);
+    used.Add(0);
+
+    // Repetimos hasta usar todos los puntos
+    while (ordered.Count < points.Count)
+    {
+        float minDist = float.MaxValue;
+        int nextIndex = -1;
+
+        // Buscar el punto más cercano al actual que no haya sido usado
+        for (int i = 0; i < points.Count; i++)
+        {
+            if (used.Contains(i)) continue;
+
+            float dist = Vector3.Distance(current, points[i]);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                nextIndex = i;
+            }
+        }
+
+        // Si encontramos un punto cercano, lo agregamos
+        if (nextIndex != -1)
+        {
+            current = points[nextIndex];
+            ordered.Add(current);
+            used.Add(nextIndex);
+        }
+        else
+        {
+            break; // No hay más puntos conectables
+        }
+    }
+
+    return ordered;
+}
+
 
     public Mesh ScaleMesh(Mesh mesh)
     {
@@ -294,7 +367,7 @@ public class FunctionInstantiator : MonoBehaviour
         //Se calcula la y del punto inicial en base a la formula de la funcion ingresada por el profesor.
         double y = surface.ComputeZ(actual2D.x, actual2D.y);
         Vector3 actual3D = new Vector3(actual2D.x, (float)y, actual2D.y);
-        Debug.Log("Punto inicial 3D corregido: " + actual3D);
+        //Debug.Log("Punto inicial 3D corregido: " + actual3D);
         points.Add(actual3D);
         actual2D = new Vector2(actual3D.x, actual3D.z);
 
@@ -308,7 +381,7 @@ public class FunctionInstantiator : MonoBehaviour
         while (siguiente3D.y > actual3D.y)
         {
             //Se añade el siguiente punto a la lista de puntos.
-            Debug.Log("Punto siguiente 3D: " + siguiente3D);
+            //Debug.Log("Punto siguiente 3D: " + siguiente3D);
             points.Add(siguiente3D);
             actual3D = siguiente3D;
             //Se calcula el siguiente punto
@@ -321,7 +394,7 @@ public class FunctionInstantiator : MonoBehaviour
             //Revisar si el siguiente punto está fuera de los límites de la superficie
             if (siguiente3D.x < surfaceMinX || siguiente3D.x > surfaceMaxX || siguiente3D.z < surfaceMinZ || siguiente3D.z > surfaceMaxZ)
             {
-                Debug.Log("El siguiente punto está fuera de los límites de la superficie. Terminando la ascensión.");
+                //Debug.Log("El siguiente punto está fuera de los límites de la superficie. Terminando la ascensión.");
                 break;
             }
         }
@@ -342,21 +415,62 @@ public class FunctionInstantiator : MonoBehaviour
             Vector3 modifiedPoint = points[i];
             modifiedPoint.y /= 48;
             lineRenderer.SetPosition(i, modifiedPoint + new Vector3(-100, 100000, -100)); // elevar un poco el punto para mejor visibilidad
-            Debug.Log("Punto " + i + ": " + points[i]);
+            //Debug.Log("Punto " + i + ": " + points[i]);
         }
 
     }
 
-    public void DrawLevelCurves(List<GameObject> gradientObjects)
+    public void DrawLevelCurves(List<Vector3> gradientObjects)
     {
         //Logica para dibujar un LineRenderer con los puntos de la curva de nivel.
         float MaxY = surfaceMaxY;
         float MinY = surfaceMinY;
-        float i = MinY;
-        while (i <= MaxY)
-        { 
-            
+        float heightCheck = 0;
+        if (LevelCurvesIterations <= MaxY)
+        {
+            Debug.Log("Dibujando curva de nivel en altura: " + LevelCurvesIterations);
+            for (int j = 0; j < gradientObjects.Count-1; j++)
+            {
+                Debug.Log("Revisando punto: " + gradientObjects[j]);
+                GameObject lineObject = CreateLevelCurveLine(j, gradientObjects.Count);
+                LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
+                heightCheck = gradientObjects[j].y;
+                if (heightCheck >= LevelCurvesIterations + 0.25f && heightCheck <= LevelCurvesIterations + 0.25f)
+                {
+                    lineRenderer.SetPosition(0, gradientObjects[j]);
+                }
+                else
+                {
+                    Debug.Log("El punto no está en la altura de la curva de nivel, la altura del punto es: " + heightCheck + " y la altura de la curva es: " + LevelCurvesIterations);
+                }
+            }
+            LevelCurvesIterations += 1.0f; // Incrementar i para la siguiente altura
         }
+        else
+        {
+            Debug.Log("Todas las curvas de nivel han sido dibujadas.");
+            LineRendererCurvesReady = true;
+        }
+        
+    }
+
+    public GameObject CreateLevelCurveLine(int LevelCurveNumber, int NumberOfPoints)
+    {
+        //Logica para dibujar un LineRenderer con los puntos de la curva de nivel.
+        GameObject lineObject = new GameObject("LevelCurveLine");
+        lineObject.name = "LevelCurveLine" + LevelCurveNumber;
+        LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
+        lineRenderer.positionCount = NumberOfPoints;
+        lineRenderer.startWidth = 0.1f;
+        lineRenderer.endWidth = 0.1f;
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        lineRenderer.startColor = Color.white;
+        lineRenderer.endColor = Color.white;
+        lineRenderer.useWorldSpace = true;
+        lineRenderer.shadowCastingMode = ShadowCastingMode.Off;
+        lineRenderer.receiveShadows = false;
+
+        return lineObject;
     }
 
 }
