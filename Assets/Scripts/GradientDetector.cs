@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using JetBrains.Annotations;
-using Photon.Pun.Demo.SlotRacer.Utils;
 using UnityEngine;
 
 public class GradientDetector : MonoBehaviour

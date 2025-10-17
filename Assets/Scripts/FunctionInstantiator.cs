@@ -25,8 +25,10 @@ public class FunctionInstantiator : MonoBehaviour
 
     private float curveHeight = 10f; // Altura de la curva de nivel
                                      // Tolerancia para considerar un punto
-
+                                     //Esta lista se usa para las curvas de nivel, ya que debe ser borrada cada vez que se calcula una nueva curva.
     public List<Vector3> intersectionPoints = new List<Vector3>();
+    //Esta lista se usa para las gradientes, ya que debe conservar todos los puntos de intersección.
+    public List<Vector3> intersectionPointsForGradient = new List<Vector3>();
     public List<GameObject> gradientObjects = new List<GameObject>();
     private bool isLevelCurvesReady = false;
     private bool LineRendererCurvesReady = false;
@@ -46,14 +48,10 @@ public class FunctionInstantiator : MonoBehaviour
         createSupportSurface();
     }
 
-    // void Update()
-    // {
-    //     if(isLevelCurvesReady == true && LineRendererCurvesReady == false)
-    //     {
-    //         Debug.Log("Dibujando curvas de nivel en el update.");
-    //         DrawLevelCurves(intersectionPoints);
-    //     }
-    // }
+    void Update()
+    {
+        return;
+    }
 
     // Update is called once per frame
     public void CreateSurface()
@@ -85,7 +83,7 @@ public class FunctionInstantiator : MonoBehaviour
     {
         supportSurface = new GameObject("SupportSurface");
         supportSurface.transform.position = new Vector3(-100, 99999, -100);
-        supportSurface.transform.localScale = new Vector3(50, 50, 50);
+        supportSurface.transform.localScale = new Vector3(75, 75, 75);
         supportSurface.AddComponent<MeshFilter>();
         supportSurface.AddComponent<MeshCollider>();
         supportSurface.AddComponent<PhotonView>();
@@ -107,12 +105,12 @@ public class FunctionInstantiator : MonoBehaviour
         Mesh scaledmesh = GeneratorMesh;
         scaledmesh = ScaleMesh(scaledmesh);
         ComputePoints(scaledmesh);
-
-        foreach (Vector3 v in intersectionPoints)
+        foreach (Vector3 v in intersectionPointsForGradient)
         {
+            Debug.Log("Punto de intersección escalado: " + v);
             Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
             Vector2 grad = GradienteCalculator.CalculateScaledGradient(pointXY, surface);
-            Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.5f;
+            Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.50f;
             Vector3 newend = end + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
             //Se crea un detector de gradiente en el punto de intersección para que solo las gradientes cercanas al jugador se activen.
             GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
@@ -121,7 +119,7 @@ public class FunctionInstantiator : MonoBehaviour
             detector.GetComponent<Renderer>().enabled = false;
             detector.GetComponent<Collider>().isTrigger = true;
             detector.GetComponent<Collider>().providesContacts = false;
-            detector.transform.localScale = new Vector3(4, 50, 4);
+            detector.transform.localScale = new Vector3(2, 75, 2);
             detector.AddComponent<GradientDetector>();
 
 
@@ -220,6 +218,7 @@ public class FunctionInstantiator : MonoBehaviour
             CheckEdge(p2, p3, curveHeight, ref contadorEpsilon);
             CheckEdge(p3, p1, curveHeight, ref contadorEpsilon);
         }
+        Debug.Log("Los puntos de intersección en ComputePointsAtHeight a altura " + curveHeight + " son: ");
         if (intersectionPoints.Count > 1)
         {
             List<Vector3> orderedPoints = OrderPointsByProximity(intersectionPoints);
@@ -260,6 +259,7 @@ public class FunctionInstantiator : MonoBehaviour
 
                 Vector3 localPoint = new Vector3(x, y, z);
                 intersectionPoints.Add(localPoint);
+                intersectionPointsForGradient.Add(localPoint);
 
                 Vector3 worldPoint = transform.TransformPoint(localPoint);
                 s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -275,6 +275,7 @@ public class FunctionInstantiator : MonoBehaviour
         {
             //Debug.Log("Entró al caso 2");
             intersectionPoints.Add(p1);
+            intersectionPointsForGradient.Add(p1);
 
             Vector3 worldP1 = transform.TransformPoint(p1);
             //Debug.Log("Punto de intersección: " + p1.ToString());
@@ -289,6 +290,7 @@ public class FunctionInstantiator : MonoBehaviour
         {
             //Debug.Log("Entró al caso 2.1");
             intersectionPoints.Add(p2);
+            intersectionPointsForGradient.Add(p2);
 
             Vector3 worldP2 = transform.TransformPoint(p2);
             //  Debug.Log("Punto de intersección: " + p2.ToString());
@@ -355,7 +357,7 @@ public class FunctionInstantiator : MonoBehaviour
         Vector3[] vertices = mesh.vertices;
         for (int i = 0; i < vertices.Length; i++)
         {
-            vertices[i] *= 75f; // Escalar a 50 veces
+            vertices[i] *= 75f; // Escalar a 75 veces
         }
         mesh.vertices = vertices;
         mesh.RecalculateBounds();
@@ -425,41 +427,7 @@ public class FunctionInstantiator : MonoBehaviour
         }
 
     }
-
-    public void DrawLevelCurves(List<Vector3> gradientObjects)
-    {
-        //Logica para dibujar un LineRenderer con los puntos de la curva de nivel.
-        float MaxY = surfaceMaxY;
-        float MinY = surfaceMinY;
-        float heightCheck = 0;
-        if (LevelCurvesIterations <= MaxY)
-        {
-            Debug.Log("Dibujando curva de nivel en altura: " + LevelCurvesIterations);
-            for (int j = 0; j < gradientObjects.Count - 1; j++)
-            {
-                Debug.Log("Revisando punto: " + gradientObjects[j]);
-                GameObject lineObject = CreateLevelCurveLine(j, gradientObjects.Count);
-                LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
-                heightCheck = gradientObjects[j].y;
-                if (heightCheck >= LevelCurvesIterations + 0.25f && heightCheck <= LevelCurvesIterations + 0.25f)
-                {
-                    lineRenderer.SetPosition(0, gradientObjects[j]);
-                }
-                else
-                {
-                    Debug.Log("El punto no está en la altura de la curva de nivel, la altura del punto es: " + heightCheck + " y la altura de la curva es: " + LevelCurvesIterations);
-                }
-            }
-            LevelCurvesIterations += 1.0f; // Incrementar i para la siguiente altura
-        }
-        else
-        {
-            Debug.Log("Todas las curvas de nivel han sido dibujadas.");
-            LineRendererCurvesReady = true;
-        }
-
-    }
-
+    //Metodo para crear un objeto con line renderer para las curvas de nivel.
     public GameObject CreateLevelCurveLine(int LevelCurveNumber, int NumberOfPoints)
     {
         //Logica para dibujar un LineRenderer con los puntos de la curva de nivel.
@@ -467,8 +435,8 @@ public class FunctionInstantiator : MonoBehaviour
         lineObject.name = "LevelCurveLine" + LevelCurveNumber;
         LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
         lineRenderer.positionCount = NumberOfPoints;
-        lineRenderer.startWidth = 0.1f;
-        lineRenderer.endWidth = 0.1f;
+        lineRenderer.startWidth = 0.5f;
+        lineRenderer.endWidth = 0.5f;
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.startColor = Color.white;
         lineRenderer.endColor = Color.white;

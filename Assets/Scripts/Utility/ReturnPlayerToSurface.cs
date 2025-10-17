@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ReturnPlayerToSurface : MonoBehaviour
 {
-    // Start is called before the first frame update
+    GameObject player;
     void Start()
     {
         
