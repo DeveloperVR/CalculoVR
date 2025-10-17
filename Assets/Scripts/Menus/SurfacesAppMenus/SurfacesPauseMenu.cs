@@ -32,7 +32,7 @@ public class SurfacesPauseMenu : MonoBehaviour
     }
     void Start()
     {
-        MainPlane = GameObject.Find("Plane");
+        MainPlane = GameObject.Find("SpawnPoint");
     }
 
     private void LateUpdate()

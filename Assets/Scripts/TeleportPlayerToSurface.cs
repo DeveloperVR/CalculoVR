@@ -8,13 +8,13 @@ public class TeleportPlayerToSurface : MonoBehaviourPun
 {
     [SerializeField] private GameObject Player;
     [SerializeField] private GameObject Surface;
+    [SerializeField] private FunctionInstantiator functionInstantiator;
 
     //[PunRPC]
     public void TeleportPlayer()
     {
         Surface = GameObject.Find("FunctionSurface");
-        Player.transform.position = Surface.transform.position + new Vector3(0, 3, 0); // Adjust the Y position to be above the surface
-        Debug.Log("La posición a la que se lleva al jugador es: " + (Surface.transform.position + new Vector3(0, 3, 0)));
+        Player.transform.position = functionInstantiator.OriginPoint;
         Player.transform.rotation = Quaternion.identity; // Reset rotation to default
     }
 

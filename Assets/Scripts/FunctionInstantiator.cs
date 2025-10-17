@@ -21,6 +21,7 @@ public class FunctionInstantiator : MonoBehaviour
     private GameObject supportSurface;
     private GameObject s;
     private GameObject LinerenderObject;
+    public Vector3 OriginPoint;
 
     private float curveHeight = 10f; // Altura de la curva de nivel
                                      // Tolerancia para considerar un punto
@@ -161,6 +162,7 @@ public class FunctionInstantiator : MonoBehaviour
     public void ComputePoints(Mesh mesh)
     {
         intersectionPoints.Clear();
+        SurfaceEvaluator surface = new SurfaceEvaluator(FunctionGenerator.GetComponent<FunctionGenerator>().WrittenFunction);
         Bounds bounds = mesh.bounds;
         int levelCurveIndex = 0;
 
@@ -179,6 +181,10 @@ public class FunctionInstantiator : MonoBehaviour
         surfaceMaxX = (new Vector3(bounds.max.x, 0, 0)).x;
         surfaceMinZ = (new Vector3(0, 0, bounds.min.z)).z;
         surfaceMaxZ = (new Vector3(0, 0, bounds.max.z)).z;
+        Debug.Log("Límites del mesh - minY: " + minY + ", maxY: " + maxY + ", minX: " + minX + ", maxX: " + maxX + ", minZ: " + minZ + ", maxZ: " + maxZ);
+        Debug.Log("La altura Y en x 0 y z 0 es: " + (new Vector3(0, (float)surface.ComputeZ(0, 0), 0)).y);
+        OriginPoint = new Vector3(-100, (float)surface.ComputeZ(0, 0) * 75f + 100002f, -100);
+        Debug.Log("El punto de origen es: " + OriginPoint);
         // Debug.Log("Límites del mesh - minY: " + minY + ", maxY: " + maxY + ", minX: " + minX + ", maxX: " + maxX + ", minZ: " + minZ + ", maxZ: " + maxZ);
         // Debug.Log("Su posición en el mund del limite inferior de y es: " + (new Vector3(0, bounds.min.y, 0)).y);
 
@@ -296,52 +302,52 @@ public class FunctionInstantiator : MonoBehaviour
     }
     //Se ordenan los puntos por proximidad para dibujar el objeto curva de nivel.
     private List<Vector3> OrderPointsByProximity(List<Vector3> points)
-{
-    if (points.Count <= 2)
-        return points;
-
-    List<Vector3> ordered = new List<Vector3>();
-    HashSet<int> used = new HashSet<int>();
-
-    // Empezamos desde el primer punto
-    Vector3 current = points[0];
-    ordered.Add(current);
-    used.Add(0);
-
-    // Repetimos hasta usar todos los puntos
-    while (ordered.Count < points.Count)
     {
-        float minDist = float.MaxValue;
-        int nextIndex = -1;
+        if (points.Count <= 2)
+            return points;
 
-        // Buscar el punto más cercano al actual que no haya sido usado
-        for (int i = 0; i < points.Count; i++)
+        List<Vector3> ordered = new List<Vector3>();
+        HashSet<int> used = new HashSet<int>();
+
+        // Empezamos desde el primer punto
+        Vector3 current = points[0];
+        ordered.Add(current);
+        used.Add(0);
+
+        // Repetimos hasta usar todos los puntos
+        while (ordered.Count < points.Count)
         {
-            if (used.Contains(i)) continue;
+            float minDist = float.MaxValue;
+            int nextIndex = -1;
 
-            float dist = Vector3.Distance(current, points[i]);
-            if (dist < minDist)
+            // Buscar el punto más cercano al actual que no haya sido usado
+            for (int i = 0; i < points.Count; i++)
             {
-                minDist = dist;
-                nextIndex = i;
+                if (used.Contains(i)) continue;
+
+                float dist = Vector3.Distance(current, points[i]);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    nextIndex = i;
+                }
+            }
+
+            // Si encontramos un punto cercano, lo agregamos
+            if (nextIndex != -1)
+            {
+                current = points[nextIndex];
+                ordered.Add(current);
+                used.Add(nextIndex);
+            }
+            else
+            {
+                break; // No hay más puntos conectables
             }
         }
 
-        // Si encontramos un punto cercano, lo agregamos
-        if (nextIndex != -1)
-        {
-            current = points[nextIndex];
-            ordered.Add(current);
-            used.Add(nextIndex);
-        }
-        else
-        {
-            break; // No hay más puntos conectables
-        }
+        return ordered;
     }
-
-    return ordered;
-}
 
 
     public Mesh ScaleMesh(Mesh mesh)
@@ -349,7 +355,7 @@ public class FunctionInstantiator : MonoBehaviour
         Vector3[] vertices = mesh.vertices;
         for (int i = 0; i < vertices.Length; i++)
         {
-            vertices[i] *= 50f; // Escalar a 50 veces
+            vertices[i] *= 75f; // Escalar a 50 veces
         }
         mesh.vertices = vertices;
         mesh.RecalculateBounds();
@@ -413,7 +419,7 @@ public class FunctionInstantiator : MonoBehaviour
         for (int i = 0; i < points.Count; i++)
         {
             Vector3 modifiedPoint = points[i];
-            modifiedPoint.y /= 48;
+            modifiedPoint.y /= 74f; // Ajustar la altura para que coincida con la escala del mesh
             lineRenderer.SetPosition(i, modifiedPoint + new Vector3(-100, 100000, -100)); // elevar un poco el punto para mejor visibilidad
             //Debug.Log("Punto " + i + ": " + points[i]);
         }
@@ -429,7 +435,7 @@ public class FunctionInstantiator : MonoBehaviour
         if (LevelCurvesIterations <= MaxY)
         {
             Debug.Log("Dibujando curva de nivel en altura: " + LevelCurvesIterations);
-            for (int j = 0; j < gradientObjects.Count-1; j++)
+            for (int j = 0; j < gradientObjects.Count - 1; j++)
             {
                 Debug.Log("Revisando punto: " + gradientObjects[j]);
                 GameObject lineObject = CreateLevelCurveLine(j, gradientObjects.Count);
@@ -451,7 +457,7 @@ public class FunctionInstantiator : MonoBehaviour
             Debug.Log("Todas las curvas de nivel han sido dibujadas.");
             LineRendererCurvesReady = true;
         }
-        
+
     }
 
     public GameObject CreateLevelCurveLine(int LevelCurveNumber, int NumberOfPoints)
@@ -472,6 +478,8 @@ public class FunctionInstantiator : MonoBehaviour
 
         return lineObject;
     }
+
+    
 
 }
 
