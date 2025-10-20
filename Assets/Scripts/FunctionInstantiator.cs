@@ -6,6 +6,7 @@ using UnityEngine.Rendering;
 using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine.ProBuilder.Shapes;
+using System.Linq;
 
 public class FunctionInstantiator : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class FunctionInstantiator : MonoBehaviour
     private GameObject s;
     private GameObject LinerenderObject;
     public Vector3 OriginPoint;
+
+    public float scale = 100f;
 
     private float curveHeight = 10f; // Altura de la curva de nivel
                                      // Tolerancia para considerar un punto
@@ -83,7 +86,7 @@ public class FunctionInstantiator : MonoBehaviour
     {
         supportSurface = new GameObject("SupportSurface");
         supportSurface.transform.position = new Vector3(-100, 99999, -100);
-        supportSurface.transform.localScale = new Vector3(75, 75, 75);
+        supportSurface.transform.localScale = new Vector3(scale, scale, scale);
         supportSurface.AddComponent<MeshFilter>();
         supportSurface.AddComponent<MeshCollider>();
         supportSurface.AddComponent<PhotonView>();
@@ -107,7 +110,6 @@ public class FunctionInstantiator : MonoBehaviour
         ComputePoints(scaledmesh);
         foreach (Vector3 v in intersectionPointsForGradient)
         {
-            Debug.Log("Punto de intersección escalado: " + v);
             Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
             Vector2 grad = GradienteCalculator.CalculateScaledGradient(pointXY, surface);
             Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.50f;
@@ -119,7 +121,7 @@ public class FunctionInstantiator : MonoBehaviour
             detector.GetComponent<Renderer>().enabled = false;
             detector.GetComponent<Collider>().isTrigger = true;
             detector.GetComponent<Collider>().providesContacts = false;
-            detector.transform.localScale = new Vector3(2, 75, 2);
+            detector.transform.localScale = new Vector3(2, scale, 2);
             detector.AddComponent<GradientDetector>();
 
 
@@ -181,14 +183,14 @@ public class FunctionInstantiator : MonoBehaviour
         surfaceMaxZ = (new Vector3(0, 0, bounds.max.z)).z;
         Debug.Log("Límites del mesh - minY: " + minY + ", maxY: " + maxY + ", minX: " + minX + ", maxX: " + maxX + ", minZ: " + minZ + ", maxZ: " + maxZ);
         Debug.Log("La altura Y en x 0 y z 0 es: " + (new Vector3(0, (float)surface.ComputeZ(0, 0), 0)).y);
-        OriginPoint = new Vector3(-100, (float)surface.ComputeZ(0, 0) * 75f + 100002f, -100);
+        OriginPoint = new Vector3(-100, (float)surface.ComputeZ(0, 0) * scale + 100002f, -100);
         Debug.Log("El punto de origen es: " + OriginPoint);
         // Debug.Log("Límites del mesh - minY: " + minY + ", maxY: " + maxY + ", minX: " + minX + ", maxX: " + maxX + ", minZ: " + minZ + ", maxZ: " + maxZ);
         // Debug.Log("Su posición en el mund del limite inferior de y es: " + (new Vector3(0, bounds.min.y, 0)).y);
 
 
 
-        for (float h = minY; h <= maxY + 1e-4f; h += 3f)
+        for (float h = minY; h <= maxY + 1e-4f; h += 1f)
         {
             //Debug.Log("Altura actual de la curva: " + h);
             ComputePointsAtHeight(mesh, h);
@@ -221,14 +223,38 @@ public class FunctionInstantiator : MonoBehaviour
         Debug.Log("Los puntos de intersección en ComputePointsAtHeight a altura " + curveHeight + " son: ");
         if (intersectionPoints.Count > 1)
         {
-            List<Vector3> orderedPoints = OrderPointsByProximity(intersectionPoints);
-            GameObject lineObj = CreateLevelCurveLine(iteration, orderedPoints.Count);
-            LineRenderer lineRenderer = lineObj.GetComponent<LineRenderer>();
-            lineRenderer.SetPositions(orderedPoints.ToArray());
-            for (int i = 0; i < orderedPoints.Count; i++)
+            // Agrupar por cercanía
+            List<List<Vector3>> groups = GroupPointsByProximity(intersectionPoints, 7.0f);
+
+            int groupIndex = 0;
+            foreach (List<Vector3> group in groups)
             {
-                Vector3 modifiedPoint = orderedPoints[i];
-                lineRenderer.SetPosition(i, modifiedPoint + new Vector3(-100, 100000, -100)); // elevar un poco el punto para mejor visibilidad
+                List<Vector3> orderedPoints = OrderPointsByProximity(group);
+                GameObject lineObj = CreateLevelCurveLine(iteration * 100 + groupIndex, orderedPoints.Count);
+
+                LineRenderer lineRenderer = lineObj.GetComponent<LineRenderer>();
+                lineRenderer.positionCount = orderedPoints.Count;
+                for (int i = 0; i < orderedPoints.Count - 1; i++)
+                {
+                    if (orderedPoints[i] == Vector3.zero)
+                    Debug.Log("Punto en cero detectado en grupo " + groupIndex);
+                    if(orderedPoints[i] == null || orderedPoints[i + 1] == null)
+                    {
+                        Debug.Log("Punto nulo " + i + " en la lista de puntos ordenados, saltando.");
+                        continue;
+                    }
+                    if (orderedPoints[i + 1] != null && Vector3.Distance(orderedPoints[i], orderedPoints[i + 1]) > 7.0f)
+                    {
+                        Debug.Log("Saltando punto distante: " + orderedPoints[i] + " a " + orderedPoints[i + 1]);
+                        continue;
+                    }
+                    else
+                    {
+                        lineRenderer.SetPosition(i, orderedPoints[i] + new Vector3(-100, 100000, -100)); // elevar un poco el punto para mejor visibilidad
+                    }
+                }
+                //lineRenderer.SetPositions(orderedPoints.Select(p => p + new Vector3(-100, 100000, -100)).ToArray()); // elevar un poco el punto para mejor visibilidad
+                groupIndex++;
             }
         }
 
@@ -302,9 +328,48 @@ public class FunctionInstantiator : MonoBehaviour
             contadorEpsilon++;
         }
     }
+
+    //Se agrupan los puntos por proximidad, para evitar que el line renderer dibuje lineas cruzadas.
+    private List<List<Vector3>> GroupPointsByProximity(List<Vector3> points, float maxDistance)
+    {
+    List<List<Vector3>> groups = new List<List<Vector3>>();
+    HashSet<int> visited = new HashSet<int>();
+
+    for (int i = 0; i < points.Count; i++)
+    {
+        if (visited.Contains(i)) continue;
+
+        List<Vector3> group = new List<Vector3>();
+        Queue<int> queue = new Queue<int>();
+        queue.Enqueue(i);
+        visited.Add(i);
+
+        while (queue.Count > 0)
+        {
+            int current = queue.Dequeue();
+            group.Add(points[current]);
+
+            for (int j = 0; j < points.Count; j++)
+            {
+                if (visited.Contains(j)) continue;
+
+                if (Vector3.Distance(points[current], points[j]) < maxDistance)
+                {
+                    queue.Enqueue(j);
+                    visited.Add(j);
+                }
+            }
+        }
+
+        groups.Add(group);
+    }
+
+    return groups;
+    }
     //Se ordenan los puntos por proximidad para dibujar el objeto curva de nivel.
     private List<Vector3> OrderPointsByProximity(List<Vector3> points)
     {
+        
         if (points.Count <= 2)
             return points;
 
@@ -351,13 +416,12 @@ public class FunctionInstantiator : MonoBehaviour
         return ordered;
     }
 
-
     public Mesh ScaleMesh(Mesh mesh)
     {
         Vector3[] vertices = mesh.vertices;
         for (int i = 0; i < vertices.Length; i++)
         {
-            vertices[i] *= 75f; // Escalar a 75 veces
+            vertices[i] *= scale; // Escalar cada vértice por la variable scale
         }
         mesh.vertices = vertices;
         mesh.RecalculateBounds();
