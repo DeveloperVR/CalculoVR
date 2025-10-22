@@ -200,6 +200,7 @@ public class FunctionInstantiator : MonoBehaviour
         int contadorEpsilon = 0;
         Vector3[] vertices = mesh.vertices;
         int[] triangles = mesh.triangles;
+        float maxDistance = 10.0f;
 
         for (int i = 0; i < triangles.Length; i += 3)
         {
@@ -218,40 +219,41 @@ public class FunctionInstantiator : MonoBehaviour
         if (intersectionPoints.Count > 1)
         {
             // Agrupar por cercanía
-            List<List<Vector3>> groups = GroupPointsByProximity(intersectionPoints, 7.0f);
+            List<List<Vector3>> groups = GroupPointsByProximity(intersectionPoints, maxDistance);
 
             int groupIndex = 0;
             foreach (List<Vector3> group in groups)
             {
                 List<Vector3> orderedPoints = OrderPointsByProximity(group);
+                List<Vector3> validPoints = new List<Vector3>();
                 GameObject lineObj = CreateLevelCurveLine(curveHeight);
 
                 LineRenderer lineRenderer = lineObj.GetComponent<LineRenderer>();
                 Debug.Log("La altura " + curveHeight + " Grupo " + groupIndex + " con " + (orderedPoints.Count - 1) + " puntos ordenados.");
-                lineRenderer.positionCount = orderedPoints.Count;
-                for (int i = 0; i < orderedPoints.Count-1; i++)
+                for (int i = 0; i < orderedPoints.Count - 1; i++)
                 {
-                    if(orderedPoints[i] == Vector3.zero || orderedPoints[i + 1] == Vector3.zero)
+                    if (orderedPoints[i] == Vector3.zero || orderedPoints[i + 1] == Vector3.zero)
                     {
                         Debug.Log("Punto nulo " + i + " en la lista de puntos ordenados, saltando.");
                         continue;
                     }
-                    if (Vector3.Distance(orderedPoints[i], orderedPoints[i + 1]) > 7.0f)
+                    if (Vector3.Distance(orderedPoints[i], orderedPoints[i + 1]) > maxDistance)
                     {
                         Debug.Log("Saltando punto distante: " + orderedPoints[i] + " a " + orderedPoints[i + 1]);
                         continue;
                     }
                     else
                     {
-                        lineRenderer.SetPosition(i, orderedPoints[i] + new Vector3(-100, 100000, -100)); // elevar un poco el punto para mejor visibilidad
+                        validPoints.Add(orderedPoints[i]);
                     }
-                    if (i == orderedPoints.Count - 2 && Vector3.Distance(orderedPoints[i], orderedPoints[0]) <= 7.0f && orderedPoints[0] != Vector3.zero)
+                    if (i == orderedPoints.Count - 2 && Vector3.Distance(orderedPoints[i], orderedPoints[0]) <= maxDistance && orderedPoints[0] != Vector3.zero)
                     {
                         Debug.Log("Cerrando curva entre: " + orderedPoints[i] + " y " + orderedPoints[0]);
-                        lineRenderer.SetPosition(i + 1, orderedPoints[0] + new Vector3(-100, 100000, -100));
+                        validPoints.Add(orderedPoints[0]);
                     }
                 }
-                //lineRenderer.SetPositions(orderedPoints.Select(p => p + new Vector3(-100, 100000, -100)).ToArray()); // elevar un poco el punto para mejor visibilidad
+                lineRenderer.positionCount = validPoints.Count;
+                lineRenderer.SetPositions(validPoints.Select(p => p).ToArray()); // elevar un poco el punto para mejor visibilidad
                 groupIndex++;
             }
         }
@@ -261,6 +263,7 @@ public class FunctionInstantiator : MonoBehaviour
 
     private void CheckEdge(Vector3 p1, Vector3 p2, float curveHeight, ref int contadorEpsilon)
     {
+
         float epsilon = 0.01f;
         float y1 = p1.y;
         float y2 = p2.y;
@@ -282,13 +285,13 @@ public class FunctionInstantiator : MonoBehaviour
                 float z = p1.z + dir.z * t;
 
                 Vector3 localPoint = new Vector3(x, y, z);
-                intersectionPoints.Add(localPoint);
+                Vector3 worldPoint = transform.TransformPoint(localPoint);
+                intersectionPoints.Add(worldPoint);
                 intersectionPointsForGradient.Add(localPoint);
 
-                Vector3 worldPoint = transform.TransformPoint(localPoint);
                 s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 s.AddComponent<PhotonView>();
-                s.transform.position = (worldPoint);
+                s.transform.position = worldPoint;
                 s.GetComponent<SphereCollider>().enabled = false;
                 s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
                 //Debug.Log("Punto de intersección: " + localPoint.ToString());
@@ -297,11 +300,12 @@ public class FunctionInstantiator : MonoBehaviour
         // Caso 2: uno de los extremos está en el plano
         else if (Mathf.Abs(p1.y - curveHeight) < epsilon)
         {
+            Vector3 worldP1 = transform.TransformPoint(p1);
+
             //Debug.Log("Entró al caso 2");
-            intersectionPoints.Add(p1);
+            intersectionPoints.Add(worldP1);
             intersectionPointsForGradient.Add(p1);
 
-            Vector3 worldP1 = transform.TransformPoint(p1);
             //Debug.Log("Punto de intersección: " + p1.ToString());
             s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             s.AddComponent<PhotonView>();
@@ -312,12 +316,12 @@ public class FunctionInstantiator : MonoBehaviour
         }
         else if (Mathf.Abs(p2.y - curveHeight) < epsilon)
         {
+            Vector3 worldP2 = transform.TransformPoint(p2);
             //Debug.Log("Entró al caso 2.1");
-            intersectionPoints.Add(p2);
+            intersectionPoints.Add(worldP2);
             intersectionPointsForGradient.Add(p2);
 
-            Vector3 worldP2 = transform.TransformPoint(p2);
-            //  Debug.Log("Punto de intersección: " + p2.ToString());
+            //Debug.Log("Punto de intersección: " + p2.ToString());
             s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             s.AddComponent<PhotonView>();
             s.transform.position = worldP2;
@@ -328,91 +332,107 @@ public class FunctionInstantiator : MonoBehaviour
     }
 
     //Se agrupan los puntos por proximidad, para evitar que el line renderer dibuje lineas cruzadas.
-    private List<List<Vector3>> GroupPointsByProximity(List<Vector3> points, float maxDistance)
-    {
-    List<List<Vector3>> groups = new List<List<Vector3>>();
-    HashSet<int> visited = new HashSet<int>();
-
-    for (int i = 0; i < points.Count; i++)
-    {
-        if (visited.Contains(i)) continue;
-
-        List<Vector3> group = new List<Vector3>();
-        Queue<int> queue = new Queue<int>();
-        queue.Enqueue(i);
-        visited.Add(i);
-
-        while (queue.Count > 0)
-        {
-            int current = queue.Dequeue();
-            group.Add(points[current]);
-
-            for (int j = 0; j < points.Count; j++)
-            {
-                if (visited.Contains(j)) continue;
-
-                if (Vector3.Distance(points[current], points[j]) < maxDistance)
-                {
-                    queue.Enqueue(j);
-                    visited.Add(j);
+    private List<List<Vector3>> GroupPointsByProximity(List<Vector3> points, float maxDistance) {
+        List<List<Vector3>> groups = new List<List<Vector3>>();
+        HashSet<int> visited = new HashSet<int>();
+        for (int i = 0; i < points.Count; i++) {
+            if (visited.Contains(i)) continue;
+            List<Vector3> group = new List<Vector3>();
+            Queue<int> queue = new Queue<int>();
+            queue.Enqueue(i);
+            visited.Add(i);
+            while (queue.Count > 0) {
+                int current = queue.Dequeue();
+                group.Add(points[current]);
+                for (int j = 0; j < points.Count; j++) {
+                    if (visited.Contains(j)) continue;
+                    if (Vector3.Distance(points[current], points[j]) < maxDistance) {
+                        queue.Enqueue(j);
+                        visited.Add(j);
+                    }
                 }
             }
+            groups.Add(group);
         }
-
-        groups.Add(group);
+        return groups;
     }
 
-    return groups;
-    }
+    //Se ordenan los puntos por angulo para dibujar el objeto curva de nivel.
+    private List<Vector3> OrderPointsByAngle(List<Vector3> points)
+{
+    if (points.Count <= 2)
+        return points;
+
+    // Calcular el centro (promedio de todos los puntos)
+    Vector3 center = Vector3.zero;
+    foreach (var p in points)
+        center += p;
+    center /= points.Count;
+
+    // Ordenar los puntos por el ángulo respecto al centro en el plano XZ
+    List<Vector3> ordered = points
+        .OrderBy(p => Mathf.Atan2(p.z - center.z, p.x - center.x))
+        .ToList();
+
+    return ordered;
+}
     //Se ordenan los puntos por proximidad para dibujar el objeto curva de nivel.
     private List<Vector3> OrderPointsByProximity(List<Vector3> points)
+{
+    if (points.Count <= 2)
+        return points;
+
+    List<Vector3> ordered = new List<Vector3>();
+    HashSet<int> used = new HashSet<int>();
+
+    // 🔹 1. Elegir el punto inicial: el más abajo y a la izquierda (mínimo z, luego mínimo x)
+    int startIndex = 0;
+    float bestZ = points[0].z;
+    float bestX = points[0].x;
+
+    for (int i = 1; i < points.Count; i++)
     {
-        
-        if (points.Count <= 2)
-            return points;
-
-        List<Vector3> ordered = new List<Vector3>();
-        HashSet<int> used = new HashSet<int>();
-
-        // Empezamos desde el primer punto
-        Vector3 current = points[0];
-        ordered.Add(current);
-        used.Add(0);
-
-        // Repetimos hasta usar todos los puntos
-        while (ordered.Count < points.Count)
+        if (points[i].z < bestZ || (Mathf.Approximately(points[i].z, bestZ) && points[i].x < bestX))
         {
-            float minDist = float.MaxValue;
-            int nextIndex = -1;
+            bestZ = points[i].z;
+            bestX = points[i].x;
+            startIndex = i;
+        }
+    }
 
-            // Buscar el punto más cercano al actual que no haya sido usado
-            for (int i = 0; i < points.Count; i++)
-            {
-                if (used.Contains(i)) continue;
+    Vector3 current = points[startIndex];
+    ordered.Add(current);
+    used.Add(startIndex);
 
-                float dist = Vector3.Distance(current, points[i]);
-                if (dist < minDist)
-                {
-                    minDist = dist;
-                    nextIndex = i;
-                }
-            }
+    // 🔹 2. Recorrer los puntos restantes por proximidad
+    while (ordered.Count < points.Count)
+    {
+        float minDist = float.MaxValue;
+        int nextIndex = -1;
 
-            // Si encontramos un punto cercano, lo agregamos
-            if (nextIndex != -1)
+        for (int i = 0; i < points.Count; i++)
+        {
+            if (used.Contains(i)) continue;
+
+            float dist = Vector3.Distance(current, points[i]);
+            if (dist < minDist)
             {
-                current = points[nextIndex];
-                ordered.Add(current);
-                used.Add(nextIndex);
-            }
-            else
-            {
-                break; // No hay más puntos conectables
+                minDist = dist;
+                nextIndex = i;
             }
         }
 
-        return ordered;
+        if (nextIndex == -1)
+            break;
+
+        current = points[nextIndex];
+        ordered.Add(current);
+        used.Add(nextIndex);
     }
+
+    return ordered;
+}
+
 
     public Mesh ScaleMesh(Mesh mesh)
     {
