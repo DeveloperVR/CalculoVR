@@ -21,9 +21,9 @@ public class FunctionGenerator : MonoBehaviour
     public float B; //Coeficiente de Z.
     private GameObject FunctionInstantiator; //Objeto que instanciará la función.
 
-    [Range(1, 100)] // Rango que aparecerá en el inspector.
+    [Range(1, 1000)] // Rango que aparecerá en el inspector.
     public int xSegments; // Número de vértices en X.
-    [Range(1, 100)]
+    [Range(1, 1000)]
     public int ySegments; // Número de vértices en Y.
 
     public List<Vector3> verts; // Lista de vértices generados.
@@ -144,8 +144,8 @@ public class FunctionGenerator : MonoBehaviour
     {
         Debug.Log("Entró a free Resolver, activando Parser");
         List<Vector3> verts = new List<Vector3>();
-        double stepX = 1.0 / (xSegments - 1);
-        double stepY = 1.0 / (ySegments - 1);
+        double stepX = 100.0 / (xSegments - 1);
+        double stepY = 100.0 / (ySegments - 1);
 
         Tokenizer tokenizer = new Tokenizer(WrittenFunction);
         Parser parser = new Parser(tokenizer);

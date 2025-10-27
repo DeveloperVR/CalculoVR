@@ -24,7 +24,7 @@ public class FunctionInstantiator : MonoBehaviour
     private GameObject LinerenderObject;
     public Vector3 OriginPoint;
 
-    public float scale = 100f;
+    public float scale = 1f;
 
     private float curveHeight = 10f; // Altura de la curva de nivel
                                      // Tolerancia para considerar un punto
@@ -107,31 +107,31 @@ public class FunctionInstantiator : MonoBehaviour
         newsurface.GetComponent<MeshCollider>().providesContacts = false;
         Mesh scaledmesh = GeneratorMesh;
         scaledmesh = ScaleMesh(scaledmesh);
-        ComputePoints(scaledmesh);
-        foreach (Vector3 v in intersectionPointsForGradient)
-        {
-            Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
-            Vector2 grad = GradienteCalculator.CalculateScaledGradient(pointXY, surface);
-            Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.50f;
-            Vector3 newend = end + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
-            //Se crea un detector de gradiente en el punto de intersección para que solo las gradientes cercanas al jugador se activen.
-            GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            detector.name = "GradientDetector";
-            detector.transform.position = newend;
-            detector.GetComponent<Renderer>().enabled = false;
-            detector.GetComponent<Collider>().isTrigger = true;
-            detector.GetComponent<Collider>().providesContacts = false;
-            detector.transform.localScale = new Vector3(2, scale, 2);
-            detector.AddComponent<GradientDetector>();
+        // ComputePoints(scaledmesh);
+        // foreach (Vector3 v in intersectionPointsForGradient)
+        // {
+        //     Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
+        //     Vector2 grad = GradienteCalculator.CalculateScaledGradient(pointXY, surface);
+        //     Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.50f;
+        //     Vector3 newend = end + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
+        //     //Se crea un detector de gradiente en el punto de intersección para que solo las gradientes cercanas al jugador se activen.
+        //     GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        //     detector.name = "GradientDetector";
+        //     detector.transform.position = newend;
+        //     detector.GetComponent<Renderer>().enabled = false;
+        //     detector.GetComponent<Collider>().isTrigger = true;
+        //     detector.GetComponent<Collider>().providesContacts = false;
+        //     detector.transform.localScale = new Vector3(2, scale, 2);
+        //     detector.AddComponent<GradientDetector>();
 
 
-            CreateLineRendererObject(detector);
-            LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
-            lr.positionCount = 2;
-            Vector3 newv = v + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
-            lr.SetPosition(0, newv);
-            lr.SetPosition(1, newend);
-        }
+        //     CreateLineRendererObject(detector);
+        //     LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
+        //     lr.positionCount = 2;
+        //     Vector3 newv = v + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
+        //     lr.SetPosition(0, newv);
+        //     lr.SetPosition(1, newend);
+        // }
     }
 
     [PunRPC]
@@ -289,11 +289,11 @@ public class FunctionInstantiator : MonoBehaviour
                 intersectionPoints.Add(worldPoint);
                 intersectionPointsForGradient.Add(localPoint);
 
-                s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                s.AddComponent<PhotonView>();
-                s.transform.position = worldPoint;
-                s.GetComponent<SphereCollider>().enabled = false;
-                s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
+                // s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                // s.AddComponent<PhotonView>();
+                // s.transform.position = worldPoint;
+                // s.GetComponent<SphereCollider>().enabled = false;
+                // s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
                 //Debug.Log("Punto de intersección: " + localPoint.ToString());
             }
         }
@@ -307,11 +307,11 @@ public class FunctionInstantiator : MonoBehaviour
             intersectionPointsForGradient.Add(p1);
 
             //Debug.Log("Punto de intersección: " + p1.ToString());
-            s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            s.AddComponent<PhotonView>();
-            s.transform.position = worldP1;
-            s.GetComponent<SphereCollider>().enabled = false;
-            s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
+            // s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            // s.AddComponent<PhotonView>();
+            // s.transform.position = worldP1;
+            // s.GetComponent<SphereCollider>().enabled = false;
+            // s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
             contadorEpsilon++;
         }
         else if (Mathf.Abs(p2.y - curveHeight) < epsilon)
@@ -322,11 +322,11 @@ public class FunctionInstantiator : MonoBehaviour
             intersectionPointsForGradient.Add(p2);
 
             //Debug.Log("Punto de intersección: " + p2.ToString());
-            s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            s.AddComponent<PhotonView>();
-            s.transform.position = worldP2;
-            s.GetComponent<SphereCollider>().enabled = false;
-            s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
+            // s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            // s.AddComponent<PhotonView>();
+            // s.transform.position = worldP2;
+            // s.GetComponent<SphereCollider>().enabled = false;
+            // s.transform.localScale = Vector3.one * 0.2f; // Escala de la esfera
             contadorEpsilon++;
         }
     }
