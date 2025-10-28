@@ -89,8 +89,8 @@ public class FunctionGenerator : MonoBehaviour
 
         UpdateMesh();
         PaintMesh();
-        //SaveMesh();
-        //SavePrefab();
+        SaveMesh();
+        SavePrefab();
         FunctionInstantiator.GetComponent<FunctionInstantiator>().SetMesh();
         //ComputePoints(mesh);
     }
