@@ -144,8 +144,8 @@ public class FunctionGenerator : MonoBehaviour
     {
         Debug.Log("Entró a free Resolver, activando Parser");
         List<Vector3> verts = new List<Vector3>();
-        double stepX = 100.0 / (xSegments - 1);
-        double stepY = 100.0 / (ySegments - 1);
+        double stepX = 70.0 / (xSegments - 1);
+        double stepY = 70.0 / (ySegments - 1);
 
         Tokenizer tokenizer = new Tokenizer(WrittenFunction);
         Parser parser = new Parser(tokenizer);
