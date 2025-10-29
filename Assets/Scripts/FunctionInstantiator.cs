@@ -188,7 +188,7 @@ public class FunctionInstantiator : MonoBehaviour
 
         for (float h = minY; h <= maxY + 1e-4f; h += 1f)
         {
-            //Debug.Log("Altura actual de la curva: " + h);
+            Debug.Log("Altura actual de la curva: " + h);
             ComputePointsAtHeight(mesh, h);
             levelCurveIndex++;
         }
