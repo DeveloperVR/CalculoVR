@@ -108,30 +108,36 @@ public class FunctionInstantiator : MonoBehaviour
         Mesh scaledmesh = GeneratorMesh;
         scaledmesh = ScaleMesh(scaledmesh);
         // ComputePoints(scaledmesh);
-        // foreach (Vector3 v in intersectionPointsForGradient)
-        // {
-        //     Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
-        //     Vector2 grad = GradienteCalculator.CalculateScaledGradient(pointXY, surface);
-        //     Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.50f;
-        //     Vector3 newend = end + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
-        //     //Se crea un detector de gradiente en el punto de intersección para que solo las gradientes cercanas al jugador se activen.
-        //     GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        //     detector.name = "GradientDetector";
-        //     detector.transform.position = newend;
-        //     detector.GetComponent<Renderer>().enabled = false;
-        //     detector.GetComponent<Collider>().isTrigger = true;
-        //     detector.GetComponent<Collider>().providesContacts = false;
-        //     detector.transform.localScale = new Vector3(2, scale, 2);
-        //     detector.AddComponent<GradientDetector>();
+        // Gradients();
+    }
+
+    public void Gradients()
+    {
+        SurfaceEvaluator surface = new SurfaceEvaluator(FunctionGenerator.GetComponent<FunctionGenerator>().WrittenFunction);
+        foreach (Vector3 v in intersectionPointsForGradient)
+        {
+            Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
+            Vector2 grad = GradienteCalculator.CalculateScaledGradient(pointXY, surface);
+            Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.50f;
+            Vector3 newend = end + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
+            //Se crea un detector de gradiente en el punto de intersección para que solo las gradientes cercanas al jugador se activen.
+            GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            detector.name = "GradientDetector";
+            detector.transform.position = newend;
+            detector.GetComponent<Renderer>().enabled = false;
+            detector.GetComponent<Collider>().isTrigger = true;
+            detector.GetComponent<Collider>().providesContacts = false;
+            detector.transform.localScale = new Vector3(2, scale, 2);
+            detector.AddComponent<GradientDetector>();
 
 
-        //     CreateLineRendererObject(detector);
-        //     LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
-        //     lr.positionCount = 2;
-        //     Vector3 newv = v + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
-        //     lr.SetPosition(0, newv);
-        //     lr.SetPosition(1, newend);
-        // }
+            CreateLineRendererObject(detector);
+            LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
+            lr.positionCount = 2;
+            Vector3 newv = v + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
+            lr.SetPosition(0, newv);
+            lr.SetPosition(1, newend);
+        }
     }
 
     [PunRPC]
@@ -200,7 +206,7 @@ public class FunctionInstantiator : MonoBehaviour
         int contadorEpsilon = 0;
         Vector3[] vertices = mesh.vertices;
         int[] triangles = mesh.triangles;
-        float maxDistance = 10.0f;
+        float maxDistance = 0.5f;
 
         for (int i = 0; i < triangles.Length; i += 3)
         {

@@ -136,6 +136,11 @@ public class FunctionGenerator : MonoBehaviour
         WrittenFunction = functionReceived;
         MakeFunction();
     }
+    //Este método se usará cuando se trabaje con superficies ya existentes.
+    public void SetFunctionString(string functionString)
+    {
+        WrittenFunction = functionString;
+    }
 
     /// <summary>
     /// Este método retorna los vertices necesarios para construir el paraboloide hiperbólico.
@@ -144,8 +149,8 @@ public class FunctionGenerator : MonoBehaviour
     {
         Debug.Log("Entró a free Resolver, activando Parser");
         List<Vector3> verts = new List<Vector3>();
-        double stepX = 70.0 / (xSegments - 1);
-        double stepY = 70.0 / (ySegments - 1);
+        double stepX = 90.0 / (xSegments - 1);
+        double stepY = 90.0 / (ySegments - 1);
 
         Tokenizer tokenizer = new Tokenizer(WrittenFunction);
         Parser parser = new Parser(tokenizer);
@@ -162,7 +167,7 @@ public class FunctionGenerator : MonoBehaviour
                     { "y", zPos }
                 };
 
-                double yPos = ast.Evaluate(variables);
+                double yPos = ast.Evaluate(variables) / 4.0; // Se divide entre 5 para ajustar la escala de la gráfica.
 
                 verts.Add(new Vector3((float)xPos, (float)yPos, (float)zPos));
             }

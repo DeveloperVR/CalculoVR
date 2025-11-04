@@ -13,7 +13,7 @@ public class TeleportPlayerToSurface : MonoBehaviourPun
     //[PunRPC]
     public void TeleportPlayer()
     {
-        Surface = GameObject.Find("FunctionSurface");
+        Surface = GameObject.FindWithTag("Superficie1");
         Player.transform.position = functionInstantiator.OriginPoint;
         Player.transform.rotation = Quaternion.identity; // Reset rotation to default
     }
