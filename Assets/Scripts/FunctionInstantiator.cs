@@ -106,7 +106,7 @@ public class FunctionInstantiator : MonoBehaviour
         supportSurface.GetComponent<MeshCollider>().providesContacts = true;
         newsurface.GetComponent<MeshCollider>().providesContacts = false;
         Mesh scaledmesh = GeneratorMesh;
-        scaledmesh = ScaleMesh(scaledmesh);
+        scaledmesh = ScaleMesh(scaledmesh, scale);
         // ComputePoints(scaledmesh);
         // Gradients();
     }
@@ -206,7 +206,7 @@ public class FunctionInstantiator : MonoBehaviour
         int contadorEpsilon = 0;
         Vector3[] vertices = mesh.vertices;
         int[] triangles = mesh.triangles;
-        float maxDistance = 0.5f;
+        float maxDistance = 1f;
 
         for (int i = 0; i < triangles.Length; i += 3)
         {
@@ -363,7 +363,7 @@ public class FunctionInstantiator : MonoBehaviour
         return groups;
     }
 
-    //Se ordenan los puntos por angulo para dibujar el objeto curva de nivel.
+    //Se ordenan los puntos por angulo para dibujar el objeto curva de nivel. (Este metodo se intentó usar como una alternativa a la agrupación por distancia)
     private List<Vector3> OrderPointsByAngle(List<Vector3> points)
 {
     if (points.Count <= 2)
@@ -440,12 +440,12 @@ public class FunctionInstantiator : MonoBehaviour
 }
 
 
-    public Mesh ScaleMesh(Mesh mesh)
+    public Mesh ScaleMesh(Mesh mesh, float scalingNumber)
     {
         Vector3[] vertices = mesh.vertices;
         for (int i = 0; i < vertices.Length; i++)
         {
-            vertices[i] *= scale; // Escalar cada vértice por la variable scale
+            vertices[i] *= scalingNumber; // Escalar cada vértice por la variable scalingNumber
         }
         mesh.vertices = vertices;
         mesh.RecalculateBounds();
@@ -521,6 +521,7 @@ public class FunctionInstantiator : MonoBehaviour
         //Logica para dibujar un LineRenderer con los puntos de la curva de nivel.
         GameObject lineObject = new GameObject("LevelCurveLine");
         lineObject.name = "LevelCurveLine" + LevelCurveNumber;
+        lineObject.layer = LayerMask.NameToLayer("LevelCurves");
         LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
         lineRenderer.startWidth = 0.5f;
         lineRenderer.endWidth = 0.5f;
