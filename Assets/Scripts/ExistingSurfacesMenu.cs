@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Unity.XR.CoreUtils;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class ExistingSurfacesMenu : MonoBehaviour
@@ -29,34 +28,35 @@ public class ExistingSurfacesMenu : MonoBehaviour
 
     public void ProcessSurface1(GameObject surface)
     {
+        GameObject surface1 = Resources.Load<GameObject>("Surfaces/Surface1 Variant");
         List<GameObject> SurfaceItems = new List<GameObject>();
-        surface.GetChildGameObjects(SurfaceItems);
+        surface1.GetChildGameObjects(SurfaceItems);
         ThisMenu.SetActive(false);
-        surface.SetActive(true);
+        surface1.SetActive(true);
         functionInstantiator = GameObject.Find("FunctionInstantiator");
         functionGenerator = GameObject.Find("FunctionGenerator");
         treasureCreator = GameObject.Find("TreasureCreator");
-        Mesh surfaceMesh = surface.GetComponent<MeshFilter>().mesh;
+        Mesh surfaceMesh = surface1.GetComponent<MeshFilter>().mesh;
         functionGenerator.GetComponent<FunctionGenerator>().SetFunctionString(Surface1Function);
         surfaceMesh = functionInstantiator.GetComponent<FunctionInstantiator>().ScaleMesh(surfaceMesh, 2.0f);
-        surface.GetComponent<MeshFilter>().mesh = surfaceMesh;
-        surface.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
+        surface1.GetComponent<MeshFilter>().mesh = surfaceMesh;
+        surface1.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
 
         functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh);
         functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
-        List<GameObject> createdTreasures = treasureCreator.GetComponent<TreasureCreator>().PlaceTreasures(treasurePositions1);
-        foreach (GameObject treasure in createdTreasures)
-        {
-            SurfaceItems.Add(treasure);
-            Debug.Log("Treasure added to SurfaceItems: " + treasure.name);
-        }
+        //List<GameObject> createdTreasures = treasureCreator.GetComponent<TreasureCreator>().PlaceTreasures(treasurePositions1);
+        // foreach (GameObject treasure in createdTreasures)
+        // {
+        //     SurfaceItems.Add(treasure);
+        //     Debug.Log("Treasure added to SurfaceItems: " + treasure.name);
+        // }
 
         foreach (GameObject item in SurfaceItems)
         {
             Vector3 currentPos = item.transform.position;
 
             // Mantener las coordenadas X y Z, pero buscar la altura (Y)
-            Vector3 rayStart = new Vector3(currentPos.x, surface.transform.position.y + 100f, currentPos.z);
+            Vector3 rayStart = new Vector3(currentPos.x, surface1.transform.position.y + 100f, currentPos.z);
             Ray ray = new Ray(rayStart, Vector3.down);
 
             if (Physics.Raycast(ray, out RaycastHit hit, 200f))

@@ -187,6 +187,7 @@ public class FunctionInstantiator : MonoBehaviour
         surfaceMinZ = (new Vector3(0, 0, bounds.min.z)).z;
         surfaceMaxZ = (new Vector3(0, 0, bounds.max.z)).z;
         OriginPoint = new Vector3(-100, (float)surface.ComputeZ(0, 0) * scale + 100002f, -100);
+        
         // Debug.Log("Límites del mesh - minY: " + minY + ", maxY: " + maxY + ", minX: " + minX + ", maxX: " + maxX + ", minZ: " + minZ + ", maxZ: " + maxZ);
         // Debug.Log("Su posición en el mund del limite inferior de y es: " + (new Vector3(0, bounds.min.y, 0)).y);
 
