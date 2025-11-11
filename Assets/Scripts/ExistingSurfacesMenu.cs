@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Unity.XR.CoreUtils;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class ExistingSurfacesMenu : MonoBehaviour
@@ -44,25 +43,22 @@ public class ExistingSurfacesMenu : MonoBehaviour
 
         functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh);
         functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
-        List<GameObject> createdTreasures = treasureCreator.GetComponent<TreasureCreator>().PlaceTreasures(treasurePositions1);
-        foreach (GameObject treasure in createdTreasures)
-        {
-            SurfaceItems.Add(treasure);
-            Debug.Log("Treasure added to SurfaceItems: " + treasure.name);
-        }
+
+        Vector3 Origin = surface.transform.position;
 
         foreach (GameObject item in SurfaceItems)
         {
-            Vector3 currentPos = item.transform.position;
-
-            // Mantener las coordenadas X y Z, pero buscar la altura (Y)
-            Vector3 rayStart = new Vector3(currentPos.x, surface.transform.position.y + 100f, currentPos.z);
+            Vector3 direction = item.transform.position - Origin;
+            item.transform.position = Origin + direction * 2.0f;
+            Vector3 pos = item.transform.position;
+            Vector3 rayStart = new Vector3(pos.x, pos.y + 50f, pos.z);
             Ray ray = new Ray(rayStart, Vector3.down);
 
             if (Physics.Raycast(ray, out RaycastHit hit, 200f))
             {
                 // Mover el objeto justo encima del nuevo mesh
-                item.transform.position = hit.point + Vector3.up * 0.001f; // pequeño offset para evitar clipping
+                Debug.Log($"Colisión detectada para {item.name} en {hit.point}");
+                item.transform.position = hit.point + Vector3.up * 0.01f; // pequeño offset para evitar clipping
             }
             else
             {
@@ -73,14 +69,43 @@ public class ExistingSurfacesMenu : MonoBehaviour
 
     public void ProcessSurface2(GameObject surface)
     {
+        List<GameObject> SurfaceItems = new List<GameObject>();
+        surface.GetChildGameObjects(SurfaceItems);
         ThisMenu.SetActive(false);
         surface.SetActive(true);
         functionInstantiator = GameObject.Find("FunctionInstantiator");
         functionGenerator = GameObject.Find("FunctionGenerator");
+        treasureCreator = GameObject.Find("TreasureCreator");
         Mesh surfaceMesh = surface.GetComponent<MeshFilter>().mesh;
         functionGenerator.GetComponent<FunctionGenerator>().SetFunctionString(Surface2Function);
+        surfaceMesh = functionInstantiator.GetComponent<FunctionInstantiator>().ScaleMesh(surfaceMesh, 2.0f);
+        surface.GetComponent<MeshFilter>().mesh = surfaceMesh;
+        surface.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
+
         functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh);
         functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
+
+        Vector3 Origin = surface.transform.position;
+
+        foreach (GameObject item in SurfaceItems)
+        {
+            Vector3 direction = item.transform.position - Origin;
+            item.transform.position = Origin + direction * 2.0f;
+            Vector3 pos = item.transform.position;
+            Vector3 rayStart = new Vector3(pos.x, pos.y + 50f, pos.z);
+            Ray ray = new Ray(rayStart, Vector3.down);
+
+            if (Physics.Raycast(ray, out RaycastHit hit, 200f))
+            {
+                // Mover el objeto justo encima del nuevo mesh
+                Debug.Log($"Colisión detectada para {item.name} en {hit.point}");
+                item.transform.position = hit.point + Vector3.up * 0.01f; // pequeño offset para evitar clipping
+            }
+            else
+            {
+                Debug.LogWarning($"No se detectó el mesh debajo de {item.name}");
+            }
+        }
     }
 
     public void SetPlayer()

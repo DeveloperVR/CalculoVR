@@ -583,7 +583,7 @@ public class GradienteCalculator
         float dzdx = (float)(dzx / epsilon);
         float dzdy = (float)(dzy / epsilon);
 
-        Vector2 gradient = new Vector2(dzdx, dzdy).normalized;
+        Vector2 gradient = new Vector2(dzdx, dzdy);
         Vector2 ScaledGradient = gradient * 10f; // Escalar el gradiente para mejor visibilidad
         return ScaledGradient;
 
