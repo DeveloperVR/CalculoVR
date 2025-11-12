@@ -305,7 +305,6 @@ MonoBehaviour:
   Orientation: {fileID: 1557780801802281702}
   CameraPos: {fileID: 1041017081001423551}
   StandardPlayer: {fileID: 3574352933142508003}
-  ExternalPlayerModel: {fileID: 0}
   MiniMapSprite: {fileID: 3746316175413049872}
 --- !u!54 &5685136905705613002
 Rigidbody:

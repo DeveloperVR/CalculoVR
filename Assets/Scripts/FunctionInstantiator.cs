@@ -206,7 +206,7 @@ public class FunctionInstantiator : MonoBehaviour
         int contadorEpsilon = 0;
         Vector3[] vertices = mesh.vertices;
         int[] triangles = mesh.triangles;
-        float maxDistance = 1f;
+        float maxDistance = 2f;
 
         for (int i = 0; i < triangles.Length; i += 3)
         {
