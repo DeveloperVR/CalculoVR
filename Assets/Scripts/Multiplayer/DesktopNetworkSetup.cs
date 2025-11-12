@@ -11,7 +11,8 @@ public class DektopNetworkSetup : MonoBehaviour
     [SerializeField] private GameObject Orientation;
     [SerializeField] private GameObject CameraPos;
     [SerializeField] private GameObject StandardPlayer;
-    [SerializeField] private GameObject ExternalPlayerModel;
+    //[SerializeField] private GameObject ExternalPlayerModel;
+    [SerializeField] private GameObject MiniMapSprite;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +36,8 @@ public class DektopNetworkSetup : MonoBehaviour
             CameraPos.SetActive(false);
             CameraHolder.SetActive(false);
             StandardPlayer.SetActive(true);
-            ExternalPlayerModel.SetActive(true);
+            //ExternalPlayerModel.SetActive(true);
+            MiniMapSprite.SetActive(false);
         }
 
     }

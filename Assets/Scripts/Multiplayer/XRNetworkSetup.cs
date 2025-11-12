@@ -21,6 +21,7 @@ public class CXRNetworkSetup : MonoBehaviour
     [SerializeField] private OnButtonPress onButtonPress;
     [SerializeField] private GameObject LeftSimulatedHand;
     [SerializeField] private GameObject RightSimulatedHand;
+    [SerializeField] private GameObject MiniMapSprite;
 
     void Start()
     {
@@ -56,6 +57,7 @@ public class CXRNetworkSetup : MonoBehaviour
         else
         {
             skin.SetActive(true);
+            MiniMapSprite.SetActive(false);
         }
     }
 
