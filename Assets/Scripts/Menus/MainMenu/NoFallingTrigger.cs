@@ -6,16 +6,24 @@ public class NoFallingTrigger : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    [SerializeField] private GameObject player;
     [SerializeField] private Transform respawnPoint;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == player)
+        if (other.CompareTag("Player"))
         {
-            // Teleport the player to the respawn point
-            player.transform.position = respawnPoint.position;
-            player.transform.rotation = respawnPoint.rotation; // Optional: Reset rotation
+            GameObject player = other.gameObject;
+            {
+                // Teleport the player to the respawn point
+                player.transform.position = respawnPoint.position;
+                player.transform.rotation = respawnPoint.rotation; // Optional: Reset rotation
+            }
         }
     }
+
+    private void SetSpawnPoint(Transform newRespawnPoint)
+    {
+        respawnPoint = newRespawnPoint;
+    }
+
 }

@@ -35,7 +35,19 @@ public class FunctionInstantiator : MonoBehaviour
     public List<GameObject> gradientObjects = new List<GameObject>();
     private bool isLevelCurvesReady = false;
     private bool LineRendererCurvesReady = false;
-
+    Color[] LevelCurveColors = new Color[]
+    {
+        new Color(0f, 0f, 1f),     // Azul
+        new Color(0f, 0.5f, 1f),   // Azul cielo
+        new Color(0f, 1f, 1f),     // Cian
+        new Color(0f, 1f, 0.5f),   // Verde agua
+        new Color(0f, 1f, 0f),     // Verde
+        new Color(0.5f, 1f, 0f),   // Amarillo verdoso
+        new Color(1f, 1f, 0f),     // Amarillo
+        new Color(1f, 0.5f, 0f),   // Naranja
+        new Color(1f, 0.25f, 0f),  // Rojo anaranjado
+        new Color(1f, 0f, 0f)      // Rojo
+    };
 
     void Start()
     {
@@ -187,7 +199,7 @@ public class FunctionInstantiator : MonoBehaviour
         surfaceMinZ = (new Vector3(0, 0, bounds.min.z)).z;
         surfaceMaxZ = (new Vector3(0, 0, bounds.max.z)).z;
         OriginPoint = new Vector3(-100, (float)surface.ComputeZ(0, 0) * scale + 100002f, -100);
-        // Debug.Log("Límites del mesh - minY: " + minY + ", maxY: " + maxY + ", minX: " + minX + ", maxX: " + maxX + ", minZ: " + minZ + ", maxZ: " + maxZ);
+        Debug.Log("Límites del mesh - minY: " + minY + ", maxY: " + maxY + ", minX: " + minX + ", maxX: " + maxX + ", minZ: " + minZ + ", maxZ: " + maxZ);
         // Debug.Log("Su posición en el mund del limite inferior de y es: " + (new Vector3(0, bounds.min.y, 0)).y);
 
 
