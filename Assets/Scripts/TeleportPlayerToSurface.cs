@@ -9,6 +9,8 @@ public class TeleportPlayerToSurface : MonoBehaviourPun
     [SerializeField] private GameObject Player;
     [SerializeField] private GameObject Surface;
     [SerializeField] private FunctionInstantiator functionInstantiator;
+    [SerializeField] private GameObject predeterminedTelepor;
+    [SerializeField] private GameObject PredeterminedSurfacesMenu;
 
     //[PunRPC]
     public void TeleportPlayer()
@@ -34,5 +36,11 @@ public class TeleportPlayerToSurface : MonoBehaviourPun
     public void callTeleport()
     {
         TeleportPlayer();
+    }
+
+    public void standardTeleport()
+    {
+        Player.transform.position = predeterminedTelepor.transform.position;
+        PredeterminedSurfacesMenu.SetActive(true);
     }
 }

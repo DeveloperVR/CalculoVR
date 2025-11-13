@@ -1,13 +1,15 @@
 using System.Collections.Generic;
+using Photon.Pun;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 
-public class ExistingSurfacesMenu : MonoBehaviour
+public class ExistingSurfacesMenu : MonoBehaviourPun
 {
     GameObject functionInstantiator;
     GameObject functionGenerator;
     GameObject treasureCreator;
     [SerializeField] GameObject ThisMenu;
+    [SerializeField] GameObject GoToSurfaceMenu;
     [SerializeField] GameObject Surface1;
     string Surface1Function = "25.6* (2.71)^(-((x - 25.6)^2 / 1.9^4 + (y - 20.2)^2 / 4.1^2))   +  7.6* (2.71)^(-((x - 20.1)^2 / 1.8^4 + (y - 17)^2 / 2.6^2))   +   15.8* (2.71)^(-((x - 8.3)^2 / 2.2^4 + (y - 30)^2 / 7.2^2))  + 8* (2.71)^(-((x - 14.2)^2 / 1.5^4 + (y - 26.8)^2 / 3.2^2))   +    9.5* (2.71)^(-((x - 6.6)^2 / 2.2^4 + (y -17.2)^2 / 5^2))   +   17.7* (2.71)^(-((x - 2.7)^2 / 1.9^4 + (y - 8.5)^2 / 3.4^2))  +  8.6* (2.71)^(-((x - 15.6)^2 / 2.5^4 + (y - 3.4)^2 / 5.5^2))  -  9.5* (2.71)^(-((x - 31.7)^2 / 2.7^4 + (y - 7.5)^2 / 5.3^2))  -5* (2.71)^(-((x - 21.8)^2 / 1.8^4 + (y - 10.7)^2 / 4.5^2)) -2* (2.71)^(-((x - 25.5)^2 / 2.5^4 + (y - 30)^2 / 3.2^2))";
     List<Vector3> treasurePositions1 = new List<Vector3>()
@@ -25,26 +27,28 @@ public class ExistingSurfacesMenu : MonoBehaviour
     [SerializeField] GameObject Surface3;
 
     GameObject Player;
+    private bool ActiveSurface;
 
-    public void ProcessSurface1(GameObject surface)
+    [PunRPC]
+    public void ProcessSurface1()
     {
         List<GameObject> SurfaceItems = new List<GameObject>();
-        surface.GetChildGameObjects(SurfaceItems);
+        Surface1.GetChildGameObjects(SurfaceItems);
         ThisMenu.SetActive(false);
-        surface.SetActive(true);
+        Surface1.SetActive(true);
         functionInstantiator = GameObject.Find("FunctionInstantiator");
         functionGenerator = GameObject.Find("FunctionGenerator");
         treasureCreator = GameObject.Find("TreasureCreator");
-        Mesh surfaceMesh = surface.GetComponent<MeshFilter>().mesh;
+        Mesh surfaceMesh = Surface1.GetComponent<MeshFilter>().mesh;
         functionGenerator.GetComponent<FunctionGenerator>().SetFunctionString(Surface1Function);
         surfaceMesh = functionInstantiator.GetComponent<FunctionInstantiator>().ScaleMesh(surfaceMesh, 2.0f);
-        surface.GetComponent<MeshFilter>().mesh = surfaceMesh;
-        surface.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
+        Surface1.GetComponent<MeshFilter>().mesh = surfaceMesh;
+        Surface1.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
 
         functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh, 2f);
         functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
 
-        Vector3 Origin = surface.transform.position;
+        Vector3 Origin = Surface1.transform.position;
 
         foreach (GameObject item in SurfaceItems)
         {
@@ -65,30 +69,39 @@ public class ExistingSurfacesMenu : MonoBehaviour
                 Debug.LogWarning($"No se detectó el mesh debajo de {item.name}");
             }
         }
+
+        GoToSurfaceMenu.SetActive(true);
+        if (ActiveSurface == true)
+        {
+            Surface2.SetActive(false);
+            ActiveSurface = true;
+        }
+
     }
 
-    public void ProcessSurface2(GameObject surface)
+    [PunRPC]
+    public void ProcessSurface2()
     {
         List<GameObject> SurfaceItems = new List<GameObject>();
-        surface.GetChildGameObjects(SurfaceItems);
+        Surface2.GetChildGameObjects(SurfaceItems);
         ThisMenu.SetActive(false);
-        surface.SetActive(true);
+        Surface2.SetActive(true);
         functionInstantiator = GameObject.Find("FunctionInstantiator");
         functionGenerator = GameObject.Find("FunctionGenerator");
         treasureCreator = GameObject.Find("TreasureCreator");
-        Mesh surfaceMesh = surface.GetComponent<MeshFilter>().mesh;
+        Mesh surfaceMesh = Surface2.GetComponent<MeshFilter>().mesh;
         functionGenerator.GetComponent<FunctionGenerator>().SetFunctionString(Surface2Function);
         surfaceMesh = functionInstantiator.GetComponent<FunctionInstantiator>().ScaleMesh(surfaceMesh, 2.0f);
-        surface.GetComponent<MeshFilter>().mesh = surfaceMesh;
+        Surface2.GetComponent<MeshFilter>().mesh = surfaceMesh;
         surfaceMesh.RecalculateBounds();
         surfaceMesh.RecalculateNormals();
-        surface.GetComponent<MeshCollider>().sharedMesh = null;
-        surface.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
+        Surface2.GetComponent<MeshCollider>().sharedMesh = null;
+        Surface2.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
 
-        functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh, 0.5f);
+        functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh, 1f);
         functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
 
-        Vector3 Origin = surface.transform.position;
+        Vector3 Origin = Surface2.transform.position;
 
         foreach (GameObject item in SurfaceItems)
         {
@@ -108,6 +121,12 @@ public class ExistingSurfacesMenu : MonoBehaviour
             {
                 Debug.LogWarning($"No se detectó el mesh debajo de {item.name}");
             }
+        }
+        GoToSurfaceMenu.SetActive(true);
+        if (ActiveSurface == true)
+        {
+            Surface1.SetActive(false);
+            ActiveSurface = true;
         }
     }
 
@@ -123,6 +142,16 @@ public class ExistingSurfacesMenu : MonoBehaviour
             Debug.Log("XR Origin (XR Rig) found: " + Player.name);
             ThisMenu.SetActive(true);
         }
+    }
+
+    public void OnlineSurface1Call()
+    {
+        photonView.RPC("ProcessSurface1", RpcTarget.AllBuffered);
+    }
+
+    public void OnlineSurface2Call()
+    {
+        photonView.RPC("ProcessSurface2", RpcTarget.AllBuffered);
     }    
 
 }
