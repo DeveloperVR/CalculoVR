@@ -63,16 +63,11 @@ public class FunctionInstantiator : MonoBehaviour
         createSupportSurface();
     }
 
-    void Update()
-    {
-        return;
-    }
-
     // Update is called once per frame
     public void CreateSurface()
     {
         newsurface = new GameObject("FunctionSurface");
-        newsurface.transform.position = new Vector3(-100, 100000, -100);
+        newsurface.transform.position = new Vector3(100, 100, 100);
         //newsurface.transform.localScale = new Vector3(50, 50, 50);
         newsurface.AddComponent<MeshFilter>();
         newsurface.AddComponent<MeshRenderer>();
@@ -97,7 +92,7 @@ public class FunctionInstantiator : MonoBehaviour
     public void createSupportSurface()
     {
         supportSurface = new GameObject("SupportSurface");
-        supportSurface.transform.position = new Vector3(-100, 99999, -100);
+        supportSurface.transform.position = new Vector3(100, 100, 100);
         supportSurface.transform.localScale = new Vector3(scale, scale, scale);
         supportSurface.AddComponent<MeshFilter>();
         supportSurface.AddComponent<MeshCollider>();
@@ -119,8 +114,8 @@ public class FunctionInstantiator : MonoBehaviour
         newsurface.GetComponent<MeshCollider>().providesContacts = false;
         Mesh scaledmesh = GeneratorMesh;
         scaledmesh = ScaleMesh(scaledmesh, scale);
-        // ComputePoints(scaledmesh);
-        // Gradients();
+        ComputePoints(scaledmesh);
+        //Gradients();
     }
 
     public void Gradients()
@@ -131,7 +126,7 @@ public class FunctionInstantiator : MonoBehaviour
             Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
             Vector2 grad = GradienteCalculator.CalculateScaledGradient(pointXY, surface);
             Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.50f;
-            Vector3 newend = end + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
+            Vector3 newend = end + new Vector3(100, 102f, 100); // elevar un poco el punto para mejor visibilidad
             //Se crea un detector de gradiente en el punto de intersección para que solo las gradientes cercanas al jugador se activen.
             GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             detector.name = "GradientDetector";
@@ -146,7 +141,7 @@ public class FunctionInstantiator : MonoBehaviour
             CreateLineRendererObject(detector);
             LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
             lr.positionCount = 2;
-            Vector3 newv = v + new Vector3(-100, 100003f, -100); // elevar un poco el punto para mejor visibilidad
+            Vector3 newv = v + new Vector3(100, 102f, 100); // elevar un poco el punto para mejor visibilidad
             lr.SetPosition(0, newv);
             lr.SetPosition(1, newend);
         }
@@ -198,7 +193,7 @@ public class FunctionInstantiator : MonoBehaviour
         surfaceMaxX = (new Vector3(bounds.max.x, 0, 0)).x;
         surfaceMinZ = (new Vector3(0, 0, bounds.min.z)).z;
         surfaceMaxZ = (new Vector3(0, 0, bounds.max.z)).z;
-        OriginPoint = new Vector3(-100, (float)surface.ComputeZ(0, 0) * scale + 100002f, -100);
+        OriginPoint = new Vector3(100, (float)surface.ComputeZ(0, 0) * scale + 102, 100);
         Debug.Log("Límites del mesh - minY: " + minY + ", maxY: " + maxY + ", minX: " + minX + ", maxX: " + maxX + ", minZ: " + minZ + ", maxZ: " + maxZ);
         // Debug.Log("Su posición en el mund del limite inferior de y es: " + (new Vector3(0, bounds.min.y, 0)).y);
 
@@ -523,7 +518,7 @@ public class FunctionInstantiator : MonoBehaviour
         {
             Vector3 modifiedPoint = points[i];
             modifiedPoint.y /= 74f; // Ajustar la altura para que coincida con la escala del mesh
-            lineRenderer.SetPosition(i, modifiedPoint + new Vector3(-100, 100000, -100)); // elevar un poco el punto para mejor visibilidad
+            lineRenderer.SetPosition(i, modifiedPoint + new Vector3(100, 102, 100)); // elevar un poco el punto para mejor visibilidad
             //Debug.Log("Punto " + i + ": " + points[i]);
         }
 

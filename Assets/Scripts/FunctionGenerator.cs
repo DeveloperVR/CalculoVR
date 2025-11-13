@@ -433,7 +433,7 @@ public class FunctionGenerator : MonoBehaviour
             intersectionPoints.Add(p1);
             Debug.Log("Punto de intersección: " + p1.ToString());
             s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            s.transform.position = new Vector3(p1.x - 100, p1.y + 100000, p1.z - 100);
+            s.transform.position = new Vector3(p1.x + 100, p1.y + 100, p1.z + 100);
             s.transform.localScale = Vector3.one * 0.5f; // Escala de la esfera
             contadorEpsilon++;
         }
@@ -443,7 +443,7 @@ public class FunctionGenerator : MonoBehaviour
             intersectionPoints.Add(p2);
             Debug.Log("Punto de intersección: " + p2.ToString());
             s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            s.transform.position = new Vector3(p2.x - 100, p2.y + 100000, p2.z - 100);
+            s.transform.position = new Vector3(p2.x + 100, p2.y + 100, p2.z + 100);
             s.transform.localScale = Vector3.one * 0.5f; // Escala de la esfera
             contadorEpsilon++;
         }

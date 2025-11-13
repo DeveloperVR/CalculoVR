@@ -42,7 +42,7 @@ public class ExistingSurfacesMenu : MonoBehaviour
         surface.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
 
         functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh);
-        //functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
+        functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
 
         Vector3 Origin = surface.transform.position;
 
@@ -80,6 +80,9 @@ public class ExistingSurfacesMenu : MonoBehaviour
         functionGenerator.GetComponent<FunctionGenerator>().SetFunctionString(Surface2Function);
         surfaceMesh = functionInstantiator.GetComponent<FunctionInstantiator>().ScaleMesh(surfaceMesh, 2.0f);
         surface.GetComponent<MeshFilter>().mesh = surfaceMesh;
+        surfaceMesh.RecalculateBounds();
+        surfaceMesh.RecalculateNormals();
+        surface.GetComponent<MeshCollider>().sharedMesh = null;
         surface.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
 
         functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh);
