@@ -207,12 +207,12 @@ public class FunctionInstantiator : MonoBehaviour
         for (float h = minY; h <= maxY + 1e-4f; h += 1f)
         {
             Debug.Log("Altura actual de la curva: " + h);
-            ComputePointsAtHeight(mesh, h);
+            ComputePointsAtHeight(mesh, h, minY, maxY);
             levelCurveIndex++;
         }
     }
 
-    private void ComputePointsAtHeight(Mesh mesh, float curveHeight)
+    private void ComputePointsAtHeight(Mesh mesh, float curveHeight, float minY, float maxY)
     {
         intersectionPoints.Clear();
         int contadorEpsilon = 0;
@@ -244,7 +244,8 @@ public class FunctionInstantiator : MonoBehaviour
             {
                 List<Vector3> orderedPoints = OrderPointsByProximity(group);
                 List<Vector3> validPoints = new List<Vector3>();
-                GameObject lineObj = CreateLevelCurveLine(curveHeight);
+                Color lineColor = GetHeightColor(curveHeight, minY, maxY);
+                GameObject lineObj = CreateLevelCurveLine(curveHeight, lineColor);
 
                 LineRenderer lineRenderer = lineObj.GetComponent<LineRenderer>();
                 Debug.Log("La altura " + curveHeight + " Grupo " + groupIndex + " con " + (orderedPoints.Count - 1) + " puntos ordenados.");
@@ -528,7 +529,7 @@ public class FunctionInstantiator : MonoBehaviour
 
     }
     //Metodo para crear un objeto con line renderer para las curvas de nivel.
-    public GameObject CreateLevelCurveLine(float LevelCurveNumber)
+    public GameObject CreateLevelCurveLine(float LevelCurveNumber, Color lineColor)
     {
         //Logica para dibujar un LineRenderer con los puntos de la curva de nivel.
         GameObject lineObject = new GameObject("LevelCurveLine");
@@ -538,13 +539,41 @@ public class FunctionInstantiator : MonoBehaviour
         lineRenderer.startWidth = 0.5f;
         lineRenderer.endWidth = 0.5f;
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.startColor = Color.white;
-        lineRenderer.endColor = Color.white;
+        lineRenderer.startColor = lineColor;
+        lineRenderer.endColor = lineColor;
         lineRenderer.useWorldSpace = true;
         lineRenderer.shadowCastingMode = ShadowCastingMode.Off;
         lineRenderer.receiveShadows = false;
 
         return lineObject;
+    }
+
+    public static Color GetHeightColor(float y, float minHeight, float maxHeight)
+    {
+        // Normalizar entre 0 y 1
+        float t = Mathf.InverseLerp(minHeight, maxHeight, y);
+
+        // Puedes ajustar los puntos intermedios para definir tu propio gradiente
+        if (t < 0.25f)
+        {
+            // Azul → Cian
+            return Color.Lerp(new Color(0f, 0f, 1f), new Color(0f, 1f, 1f), t / 0.25f);
+        }
+        else if (t < 0.5f)
+        {
+            // Cian → Verde
+            return Color.Lerp(new Color(0f, 1f, 1f), new Color(0f, 1f, 0f), (t - 0.25f) / 0.25f);
+        }
+        else if (t < 0.75f)
+        {
+            // Verde → Amarillo
+            return Color.Lerp(new Color(0f, 1f, 0f), new Color(1f, 1f, 0f), (t - 0.5f) / 0.25f);
+        }
+        else
+        {
+            // Amarillo → Rojo
+            return Color.Lerp(new Color(1f, 1f, 0f), new Color(1f, 0f, 0f), (t - 0.75f) / 0.25f);
+        }
     }
 
     
