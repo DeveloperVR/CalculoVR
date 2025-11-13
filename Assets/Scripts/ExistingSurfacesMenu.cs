@@ -41,7 +41,7 @@ public class ExistingSurfacesMenu : MonoBehaviour
         surface.GetComponent<MeshFilter>().mesh = surfaceMesh;
         surface.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
 
-        functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh);
+        functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh, 2f);
         functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
 
         Vector3 Origin = surface.transform.position;
@@ -85,7 +85,7 @@ public class ExistingSurfacesMenu : MonoBehaviour
         surface.GetComponent<MeshCollider>().sharedMesh = null;
         surface.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
 
-        functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh);
+        functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh, 0.5f);
         functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
 
         Vector3 Origin = surface.transform.position;
@@ -123,12 +123,6 @@ public class ExistingSurfacesMenu : MonoBehaviour
             Debug.Log("XR Origin (XR Rig) found: " + Player.name);
             ThisMenu.SetActive(true);
         }
-    }
-
-    public void PlaceTreasures(List<Vector3> treasurePositions)
-    {
-        
-    }
-    
+    }    
 
 }

@@ -10,6 +10,7 @@ using System.Linq;
 
 public class FunctionInstantiator : MonoBehaviour
 {
+    [SerializeField] private GameObject LandingPlataform;
     private GameObject FunctionGenerator;
     public GameObject functionMesh;
     private String MeshPath;
@@ -114,7 +115,7 @@ public class FunctionInstantiator : MonoBehaviour
         newsurface.GetComponent<MeshCollider>().providesContacts = false;
         Mesh scaledmesh = GeneratorMesh;
         scaledmesh = ScaleMesh(scaledmesh, scale);
-        ComputePoints(scaledmesh);
+        ComputePoints(scaledmesh, 2f);
         //Gradients();
     }
 
@@ -171,7 +172,7 @@ public class FunctionInstantiator : MonoBehaviour
 
     //-------------------------------------LevelCurves-------------------------------------
 
-    public void ComputePoints(Mesh mesh)
+    public void ComputePoints(Mesh mesh, float maxDistance)
     {
         intersectionPoints.Clear();
         SurfaceEvaluator surface = new SurfaceEvaluator(FunctionGenerator.GetComponent<FunctionGenerator>().WrittenFunction);
@@ -194,6 +195,7 @@ public class FunctionInstantiator : MonoBehaviour
         surfaceMinZ = (new Vector3(0, 0, bounds.min.z)).z;
         surfaceMaxZ = (new Vector3(0, 0, bounds.max.z)).z;
         OriginPoint = new Vector3(100, (float)surface.ComputeZ(0, 0) * scale + 102, 100);
+        LandingPlataform.GetComponent<NoFallingTrigger>().SetSpawnPoint(OriginPoint);
         Debug.Log("Límites del mesh - minY: " + minY + ", maxY: " + maxY + ", minX: " + minX + ", maxX: " + maxX + ", minZ: " + minZ + ", maxZ: " + maxZ);
         // Debug.Log("Su posición en el mund del limite inferior de y es: " + (new Vector3(0, bounds.min.y, 0)).y);
 
@@ -202,18 +204,17 @@ public class FunctionInstantiator : MonoBehaviour
         for (float h = minY; h <= maxY + 1e-4f; h += 1f)
         {
             Debug.Log("Altura actual de la curva: " + h);
-            ComputePointsAtHeight(mesh, h, minY, maxY);
+            ComputePointsAtHeight(mesh, h, minY, maxY, maxDistance);
             levelCurveIndex++;
         }
     }
 
-    private void ComputePointsAtHeight(Mesh mesh, float curveHeight, float minY, float maxY)
+    private void ComputePointsAtHeight(Mesh mesh, float curveHeight, float minY, float maxY, float maxDistance)
     {
         intersectionPoints.Clear();
         int contadorEpsilon = 0;
         Vector3[] vertices = mesh.vertices;
         int[] triangles = mesh.triangles;
-        float maxDistance = 2f;
 
         for (int i = 0; i < triangles.Length; i += 3)
         {

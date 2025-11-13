@@ -6,7 +6,7 @@ public class NoFallingTrigger : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    [SerializeField] private Transform respawnPoint;
+    [SerializeField] private Vector3 respawnPosition;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -15,15 +15,15 @@ public class NoFallingTrigger : MonoBehaviour
             GameObject player = other.gameObject;
             {
                 // Teleport the player to the respawn point
-                player.transform.position = respawnPoint.position;
-                player.transform.rotation = respawnPoint.rotation; // Optional: Reset rotation
+                player.transform.position = respawnPosition;
+                player.transform.rotation = Quaternion.identity; // Optional: Reset rotation
             }
         }
     }
 
-    private void SetSpawnPoint(Transform newRespawnPoint)
+    public void SetSpawnPoint(Vector3 newRespawnPosition)
     {
-        respawnPoint = newRespawnPoint;
+        respawnPosition = newRespawnPosition;
     }
 
 }
