@@ -8,6 +8,8 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
     GameObject functionInstantiator;
     GameObject functionGenerator;
     GameObject treasureCreator;
+    GameObject treasureManager;
+    [SerializeField] GameObject TreasureManagerObject;
     [SerializeField] GameObject ThisMenu;
     [SerializeField] GameObject GoToSurfaceMenu;
     [SerializeField] GameObject Surface1;
@@ -80,7 +82,8 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
                 Debug.LogWarning($"No se detectó el mesh debajo de {item.name}");
             }
         }
-
+        TreasureManagerObject.GetComponent<TreasureManager>().SetTotalTreasures(6);
+        TreasureManagerObject.GetComponent<TreasureManager>().SetSurfaceRoutine(1);
         GoToSurfaceMenu.SetActive(true);
         
 
@@ -138,6 +141,8 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
                 Debug.LogWarning($"No se detectó el mesh debajo de {item.name}");
             }
         }
+        TreasureManagerObject.GetComponent<TreasureManager>().SetTotalTreasures(11);
+        TreasureManagerObject.GetComponent<TreasureManager>().SetSurfaceRoutine(2);
         GoToSurfaceMenu.SetActive(true);
         
     }
