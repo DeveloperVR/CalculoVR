@@ -37,10 +37,15 @@ public class TeleportPlayerToSurface : MonoBehaviourPun
     {
         TeleportPlayer();
     }
+    
+    public void SetSurface(GameObject surface)
+    {
+        Surface = surface;
+    }
 
     public void standardTeleport()
     {
-        Player.transform.position = predeterminedTelepor.transform.position;
+        Player.transform.position = Surface.transform.position + Vector3.up * 2f;
         PredeterminedSurfacesMenu.SetActive(true);
     }
 }

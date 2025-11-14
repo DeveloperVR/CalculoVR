@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class WristMenu : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class WristMenu : MonoBehaviour
     public GameObject miniMap;
     public InputActionReference ActivateMiniMap;
     private GameObject Player;
+    public RenderTexture miniMapTexture;
+    public List<Sprite> Surface1Clues;
     private void Awake()
     {
         ActivateMiniMap.action.Enable();
@@ -57,6 +60,23 @@ public class WristMenu : MonoBehaviour
                 ActivateMiniMap.action.Enable();
                 ActivateMiniMap.action.performed += MinimapButtonPressed;
                 break;
+        }
+    }
+
+    public void SetMiniMapSprite()
+    {
+        miniMap.GetComponent<RawImage>().texture = miniMapTexture;
+    }
+
+     public void SetClueSprite(int clueIndex)
+    {
+        if (clueIndex >= 0 && clueIndex < Surface1Clues.Count-1)
+        {
+            miniMap.GetComponent<RawImage>().texture = Surface1Clues[clueIndex].texture;
+        }
+        else
+        {
+            Debug.LogWarning("Clue index out of range.");
         }
     }
 

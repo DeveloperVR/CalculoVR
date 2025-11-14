@@ -11,6 +11,8 @@ public class TreasureManager : MonoBehaviourPun
     [SerializeField] private List<GameObject> Treasures = new List<GameObject>();
     private int treasureIndex = 0;
     private int SurfaceRoutine;
+    [SerializeField] private DesktopMiniMap desktopMiniMap;
+    [SerializeField] private WristMenu wristMenu;
     // Start is called before the first frame update
 
     public void SetTotalTreasures(int total)
@@ -51,7 +53,7 @@ public class TreasureManager : MonoBehaviourPun
     [PunRPC]
     private void Routine1()
     {
-        if (treasureIndex+1 >= totalTreasures)
+        if (treasureIndex+2 >= totalTreasures)
         {
             Debug.Log("All treasures collected on surface 1!");
             // Add any additional logic for when all treasures are collected
@@ -59,8 +61,17 @@ public class TreasureManager : MonoBehaviourPun
             Treasures[treasureIndex].SetActive(false);
             resetValues();
             SetSurfaceRoutine(0);
+            desktopMiniMap.SetMiniMapSprite();
+            wristMenu.SetMiniMapSprite();
             return;
         }
+        if(treasureIndex+1 != totalTreasures)
+        {
+            desktopMiniMap.SetClueSprite(treasureIndex+1);
+            wristMenu.SetClueSprite(treasureIndex+1);
+        }
+        
+        
         Treasures[treasureIndex].SetActive(false);
         if(treasureIndex + 1 < totalTreasures) Treasures[treasureIndex+1].SetActive(true);
         treasureIndex++;

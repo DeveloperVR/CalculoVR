@@ -82,9 +82,13 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
                 Debug.LogWarning($"No se detectó el mesh debajo de {item.name}");
             }
         }
+        // Cambiar el minimapa por la primera pista
+        GameObject.Find("DesktopMiniMap").GetComponent<DesktopMiniMap>().SetClueSprite(0);
+        GameObject.Find("WristMenu").GetComponent<WristMenu>().SetClueSprite(0);
         TreasureManagerObject.GetComponent<TreasureManager>().SetTotalTreasures(6);
         TreasureManagerObject.GetComponent<TreasureManager>().SetSurfaceRoutine(1);
         GoToSurfaceMenu.SetActive(true);
+        GoToSurfaceMenu.GetComponent<TeleportPlayerToSurface>().SetSurface(Surface1);
         
 
     }
@@ -144,6 +148,7 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
         TreasureManagerObject.GetComponent<TreasureManager>().SetTotalTreasures(11);
         TreasureManagerObject.GetComponent<TreasureManager>().SetSurfaceRoutine(2);
         GoToSurfaceMenu.SetActive(true);
+        GoToSurfaceMenu.GetComponent<TeleportPlayerToSurface>().SetSurface(Surface2);
         
     }
 
