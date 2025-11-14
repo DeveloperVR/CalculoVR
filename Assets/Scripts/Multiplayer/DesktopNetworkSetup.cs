@@ -1,8 +1,9 @@
 
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
-public class DektopNetworkSetup : MonoBehaviour
+public class DektopNetworkSetup : MonoBehaviourPun
 {
     [SerializeField] private MonoBehaviour movementScript;
     [SerializeField] private Rigidbody rb;
@@ -13,6 +14,7 @@ public class DektopNetworkSetup : MonoBehaviour
     [SerializeField] private GameObject StandardPlayer;
     //[SerializeField] private GameObject ExternalPlayerModel;
     [SerializeField] private GameObject MiniMapSprite;
+    [SerializeField] private GameObject Skin;
     // Start is called before the first frame update
     void Start()
     {
@@ -40,5 +42,11 @@ public class DektopNetworkSetup : MonoBehaviour
             MiniMapSprite.SetActive(false);
         }
 
+    }
+
+    [PunRPC]
+    public void ResetSkinToAll()
+    {
+        Skin.transform.localPosition = new Vector3(0, 0, 0);
     }
 }

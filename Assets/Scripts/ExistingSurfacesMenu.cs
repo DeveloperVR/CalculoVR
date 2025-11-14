@@ -89,6 +89,7 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
         TreasureManagerObject.GetComponent<TreasureManager>().SetSurfaceRoutine(1);
         GoToSurfaceMenu.SetActive(true);
         GoToSurfaceMenu.GetComponent<TeleportPlayerToSurface>().SetSurface(Surface1);
+        GameObject.Find("LandingPlane").GetComponent<NoFallingTrigger>().SetSurface(Surface1);
         
 
     }
@@ -149,6 +150,7 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
         TreasureManagerObject.GetComponent<TreasureManager>().SetSurfaceRoutine(2);
         GoToSurfaceMenu.SetActive(true);
         GoToSurfaceMenu.GetComponent<TeleportPlayerToSurface>().SetSurface(Surface2);
+        GameObject.Find("LandingPlane").GetComponent<NoFallingTrigger>().SetSurface(Surface2);
         
     }
 

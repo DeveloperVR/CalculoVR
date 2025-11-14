@@ -11,6 +11,7 @@ public class TeleportPlayerToSurface : MonoBehaviourPun
     [SerializeField] private FunctionInstantiator functionInstantiator;
     [SerializeField] private GameObject predeterminedTelepor;
     [SerializeField] private GameObject PredeterminedSurfacesMenu;
+    private bool isDesktopPlayer = false;
 
     //[PunRPC]
     public void TeleportPlayer()
@@ -20,7 +21,7 @@ public class TeleportPlayerToSurface : MonoBehaviourPun
         Player.transform.rotation = Quaternion.identity; // Reset rotation to default
     }
 
-    public void SetPlayer()
+    public void SetPlayer(bool desktop)
     {
         Player = FRGameManager.Instance.LocalPlayer;
         if (Player == null)
@@ -30,6 +31,7 @@ public class TeleportPlayerToSurface : MonoBehaviourPun
         else
         {
             Debug.Log("XR Origin (XR Rig) found: " + Player.name);
+            isDesktopPlayer = desktop;
         }
     }
 
@@ -47,5 +49,14 @@ public class TeleportPlayerToSurface : MonoBehaviourPun
     {
         Player.transform.position = Surface.transform.position + Vector3.up * 2f;
         PredeterminedSurfacesMenu.SetActive(true);
+        ResetDesktopPlayer();
+    }
+
+    private void ResetDesktopPlayer()
+    {
+        if (isDesktopPlayer)
+        {
+            Player.GetComponent<DektopNetworkSetup>().photonView.RPC("ResetSkinToAll", RpcTarget.AllBuffered);
+        }
     }
 }

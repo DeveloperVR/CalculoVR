@@ -74,6 +74,8 @@ MonoBehaviour:
   - ProcessSurface2
   - Routine1
   - routine2
+  - ResetSkinToAll
+  - Routine2
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
