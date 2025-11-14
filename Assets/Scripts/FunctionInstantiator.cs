@@ -34,8 +34,6 @@ public class FunctionInstantiator : MonoBehaviour
     //Esta lista se usa para las gradientes, ya que debe conservar todos los puntos de intersección.
     public List<Vector3> intersectionPointsForGradient = new List<Vector3>();
     public List<GameObject> gradientObjects = new List<GameObject>();
-    private bool isLevelCurvesReady = false;
-    private bool LineRendererCurvesReady = false;
     Color[] LevelCurveColors = new Color[]
     {
         new Color(0f, 0f, 1f),     // Azul
@@ -49,6 +47,11 @@ public class FunctionInstantiator : MonoBehaviour
         new Color(1f, 0.25f, 0f),  // Rojo anaranjado
         new Color(1f, 0f, 0f)      // Rojo
     };
+
+    private bool areLevelCurvesDone = false;
+    private bool areGradientsDone = false;
+    private List<GameObject> levelCurveObjects = new List<GameObject>();
+    private List<GameObject> gradientLineObjects = new List<GameObject>();
 
     void Start()
     {
@@ -119,8 +122,10 @@ public class FunctionInstantiator : MonoBehaviour
         //Gradients();
     }
 
-    public void Gradients()
+    public List<GameObject> Gradients()
     {
+        gradientObjects.Clear();
+        gradientLineObjects.Clear();
         SurfaceEvaluator surface = new SurfaceEvaluator(FunctionGenerator.GetComponent<FunctionGenerator>().WrittenFunction);
         foreach (Vector3 v in intersectionPointsForGradient)
         {
@@ -146,6 +151,7 @@ public class FunctionInstantiator : MonoBehaviour
             lr.SetPosition(0, newv);
             lr.SetPosition(1, newend);
         }
+        return gradientLineObjects;
     }
 
     [PunRPC]
@@ -168,12 +174,14 @@ public class FunctionInstantiator : MonoBehaviour
         LinerenderObject.SetActive(false);
         gradientObjects.Add(LinerenderObject);
         detector.GetComponent<GradientDetector>().SetLine(LinerenderObject);
+        gradientLineObjects.Add(LinerenderObject);
     }
 
     //-------------------------------------LevelCurves-------------------------------------
 
-    public void ComputePoints(Mesh mesh, float maxDistance)
+    public List<GameObject> ComputePoints(Mesh mesh, float maxDistance)
     {
+        levelCurveObjects.Clear();
         intersectionPoints.Clear();
         SurfaceEvaluator surface = new SurfaceEvaluator(FunctionGenerator.GetComponent<FunctionGenerator>().WrittenFunction);
         Bounds bounds = mesh.bounds;
@@ -207,6 +215,7 @@ public class FunctionInstantiator : MonoBehaviour
             ComputePointsAtHeight(mesh, h, minY, maxY, maxDistance);
             levelCurveIndex++;
         }
+        return levelCurveObjects;
     }
 
     private void ComputePointsAtHeight(Mesh mesh, float curveHeight, float minY, float maxY, float maxDistance)
@@ -540,6 +549,7 @@ public class FunctionInstantiator : MonoBehaviour
         lineRenderer.useWorldSpace = true;
         lineRenderer.shadowCastingMode = ShadowCastingMode.Off;
         lineRenderer.receiveShadows = false;
+        levelCurveObjects.Add(lineObject);
 
         return lineObject;
     }

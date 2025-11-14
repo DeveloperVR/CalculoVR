@@ -28,10 +28,21 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
 
     GameObject Player;
     private bool ActiveSurface;
+    private List<GameObject> ActiveLineObjects = new List<GameObject>();
+    private List<GameObject> ActiveGradientObjects = new List<GameObject>();
 
     [PunRPC]
     public void ProcessSurface1()
     {
+        if (ActiveSurface == true)
+        {
+            Surface2.SetActive(false);
+            ActiveLineObjects.ForEach(Destroy);
+            ActiveLineObjects.Clear();
+            ActiveGradientObjects.ForEach(Destroy);
+            ActiveGradientObjects.Clear();
+        }
+        ActiveSurface = true;
         List<GameObject> SurfaceItems = new List<GameObject>();
         Surface1.GetChildGameObjects(SurfaceItems);
         ThisMenu.SetActive(false);
@@ -45,8 +56,8 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
         Surface1.GetComponent<MeshFilter>().mesh = surfaceMesh;
         Surface1.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
 
-        functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh, 2f);
-        functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
+        ActiveLineObjects = functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh, 2f);
+        ActiveGradientObjects = functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
 
         Vector3 Origin = Surface1.transform.position;
 
@@ -71,17 +82,22 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
         }
 
         GoToSurfaceMenu.SetActive(true);
-        if (ActiveSurface == true)
-        {
-            Surface2.SetActive(false);
-            ActiveSurface = true;
-        }
+        
 
     }
 
     [PunRPC]
     public void ProcessSurface2()
     {
+        if (ActiveSurface == true)
+        {
+            Surface1.SetActive(false);
+            ActiveLineObjects.ForEach(Destroy);
+            ActiveLineObjects.Clear();
+            ActiveGradientObjects.ForEach(Destroy);
+            ActiveGradientObjects.Clear();
+        }
+        ActiveSurface = true;
         List<GameObject> SurfaceItems = new List<GameObject>();
         Surface2.GetChildGameObjects(SurfaceItems);
         ThisMenu.SetActive(false);
@@ -98,8 +114,8 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
         Surface2.GetComponent<MeshCollider>().sharedMesh = null;
         Surface2.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
 
-        functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh, 1f);
-        functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
+        ActiveLineObjects = functionInstantiator.GetComponent<FunctionInstantiator>().ComputePoints(surfaceMesh, 1f);
+        ActiveGradientObjects = functionInstantiator.GetComponent<FunctionInstantiator>().Gradients();
 
         Vector3 Origin = Surface2.transform.position;
 
@@ -123,11 +139,7 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
             }
         }
         GoToSurfaceMenu.SetActive(true);
-        if (ActiveSurface == true)
-        {
-            Surface1.SetActive(false);
-            ActiveSurface = true;
-        }
+        
     }
 
     public void SetPlayer()
