@@ -92,7 +92,8 @@ public class WristMenu : MonoBehaviour
             else
             {
                 wristUI.transform.SetParent(leftController.transform);
-                wristUI.transform.localPosition = new Vector3(0.1f, 0.1f, 0.2f); // Adjust position as needed
+                wristUI.transform.localPosition = new Vector3(0, 0f, 0f);
+                wristUI.transform.localRotation = Quaternion.identity * Quaternion.Euler(0, 0, 0); // Adjust position as needed
             }
         }
     }

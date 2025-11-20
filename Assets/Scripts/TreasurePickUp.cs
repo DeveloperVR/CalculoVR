@@ -8,7 +8,7 @@ public class TreasurePickUp : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("VRPlayer"))
         {
             // Aquí puedes agregar lógica para sumar puntos o actualizar el inventario del jugador
             TreasureManager = GameObject.Find("TreasureManager");

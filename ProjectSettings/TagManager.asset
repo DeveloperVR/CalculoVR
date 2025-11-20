@@ -9,6 +9,7 @@ TagManager:
   - Superficie2
   - Superficie3
   - Superficies
+  - VRPlayer
   layers:
   - Default
   - TransparentFX

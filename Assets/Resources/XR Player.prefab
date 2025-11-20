@@ -1557,7 +1557,7 @@ GameObject:
   - component: {fileID: 6118120949212310911}
   m_Layer: 2
   m_Name: XR Player
-  m_TagString: Player
+  m_TagString: VRPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
