@@ -3,14 +3,13 @@ using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
-using JetBrains.Annotations;
-using Unity.VisualScripting;
-using UnityEngine.ProBuilder.Shapes;
 using System.Linq;
+using UnityEditor;
 
 public class FunctionInstantiator : MonoBehaviour
 {
     [SerializeField] private GameObject LandingPlataform;
+    [SerializeField] GameObject GradientPrefab;
     private GameObject FunctionGenerator;
     public GameObject functionMesh;
     private String MeshPath;
@@ -130,13 +129,13 @@ public class FunctionInstantiator : MonoBehaviour
         foreach (Vector3 v in intersectionPointsForGradient)
         {
             Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
-            Vector2 grad = GradienteCalculator.CalculateScaledGradient(pointXY, surface);
+            Vector2 grad = GradienteCalculator.CalculateNeutralGradient(pointXY, surface);
             Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.50f;
-            Vector3 newend = end + new Vector3(100, 102f, 100); // elevar un poco el punto para mejor visibilidad
+            Vector3 newend = end + new Vector3(100, 110f, 100); // elevar un poco el punto para mejor visibilidad
+            Vector3 newv = v + new Vector3(100, 110f, 100); // elevar un poco el punto para mejor visibilidad
             //Se crea un detector de gradiente en el punto de intersección para que solo las gradientes cercanas al jugador se activen.
             GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             detector.name = "GradientDetector";
-            detector.transform.position = newend;
             detector.GetComponent<Renderer>().enabled = false;
             detector.GetComponent<Collider>().isTrigger = true;
             detector.GetComponent<Collider>().providesContacts = false;
@@ -147,7 +146,8 @@ public class FunctionInstantiator : MonoBehaviour
             CreateLineRendererObject(detector);
             LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
             lr.positionCount = 2;
-            Vector3 newv = v + new Vector3(100, 102f, 100); // elevar un poco el punto para mejor visibilidad
+            
+            detector.transform.position = newv;
             lr.SetPosition(0, newv);
             lr.SetPosition(1, newend);
         }
@@ -618,6 +618,7 @@ public class GradienteCalculator
     public static Vector2 CalculateScaledGradient(Vector2 point, SurfaceEvaluator
      surface)
     {
+        float l = 2.0f;
         float x1 = point.x;
         float y1 = point.y;
 
@@ -630,7 +631,7 @@ public class GradienteCalculator
         float dzdx = (float)(dzx / epsilon);
         float dzdy = (float)(dzy / epsilon);
 
-        Vector2 gradient = new Vector2(dzdx, dzdy);
+        Vector2 gradient = new Vector2(dzdx / l, dzdy / l);
         Vector2 ScaledGradient = gradient * 10f; // Escalar el gradiente para mejor visibilidad
         return ScaledGradient;
 
@@ -639,6 +640,7 @@ public class GradienteCalculator
     public static Vector2 CalculateNeutralGradient(Vector2 point, SurfaceEvaluator
      surface)
     {
+        float l = 2.0f;
         float x1 = point.x;
         float y1 = point.y;
 
@@ -651,7 +653,7 @@ public class GradienteCalculator
         float dzdx = (float)(dzx / epsilon);
         float dzdy = (float)(dzy / epsilon);
 
-        Vector2 gradient = new Vector2(dzdx, dzdy);
+        Vector2 gradient = new Vector2(dzdx / l, dzdy / l);
         return gradient;
 
     }
