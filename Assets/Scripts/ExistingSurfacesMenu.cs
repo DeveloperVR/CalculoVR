@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Photon.Pun;
+using Unity.VisualScripting;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 
@@ -55,6 +56,14 @@ public class ExistingSurfacesMenu : MonoBehaviourPun
         Mesh surfaceMesh = Surface1.GetComponent<MeshFilter>().mesh;
         functionGenerator.GetComponent<FunctionGenerator>().SetFunctionString(Surface1Function);
         surfaceMesh = functionInstantiator.GetComponent<FunctionInstantiator>().ScaleMesh(surfaceMesh, 2.0f);
+        Mesh supportMesh = surfaceMesh;
+        //---Configurar el mesh de soporte---
+        GameObject SupportSurface = new GameObject("SupportSurface");
+        SupportSurface.transform.position = Surface1.transform.position - new Vector3(0, 1, 0);
+        SupportSurface.AddComponent<MeshFilter>();
+        SupportSurface.AddComponent<MeshCollider>();
+        SupportSurface.GetComponent<MeshFilter>().mesh = supportMesh;
+        SupportSurface.GetComponent<MeshCollider>().sharedMesh = supportMesh;
         Surface1.GetComponent<MeshFilter>().mesh = surfaceMesh;
         Surface1.GetComponent<MeshCollider>().sharedMesh = surfaceMesh;
 

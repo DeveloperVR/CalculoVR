@@ -8,7 +8,7 @@ public class GradientDetector : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         Debug.Log("Trigger entered by: " + other.name);
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") || other.CompareTag("VRPlayer"))
         {
             Debug.Log("Player entered gradient detector");
             if (GradientLine != null)
@@ -23,7 +23,7 @@ public class GradientDetector : MonoBehaviour
     void OnTriggerExit(Collider other)
     {
         Debug.Log("Trigger exited by: " + other.name);
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") || other.CompareTag("VRPlayer"))
         {
             Debug.Log("Player exited gradient detector");
             if (GradientLine != null)

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.Rendering;
 using System.Linq;
 using UnityEditor;
+using Unity.VisualScripting;
 
 public class FunctionInstantiator : MonoBehaviour
 {
@@ -129,11 +130,20 @@ public class FunctionInstantiator : MonoBehaviour
         foreach (Vector3 v in intersectionPointsForGradient)
         {
             Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
-            Vector2 grad = GradienteCalculator.CalculateNeutralGradient(pointXY, surface);
+            Vector2 grad = GradienteCalculator.CalculateScaledGradient(pointXY, surface);
             Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.50f;
             Vector3 newend = end + new Vector3(100, 110f, 100); // elevar un poco el punto para mejor visibilidad
             Vector3 newv = v + new Vector3(100, 110f, 100); // elevar un poco el punto para mejor visibilidad
             //Se crea un detector de gradiente en el punto de intersección para que solo las gradientes cercanas al jugador se activen.
+            //----------Arrow Model Logic----------
+            Vector3 direction = newend - newv;
+            GameObject Arrow = Instantiate(GradientPrefab, newv, Quaternion.LookRotation(direction + 180f * Vector3.forward));
+            float distance = direction.magnitude;
+            Arrow.layer = LayerMask.NameToLayer("Gradients");
+            Arrow.tag = "Gradients";
+            Arrow.transform.localScale = new Vector3(10f, 10f, distance);
+            Arrow.SetActive(false);
+            //--------------------------------------
             GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             detector.name = "GradientDetector";
             detector.GetComponent<Renderer>().enabled = false;
@@ -141,15 +151,18 @@ public class FunctionInstantiator : MonoBehaviour
             detector.GetComponent<Collider>().providesContacts = false;
             detector.transform.localScale = new Vector3(2, scale, 2);
             detector.AddComponent<GradientDetector>();
-
-
-            CreateLineRendererObject(detector);
-            LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
-            lr.positionCount = 2;
-            
             detector.transform.position = newv;
-            lr.SetPosition(0, newv);
-            lr.SetPosition(1, newend);
+            detector.GetComponent<GradientDetector>().SetLine(Arrow);
+
+
+            //CreateLineRendererObject(detector);
+            // LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
+            // lr.positionCount = 2;
+            
+            
+            // lr.SetPosition(0, newv);
+            // lr.SetPosition(1, newend);
+            
         }
         return gradientLineObjects;
     }
@@ -173,7 +186,7 @@ public class FunctionInstantiator : MonoBehaviour
         //LinerenderObject.setActive(false);
         LinerenderObject.SetActive(false);
         gradientObjects.Add(LinerenderObject);
-        detector.GetComponent<GradientDetector>().SetLine(LinerenderObject);
+        //detector.GetComponent<GradientDetector>().SetLine(LinerenderObject);
         gradientLineObjects.Add(LinerenderObject);
     }
 

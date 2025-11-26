@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5783095593232158578}
   - component: {fileID: 5422354172040319767}
   - component: {fileID: 2538057420046296972}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 8333836151115344533}
   - component: {fileID: 1698725491200535630}
   - component: {fileID: 5755572301993500847}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: YAxis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,7 +176,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8574529058363076891}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RedArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}

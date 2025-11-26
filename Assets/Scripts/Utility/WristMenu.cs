@@ -10,6 +10,7 @@ public class WristMenu : MonoBehaviour
     [SerializeField]
     private GameObject wristUI;
     public GameObject miniMap;
+    public GameObject N;
     public InputActionReference ActivateMiniMap;
     private GameObject Player;
     public RenderTexture miniMapTexture;
@@ -39,11 +40,13 @@ public class WristMenu : MonoBehaviour
         if (isWristUIDisplayed)
         {
             miniMap.SetActive(false);
+            N.SetActive(false);
             isWristUIDisplayed = false;
         }
         else if (!isWristUIDisplayed)
         {
             miniMap.SetActive(true);
+            N.SetActive(true);
             isWristUIDisplayed = true;
         }
     }
