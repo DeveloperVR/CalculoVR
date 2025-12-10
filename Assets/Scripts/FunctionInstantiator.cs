@@ -122,48 +122,43 @@ public class FunctionInstantiator : MonoBehaviour
         //Gradients();
     }
 
-    public List<GameObject> Gradients()
+    public List<GameObject> Gradients(List<Vector2> GaussianCenters)
     {
         gradientObjects.Clear();
         gradientLineObjects.Clear();
         SurfaceEvaluator surface = new SurfaceEvaluator(FunctionGenerator.GetComponent<FunctionGenerator>().WrittenFunction);
         foreach (Vector3 v in intersectionPointsForGradient)
-        {
-            Vector2 pointXY = new Vector2(v.x, v.z); // suponiendo XZ como plano
-            Vector2 grad = GradienteCalculator.CalculateScaledGradient(pointXY, surface);
-            Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.50f;
-            Vector3 newend = end + new Vector3(100, 110f, 100); // elevar un poco el punto para mejor visibilidad
-            Vector3 newv = v + new Vector3(100, 110f, 100); // elevar un poco el punto para mejor visibilidad
-            //Se crea un detector de gradiente en el punto de intersección para que solo las gradientes cercanas al jugador se activen.
-            //----------Arrow Model Logic----------
-            Vector3 direction = newend - newv;
-            GameObject Arrow = Instantiate(GradientPrefab, newv, Quaternion.LookRotation(direction + 180f * Vector3.forward));
-            float distance = direction.magnitude;
-            Arrow.layer = LayerMask.NameToLayer("Gradients");
-            Arrow.tag = "Gradients";
-            Arrow.transform.localScale = new Vector3(10f, 10f, distance);
-            Arrow.SetActive(false);
-            //--------------------------------------
-            GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            detector.name = "GradientDetector";
-            detector.GetComponent<Renderer>().enabled = false;
-            detector.GetComponent<Collider>().isTrigger = true;
-            detector.GetComponent<Collider>().providesContacts = false;
-            detector.transform.localScale = new Vector3(2, scale, 2);
-            detector.AddComponent<GradientDetector>();
-            detector.transform.position = newv;
-            detector.GetComponent<GradientDetector>().SetLine(Arrow);
+    {
+        Vector2 pointXY = new Vector2(v.x, v.z);
+        Vector2 grad = GradienteCalculator.CalculateNeutralGradient(pointXY, surface);
 
+        Vector3 end = v + new Vector3(grad.x, 0f, grad.y) * 0.50f;
 
-            //CreateLineRendererObject(detector);
-            // LineRenderer lr = LinerenderObject.GetComponent<LineRenderer>();
-            // lr.positionCount = 2;
-            
-            
-            // lr.SetPosition(0, newv);
-            // lr.SetPosition(1, newend);
-            
-        }
+        Vector3 direction = end - v;
+        Quaternion rot = Quaternion.LookRotation(-direction);
+
+        Vector3 offset = new Vector3(100, 110f, 100);
+        Vector3 newv = v + offset;
+
+        GameObject Arrow = Instantiate(GradientPrefab, newv, rot);
+
+        float distance = direction.magnitude;
+        Arrow.transform.localScale = new Vector3(10f, 10f, distance);
+        Arrow.layer = LayerMask.NameToLayer("Gradients");
+        Arrow.tag = "Gradients";
+        Arrow.SetActive(false);
+
+        // Detector
+        GameObject detector = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        detector.name = "GradientDetector";
+        detector.GetComponent<Renderer>().enabled = false;
+        detector.GetComponent<Collider>().isTrigger = true;
+        detector.GetComponent<Collider>().providesContacts = false;
+        detector.transform.localScale = new Vector3(2, scale, 2);
+        detector.AddComponent<GradientDetector>();
+        detector.transform.position = newv;
+        detector.GetComponent<GradientDetector>().SetLine(Arrow);
+    }
         return gradientLineObjects;
     }
 
@@ -604,7 +599,7 @@ public class FunctionInstantiator : MonoBehaviour
 public class GradienteCalculator
 {
 
-    public static float epsilon = 0.01f;
+    public static float epsilon = 0.1f;
 
     //Se calcula el gradiente en un punto dado, usando la formula del gradiente.
     public static Vector2 CalculateNormalizedGradient(Vector2 point, SurfaceEvaluator
@@ -631,7 +626,7 @@ public class GradienteCalculator
     public static Vector2 CalculateScaledGradient(Vector2 point, SurfaceEvaluator
      surface)
     {
-        float l = 2.0f;
+        float l = 1.0f;
         float x1 = point.x;
         float y1 = point.y;
 
@@ -654,8 +649,8 @@ public class GradienteCalculator
      surface)
     {
         float l = 2.0f;
-        float x1 = point.x;
-        float y1 = point.y;
+        float x1 = point.x /2;
+        float y1 = point.y /2;
 
         float x2 = x1 + epsilon;
         float y2 = y1 + epsilon;
@@ -666,10 +661,98 @@ public class GradienteCalculator
         float dzdx = (float)(dzx / epsilon);
         float dzdy = (float)(dzy / epsilon);
 
-        Vector2 gradient = new Vector2(dzdx / l, dzdy / l);
+        Vector2 gradient = new Vector2(dzdx / l, dzdy / l) * 2;
         return gradient;
 
     }
+
+    public static Vector2 AltCalculateNeutralGradient(Vector2 point, SurfaceEvaluator surface)
+    {
+        // Usa un epsilon más razonable:
+        float h = 0.1f;
+
+        float x = point.x;
+        float y = point.y;
+
+        // Derivadas centrales
+        double f_x_plus  = surface.ComputeZ(x + h, y);
+        double f_x_minus = surface.ComputeZ(x - h, y);
+
+        double f_y_plus  = surface.ComputeZ(x, y + h);
+        double f_y_minus = surface.ComputeZ(x, y - h);
+
+        float dzdx = (float)((f_x_plus - f_x_minus) / (2f * h));
+        float dzdy = (float)((f_y_plus - f_y_minus) / (2f * h));
+
+        Vector2 gradient = new Vector2(dzdx, dzdy);
+
+        // Evitar gradientes casi nulos (colapsan tu línea)
+        if (gradient.sqrMagnitude < 1e-6f)
+        {
+            // Puedes:
+            // 1. Devolver cero
+            // 2. Normalizar a un mínimo vector visible
+            // 3. Saltarte el punto en tu método Gradients()
+
+            return Vector2.zero; // la opción más honesta
+        }
+
+        // Si quieres mantener una longitud similar visual:
+        // gradient.Normalize();
+
+        return gradient;
+    }
+
+    public static Vector2 Alt2CalculateNeutralGradient(Vector2 point, List<Vector2> centers)
+    {
+        if (centers == null || centers.Count == 0)
+            return Vector2.zero;
+
+        // 1. Encontrar el centro más cercano
+        Vector2 closest = centers[0];
+        float minDist = Vector2.SqrMagnitude(point - closest);
+
+        for (int i = 1; i < centers.Count; i++)
+        {
+            float dist = Vector2.SqrMagnitude(point - centers[i]);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                closest = centers[i];
+            }
+        }
+
+        // 2. Dirección hacia ese centro
+        Vector2 dir = closest - point;
+
+        // 3. Normalizar para que todas las flechas tengan tamaño consistente
+        if (dir == Vector2.zero)
+            return Vector2.zero;
+
+        return dir; 
+    }
+
+
+    public static Vector2 GetClosestGaussianCenter(Vector2 point, List<Vector2> GaussianCenters)
+    {
+        float minDist = float.MaxValue;
+        Vector2 closest = Vector2.zero;
+
+        foreach (var center in GaussianCenters)
+        {
+            float d = Vector2.SqrMagnitude(point - center);
+            if (d < minDist)
+            {
+                minDist = d;
+                closest = center;
+            }
+        }
+
+        return closest;
+    }
+
+
+
 }
 
 //-------------------------------------Gradient ascension-------------------------------------
