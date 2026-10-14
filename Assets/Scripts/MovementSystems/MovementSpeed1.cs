@@ -147,7 +147,7 @@ public class MovementSpeed1 : MonoBehaviourPun
             audioManager.StopAudio();
             StopAudio();
 
-            //Determines where tu put the button at the end of the ride
+            //Determines where to put the button at the end of the ride
             PlacePlayerAtEnding();
             PlaceEndingButton();
             isObserving = false;
